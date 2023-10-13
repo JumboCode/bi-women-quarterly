@@ -1,4 +1,4 @@
-_Please remember to ticket accordingly: -> `In Progress` if this is currently being worked on, -> `Dev Review` (and assign to Shreyas) if this is ready for review, -> `Done` if this is approved and merged_
+_Please remember to ticket accordingly: -> `In Progress` if this is currently being worked on, -> `Dev Review` if this is ready for review, -> `Done` if this is approved and merged_
 
 # Jira Ticket Link:
 
