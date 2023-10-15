@@ -8,7 +8,6 @@
 - Use strict mode for TypeScript.
 - Use named exports instead of default exports.
 - Always specify return type of functions.
-- Use TS Lint for static code checking.
 
 ### React
 
