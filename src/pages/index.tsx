@@ -1,4 +1,4 @@
-import Button from "@/components/Button"
+import Button from "@/components/Button";
 import { useState } from "react";
 
 export default function Home() {
@@ -10,7 +10,7 @@ export default function Home() {
       .then(data => {
         console.log(data);
         data.properties.periods.map((datum: any) => {
-          console.log(datum.temperature + "°" + datum.temperatureUnit)
+          console.log(datum.temperature + "°" + datum.temperatureUnit);
           console.log(datum.shortForecast);
         });
         setData(data.properties.periods);
