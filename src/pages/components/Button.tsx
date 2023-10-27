@@ -9,11 +9,9 @@ export default function TellWeather({label}:ButtonProps) {
         fetch('https://api.weather.gov/gridpoints/BOX/69,92/forecast')
             .then(response => response.json())
             //.then(data => console.log(data.properties.periods[0].detailedForecast))
-            //const todayWeather = data.properties.periods[0]
             .then(data => {
                 setWeather(data.properties.periods[0].detailedForecast)
             })
-        //console.log("Clicked!")
     }
 
     return (
@@ -23,27 +21,3 @@ export default function TellWeather({label}:ButtonProps) {
         </div>
     )
 }
-
-// type ButtonProps = { label: string }
-// const [weather, setWeather] = useState(0);
-
-// const handleClick = () => {
-    
-//     fetch('https://api.weather.gov/gridpoints/BOX/69,92/forecast')
-//         .then(response => response.json())
-//         //.then(data => console.log(data.properties.periods[0]))
-//         //const todayWeather = data.properties.periods[0]
-//         .then(data => {
-//             setWeather(data.properties.periods[0].detailedForecast)
-//         })
-//     //console.log("Clicked!")
-// }
-
-// //destructuring props
-// const WeatherButton = ({label}:ButtonProps) => {
-//     return (
-//         <button onClick={handleClick}>{label}</button>
-//     )
-// }
-
-// export default WeatherButton;
