@@ -1,0 +1,20 @@
+.App {
+    font-family: sans-serif;
+    text-align: center;
+  }
+  .override {
+    color: blue;
+  }
+  
+  .title {
+    color: rgb(214, 2, 112);
+  }
+  
+  .header {
+    color: purple;
+  }
+
+  .button {
+    color: blue;
+  }
+  
