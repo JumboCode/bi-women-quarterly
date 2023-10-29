@@ -10,6 +10,7 @@
         "lint": "next lint"
     },
     "dependencies": {
+        "mongodb": "^6.2.0",
         "next": "13.5.4",
         "prettier": "^3.0.3",
         "react": "^18",
