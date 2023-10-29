@@ -1,3 +1,5 @@
+import MyButton from "@/components/Button";
+
 export default function Home() {
-    return <div>Hello</div>;
+    return <MyButton title="hi"/>;
 }
