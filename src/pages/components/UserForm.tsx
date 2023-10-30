@@ -16,37 +16,48 @@ export function MyForm() {
 
                                   
                                 
-  //TODO: what should the type of e be?
-  const onChange = (e : React.FormEvent<HTMLInputElement>) => {
+  const onChangeUser = (e : React.ChangeEvent<HTMLInputElement>) => {
     setUser({...user, [e.target.name] : e.target.value});
   }
-  const handleSubmit = (e: React.SyntheticEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     alert(`The name you entered was: ${user.name}`);
     alert(`The email you entered was: ${user.email}`);
     alert(`The bio you entered was: ${user.bio}`);
     alert(`The social media accounts you entered were: ${user.socMedia}`);
+    console.log(user);
   }                       
   return (
       <form onSubmit={handleSubmit}>
         <label>Enter your pen name:
           <input type="text" 
                  value={user.name}
-                 name="name"
-                 onChange={(e)=> {setUser(e.target.value)}} />
+                 name="name"      
+                 onChange={onChangeUser}/>
         </label>
         <br></br>
         <label>Enter your email address:
-          <input type="text"/>
+          <input type="text"
+                 value={user.email}
+                 name="email"
+                 onChange={onChangeUser}/>
         </label>
         <br></br>
         <label>Enter a short biography:
-          <input type="text" />
+          <input type="text" 
+                 value={user.bio}
+                 name="bio"
+                 onChange={onChangeUser}/>
         </label>
         <br></br>
         <label>Enter any social media accounts:
-          <input type="text" />
+          <input type="text" 
+                 value={user.socMedia}
+                 name="socMedia"
+                 onChange={onChangeUser}/>
         </label>
+        <br></br>
+        <button type = "submit">Submit</button>
       </form>
     )
 }
