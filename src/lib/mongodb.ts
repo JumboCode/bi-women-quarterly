@@ -1,7 +1,13 @@
-import { MongoClient } from "mongodb";
+import { MongoClient } from 'mongodb'
 
-const uri: string =
-    "mongodb+srv://biwomenquarterly:JumboCode2324@biwomenquarterly.17vcngj.mongodb.net/";
-const client: MongoClient = new MongoClient(uri);
+if (!process.env.MONGODB_URI) {
+    throw new Error('Invalid/Missing environment variable: "MONGODB_URI"')
+}
 
-export default client;
+const uri = process.env.MONGODB_URI
+const options = {}
+
+let client: MongoClient = new MongoClient(uri, options);
+let clientPromise: Promise<MongoClient> = client.connect();
+
+export default clientPromise

@@ -43,5 +43,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ## MongoDB
 
-Database name is `BiWomenQuarterly`
-Collection name is `Users`
+The testing database name is `sample_mflix`, with collections `movies` and `users`.
+The production database name is `BiWomenQuarterly`.
+The user collection name is `Users`. The submission collection name is `Submissions`.
