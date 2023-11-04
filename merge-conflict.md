@@ -1,0 +1,1 @@
+File updated from test/merge-conflict
