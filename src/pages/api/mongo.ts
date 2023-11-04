@@ -13,7 +13,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .find({})
             .limit(10)
             .toArray();
-        
+
         console.log(collection);
         res.json("Successfully connected to the database!");
     } catch (e) {

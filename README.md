@@ -54,4 +54,3 @@ Collections: `Users` and `Submissions`
 Database name: `sample_mflix`
 
 Collections: `movies` and `users`
-
