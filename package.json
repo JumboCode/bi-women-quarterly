@@ -10,6 +10,7 @@
         "lint": "next lint"
     },
     "dependencies": {
+        "@clerk/nextjs": "^4.26.2",
         "@google-cloud/local-auth": "^2.1.0",
         "child_process": "^1.0.2",
         "googleapis": "^105.0.0",
