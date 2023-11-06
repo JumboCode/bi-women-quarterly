@@ -2,9 +2,14 @@
 // On submission, prints user info to console
 
 import {useState} from 'react';
-import ReactDOM from 'react-dom/client';
 
-export function MyForm() {
+/**
+ * Displays a user form that can handle 4 fields: name, email address, bio, and
+ * any social media accounts.
+ * @author Allison Zhang and Avery Hanna
+ * @returns user form onto the display
+ */
+export default function UserForm() {
     const [user, setUser] = useState({name : "",
                                       email : "",
                                       bio : "",
