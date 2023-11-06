@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "bi-women-quarterly",
   "version": "0.1.0",
   "private": true,
@@ -27,4 +28,38 @@
     "tailwindcss": "^3",
     "typescript": "^5"
   }
+=======
+    "name": "bi-women-quarterly",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "prettier": "prettier --write .",
+        "lint": "next lint"
+    },
+    "dependencies": {
+        "@google-cloud/local-auth": "^2.1.0",
+        "child_process": "^1.0.2",
+        "googleapis": "^105.0.0",
+        "mongodb": "^6.2.0",
+        "next": "13.5.4",
+        "prettier": "^3.0.3",
+        "react": "^18",
+        "react-dom": "^18",
+        "tsx": "^3.14.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20",
+        "@types/react": "^18",
+        "@types/react-dom": "^18",
+        "autoprefixer": "^10",
+        "eslint": "^8",
+        "eslint-config-next": "13.5.4",
+        "postcss": "^8",
+        "tailwindcss": "^3",
+        "typescript": "^5"
+    }
+>>>>>>> 88f7a8b7b1adf73073627320f3bbdecc12696cc4
 }
