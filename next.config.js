@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const nextConfig = {
-    webpack: (config) => {
+    webpack: config => {
         config.resolve.fallback = {
             fs: false,
             net: false,
