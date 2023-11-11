@@ -2,6 +2,8 @@
 // On submission, prints user info to console
 
 import {useState} from 'react';
+import User from "../types/User";
+import SocialMedias from "../types/SocialMedias"
 
 /**
  * Displays a user form that can handle 4 fields: name, email address, bio, and
@@ -10,10 +12,22 @@ import {useState} from 'react';
  * @returns user form onto the display
  */
 export default function UserForm() {
-    const [user, setUser] = useState({name : "",
-                                      email : "",
-                                      bio : "",
-                                      socMedia : ""})    
+    var new_social_medias: SocialMedias = {
+        LinkedIn: "",
+        Facebook: "",
+        Instagram: "",
+        X: "",
+        TikTok: ""
+    }
+    var new_user: User = {
+        username: "",
+        penname: "",
+        email: "",
+        bio: "",
+        socials: new_social_medias,
+        headshot: ""
+    }
+    const [user, setUser] = useState(new_user);   
     
     const onChangeUser = (e : React.ChangeEvent<HTMLInputElement>) => {
         setUser({...user, [e.target.name] : e.target.value});
@@ -28,8 +42,8 @@ export default function UserForm() {
         <form onSubmit={handleSubmit}>
             <label>Enter your pen name:
                 <input type="text" 
-                      value={user.name}
-                      name="name"      
+                      value={user.penname}
+                      name="penname"      
                       onChange={onChangeUser}/>
             </label>
             <br></br>
@@ -47,10 +61,10 @@ export default function UserForm() {
                       onChange={onChangeUser}/>
             </label>
             <br></br>
-            <label>Enter any social media accounts:
+            <label>Enter your instagram account:
                 <input type="text" 
-                      value={user.socMedia}
-                      name="socMedia"
+                      value={user.socials.Instagram}
+                      name="socials"
                       onChange={onChangeUser}/>
             </label>
             <br></br>
