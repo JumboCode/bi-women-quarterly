@@ -14,9 +14,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .limit(10)
             .toArray();
 
-        console.log(collection);
-        res.json("Successfully connected to the database!");
+            res.status(201).json({ success: true, data: collection });
     } catch (e) {
-        console.error(e);
+        res.status(400).json({ success: false });
     }
 };
