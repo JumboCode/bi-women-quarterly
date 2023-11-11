@@ -1,11 +1,11 @@
-// Type enum associates string values for each social media
+// Type to associate string values for each social media
+type SocialMedias = {
+    LinkedIn: string,
+    Facebook: string,
+    Instagram: string,
+    X: string,
+    TikTok: string,
+};
 
-enum socialMedias {
-    LinkedIn = "",
-    Facebook = "",
-    Instagram = "",
-    X = "",
-    TikTok = "",
-}
+export default SocialMedias;
 
-export default socialMedias;
