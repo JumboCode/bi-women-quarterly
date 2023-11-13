@@ -1,8 +1,5 @@
 import React, {useState} from "react";
 
-interface UploadFileProps {
-    numberOfFiles: number; 
-}
 // User file selection 
 function UploadFile() {
     const [files, setFiles] = useState<File[]>([]); 
