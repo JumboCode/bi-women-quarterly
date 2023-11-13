@@ -7,6 +7,9 @@
 // Import React
 import { useState } from 'react';
 
+// Import Submission type
+import Submission from "../types/Submission"
+
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
@@ -19,7 +22,7 @@ export default function SubmissionForm() {
     /* -------------- State ------------- */
 
     // Initialize state
-    const [states, setStates] = useState({title : "", issue : "", type : "",})
+    const [states, setStates] = useState<Submission>({title : "", issue: "", date: "", image : "", wordDoc : ""})
 
     /*------------------------------------------------------------------------*/
     /* ------------------------- Lifecycle Functions ------------------------ */
@@ -35,7 +38,7 @@ export default function SubmissionForm() {
         event.preventDefault();
         console.log('title: ' + states.title);
         console.log("issue: " + states.issue);
-        console.log("type: " + states.type);
+        console.log("date: " + states.date);
     }
     
     /**
@@ -74,14 +77,15 @@ export default function SubmissionForm() {
                 <option value="Issue3">Issue 3</option>
             </select>
 
-            {/* drop down element for type selection */}
-            <select name="type" value={states.type} onChange={handleSubmissionChange}>
-                <option value="Nonfiction">Nonfiction</option>
-                <option value="Fiction">Fiction</option>
-                <option value="Poetry">Poetry</option>
-                <option value="Visual">Visual Art</option>
-                <option value="other">Other</option>
-            </select>
+            <label>Date: 
+                {/* text input element for date */}
+                <input
+                    type="text" 
+                    name="date"
+                    value={states.date}
+                    onChange={handleSubmissionChange}
+                />
+            </label>
 
             {/* submission button */}
             <input type="submit" />
