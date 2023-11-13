@@ -1,11 +1,9 @@
-import SubmissionForm from "../components/SubmissionForm"
-
 export default function Home() {
 
 
     return (
         <div>
-            <SubmissionForm />
+            Hello
         </div>
     )
 }
