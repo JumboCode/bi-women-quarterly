@@ -3,12 +3,16 @@ import { ClerkProvider } from "@clerk/nextjs";
 import type { AppProps } from "next/app";
 
 /**
- * Prepares a car to race: fills up the tank and tests the engine
- * @author Your Name
- * @param car the car to prepare
- * @param raceType the type of race to prepare for
- * @returns cost of the preparation process in USD
+ * MyApp function is the root component for the Next.js application.
+ * It wraps the entire application with the ClerkProvider for user authentication.
+ * @author Allison Zhang and Walid Nejmi
+ * @param {Object} props - The properties passed to the component.
+ * @param {React.ComponentType} props.Component - The Next.js page component.
+ * @param {Object} props.pageProps - The initial props that were preloaded for the page.
+ * @returns {React.ReactElement} The rendered React element.
  */
+
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ClerkProvider {...pageProps}>
