@@ -3,6 +3,6 @@ import UploadFile from "./components/UploadFile";
 
 export default function Home() {
     return (
-        <div>Hello <UploadFile></UploadFile></div>
+        <div>Hello</div>
     );
 }
