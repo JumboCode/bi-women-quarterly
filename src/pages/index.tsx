@@ -6,6 +6,7 @@ export default function Home() {
                 if (res.success) {
                     console.log("Successfully connected to database!");
                     console.log(res.data);
+                    console.log("hello"); 
                 } else {
                     console.log("Could not connect to database!");
                 }
