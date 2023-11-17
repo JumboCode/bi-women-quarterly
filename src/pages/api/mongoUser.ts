@@ -7,7 +7,7 @@ import SocialMedias from "@/types/SocialMedias";
 const socials1: SocialMedias = {
     LinkedIn: "my_linkedin",
     Facebook: "my_facebook",
-    Instagram: "my_instagram",
+    Instagram: "my_instagram", 
     X: "my_X",
     TikTok: "my_tiktok",
 };
@@ -29,8 +29,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         //if (req.method === "POST") {
             console.log("in POST case")
-            //const to_post = req.body;
-            const to_post = user1; 
+
+            // Receive the data from fetch() 
+            const to_post: User = req.body;
+            // const to_post = user1; 
 
             const client = await clientPromise;
             // replace database name with whatever you are testing
