@@ -22,8 +22,8 @@ export default function Home() {
     // Get the data 
     const fetchData = async () => {
         await fetch('http://localhost:3000/api/mongo', {
-            method: 'POST',
-            body: JSON.stringify(user1)
+            // method: 'POST',
+            // body: res.json()
         })  // convert to json format 
             .then(res => res.json())
             .then(res => {

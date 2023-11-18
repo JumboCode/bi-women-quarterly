@@ -4,22 +4,22 @@ import clientPromise from "@/lib/mongodb";
 import User from "@/types/User";
 import SocialMedias from "@/types/SocialMedias";
 
-// const socials1: SocialMedias = {
-//     LinkedIn: "my_linkedin",
-//     Facebook: "my_facebook",
-//     Instagram: "my_instagram", 
-//     X: "my_X",
-//     TikTok: "my_tiktok",
-// };
+const socials1: SocialMedias = {
+    LinkedIn: "my_linkedin",
+    Facebook: "my_facebook",
+    Instagram: "my_instagram", 
+    X: "my_X",
+    TikTok: "my_tiktok",
+};
 
-// const user1: User = {
-//     username: "sohyun",
-//     penname: "sk",
-//     email: "sk@gmail.com",
-//     bio: "student",
-//     socials: socials1,
-//     headshot: "headshot",
-// };
+const user1: User = {
+    username: "sohyun",
+    penname: "sk",
+    email: "sk@gmail.com",
+    bio: "student",
+    socials: socials1,
+    headshot: "headshot",
+};
 
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -32,8 +32,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
             // Receive the data from fetch() 
             // const to_post: User = req.body;
-            const to_post = req.body
-            // const to_post = user1; 
+            // const to_post = req.body
+            const to_post = user1; 
             console.log("body:", req.body)
 
             const client = await clientPromise;
