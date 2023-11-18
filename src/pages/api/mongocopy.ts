@@ -4,37 +4,32 @@ import clientPromise from "@/lib/mongodb";
 import User from "@/types/User";
 import SocialMedias from "@/types/SocialMedias";
 
-// const socials1: SocialMedias = {
-//     LinkedIn: "my_linkedin",
-//     Facebook: "my_facebook",
-//     Instagram: "my_instagram", 
-//     X: "my_X",
-//     TikTok: "my_tiktok",
-// };
+const socials1: SocialMedias = {
+    LinkedIn: "my_linkedin",
+    Facebook: "my_facebook",
+    Instagram: "my_instagram",
+    X: "my_X",
+    TikTok: "my_tiktok",
+};
 
-// const user1: User = {
-//     username: "sohyun",
-//     penname: "sk",
-//     email: "sk@gmail.com",
-//     bio: "student",
-//     socials: socials1,
-//     headshot: "headshot",
-// };
+const user1: User = {
+    username: "student_name",
+    penname: "student_penname",
+    email: "student_email@gmail.com",
+    bio: "student",
+    socials: socials1,
+    headshot: "headshot",
+};
 
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-
     // Takes in incoming response and save to data 
     // Type POST: method that requests the web server to accept data from the incoming message -- check the POST method 
     try {
         //if (req.method === "POST") {
             console.log("in POST case")
-
-            // Receive the data from fetch() 
-            // const to_post: User = req.body;
-            const to_post = req.body
-            // const to_post = user1; 
-            console.log("body:", req.body)
+            //const to_post = req.body;
+            const to_post = user1; 
 
             const client = await clientPromise;
             // replace database name with whatever you are testing
