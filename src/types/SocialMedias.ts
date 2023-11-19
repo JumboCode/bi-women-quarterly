@@ -10,12 +10,11 @@
  */
 
 type SocialMedias = {
-    LinkedIn: string,
-    Facebook: string,
-    Instagram: string,
-    X: string,
-    TikTok: string,
+    LinkedIn: string;
+    Facebook: string;
+    Instagram: string;
+    X: string;
+    TikTok: string;
 };
 
 export default SocialMedias;
-
