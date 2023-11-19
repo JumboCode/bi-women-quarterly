@@ -1,3 +1,11 @@
+/**
+ * Retrieves user submissions from author query
+ * @author Geneva
+ * @author Walid
+ * @param req the API request
+ * @param res the API response
+ * @returns Filtered array of submissions
+ */
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 
@@ -8,7 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         const collection = await db
             .collection("Submissions")
-            .find({})
+            .find({ author: req.query.author })
             .toArray();
 
             res.status(201).json({ success: true, data: collection });
