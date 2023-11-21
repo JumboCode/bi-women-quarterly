@@ -4,23 +4,6 @@ import clientPromise from "@/lib/mongodb";
 import User from "@/types/User";
 import SocialMedias from "@/types/SocialMedias";
 
-const socials1: SocialMedias = {
-    LinkedIn: "my_linkedin",
-    Facebook: "my_facebook",
-    Instagram: "my_instagram", 
-    X: "my_X",
-    TikTok: "my_tiktok",
-};
-
-const user1: User = {
-    username: "sohyun",
-    penname: "sk",
-    email: "sk@gmail.com",
-    bio: "student",
-    socials: socials1,
-    headshot: "headshot",
-};
-
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 
@@ -31,25 +14,25 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             console.log("in POST case")
 
             // Receive the data from fetch() 
-            const to_post: User = req.body;
-            // const to_post = user1; 
+            const user_example = JSON.parse(req.body); 
+            const user: User = user_example; 
 
             const client = await clientPromise;
             // replace database name with whatever you are testing
             const db = client.db("BiWomenQuarterly");
-            const babyCollection = await db.collection("Users").insertOne(to_post); //not adding to collection
+            const user_collection = db.collection("Users"); 
+            const result = await user_collection.insertOne(user); 
             
-            const collection = await db
+            //const collection = await db
                 // replace collection name with whatever you are testing
-                .collection("Users")
-                .find({})
-                .limit(10)
-                .toArray();
+            //    .collection("Users")
+            //    .find({})
+            //    .limit(10)
+            //    .toArray();
 
-            //res.status(201).json({ name: "newName" }); // TODO: POST user data
             console.log("Printing collection:"); 
-            console.log(babyCollection);
-                res.status(201).json({ success: true, data: collection });
+            console.log(result);
+                res.status(201).json({ success: true, data: result.insertedId });
         //}
     } catch (e) {
         console.log(e);
