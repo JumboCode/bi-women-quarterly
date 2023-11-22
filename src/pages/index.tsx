@@ -2,7 +2,6 @@ import User from "@/types/User";
 import SocialMedias from "@/types/SocialMedias"; 
 
 export default function Home() {  
-    // Get the data 
     const fetchData = async () => {
        const userDocument = {
         username: "username1",
@@ -24,7 +23,7 @@ export default function Home() {
         })  
             .then(res => res.json())
             .then(res => {
-                if (res.success) {
+                if (res.success) { 
                     console.log("Successfully connected to database!");
                     console.log(res.data);
                 } else {
@@ -38,4 +37,4 @@ export default function Home() {
     fetchData();
 
     return <div>Hello</div>;
-}
+}  
