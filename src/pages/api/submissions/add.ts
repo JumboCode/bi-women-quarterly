@@ -18,7 +18,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const db = client.db("BiWomenQuarterly");
         // acesses collection Submissions
         const collect = db.collection("Submissions");
-        
+
         // Insert the defined document into the "Submissions" collection
         const body = JSON.parse(req.body)
         await collect.insertOne(body);
@@ -27,11 +27,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const collection = await db
             .collection("Submissions")
             .find({})
-            .limit(30)
+            // .limit(30)
             .toArray();
 
-            res.status(201).json({ success: true, data: collection });
-        
+        res.status(201).json({ success: true, data: collection });
+
     } catch (e) {
         res.status(400).json({ success: false });
     }

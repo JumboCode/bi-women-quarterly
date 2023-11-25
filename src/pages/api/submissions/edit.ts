@@ -14,36 +14,25 @@ import clientPromise from "@/lib/mongodb";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     try {
+        // get the mongodb information
         const client = await clientPromise;
-        // acesses database BiWomenQuarterly
+        // access database BiWomenQuarterly
         const db = client.db("BiWomenQuarterly");
-        // acesses collection Submissions
+        // access collection Submissions
         const collect = db.collection("Submissions");
 
-        // Insert the defined document into the "Submissions" collectio
-
+        // get the document to substitute in
         const body = JSON.parse(req.body);
-        // const { id, replacement } = body;
-        // await collect.replaceOne({ id: Object(id) }, replacement);
 
-
-        //I think we need to do this
         const documentID = body["id"];
+        // replaces the old document with the new one by ID
         await collect.replaceOne({ id: documentID }, body);
 
-
-        // console.log("New document:")
-
-        // `body` = the document that we're uploading
-        await collect.insertOne(body); // TODO it seems like this is the first thing we need to change?
-        // https://www.mongodb.com/docs/manual/reference/method/db.collection.replaceOne/
-
-        // accesses most recent 30 submissions of collection to verify
-        // that everything was inserted correct
+        // debugging info
         const collection = await db
             .collection("Submissions")
             .find({})
-            .limit(30)
+            // .limit(30)
             .toArray();
 
         res.status(201).json({ success: true, data: collection });
