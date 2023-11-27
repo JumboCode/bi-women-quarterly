@@ -11,17 +11,17 @@ import Preview from "../types/Preview"
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
 
-export default function SubmissionPreview ({name, title, description, image} : Preview) {
+export default function SubmissionPreview (props : Preview) {
                                                 
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
     return (
         <div>
-            <div>{name}</div>
-            <div><img src={image}></img></div>
-            <div>{title}</div>
-            <div>{description}</div>
+            <div className="fill-sky-100">{props.name}</div>
+            <div><img src={props.image}></img></div>
+            <div>{props.title}</div>
+            <div>{props.description}</div>
             <br />
         </div>
     );
