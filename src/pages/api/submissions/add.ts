@@ -27,7 +27,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const collection = await db
             .collection("Submissions")
             .find({})
-            // .limit(30)
             .toArray();
 
         res.status(201).json({ success: true, data: collection });
