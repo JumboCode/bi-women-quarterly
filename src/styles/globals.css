@@ -1,0 +1,4 @@
+/* Adding Tailwind directives into main css file */
+@tailwind base;
+@tailwind components;
+@tailwind utilities; 

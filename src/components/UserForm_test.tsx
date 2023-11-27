@@ -43,33 +43,29 @@ export default function UserForm() {
     return (
         <form onSubmit={handleSubmit}>
             <label class="block">
-                <span class="text-gray-700">*Email</span>
-                <input type="text" class="form-input mt-1 block w-full" placeholder="abcde@gmail.com"
+                <span class="text-gray-700">Email</span>
+                <input type="text" class="form-input mt-1 block w-full" placeholder="@gmail.com"
                       value={user.email}
                       name="email"
                       onChange={onChangeUser}/>
             </label>
             <br></br>
-            <div class="flex space-auto flex space-x-4"> 
-                <label>First Name
-                    <input type="text" class="form-input mt-1 block w-full" placeholder="James"
-                        value={user.firstname}
-                        name="firstname"      
-                        onChange={onChangeUser}/>
-                </label>
-                <br></br>
-                <label>Last Name 
-                    <input type="text" class="form-input mt-1 block w-full" placeholder="Smith"
-                        value={user.lastname}
-                        name="lastname"      
-                        onChange={onChangeUser}/>
-                </label>
-            </div>
-            <p class="italic text-xs text-gray-900 dark:text-white">Disclaimer: For identity protection purposes, first and last name is required.</p>
+            <label>First Name
+                <input type="text" 
+                      value={user.firstname}
+                      name="firstname"      
+                      onChange={onChangeUser}/>
+            </label>
             <br></br>
-            <label class="block">
-                 <span class="text-gray-700">*Author Name</span>
-                <input type="text" class="form-input mt-1 block w-full" placeholder="James Smith"
+            <label>Last Name
+                <input type="text" 
+                      value={user.lastname}
+                      name="lastname"      
+                      onChange={onChangeUser}/>
+            </label>
+            <br></br>
+            <label>*Author Name
+                <input type="text" 
                       value={user.authorname}
                       name="authorname"      
                       onChange={onChangeUser}/>
