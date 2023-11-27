@@ -1,5 +1,7 @@
 /**
- * Submission upload endpoint for mongoDB Submissions collection
+ * Submission edit endpoint for mongoDB Submissions collection.
+ * @author Lucien Bao
+ * @author Walid Nejmi
  * @author Alana Sendlakowski
  * @author Vanessa Rose
  */
@@ -11,19 +13,22 @@ import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-
     try {
+        // get the mongodb information
         const client = await clientPromise;
-        // acesses database BiWomenQuarterly
+        // access database BiWomenQuarterly
         const db = client.db("BiWomenQuarterly");
-        // acesses collection Submissions
+        // access collection Submissions
         const collect = db.collection("Submissions");
 
-        // Insert the defined document into the "Submissions" collection
-        const body = JSON.parse(req.body)
-        await collect.insertOne(body);
+        // get the document to substitute in
+        const body = JSON.parse(req.body);
 
-        // accesses collection to verify that everything was inserted correct
+        const documentID = body["id"];
+        // replaces the old document with the new one by ID
+        await collect.replaceOne({ id: documentID }, body);
+
+        // debugging info
         const collection = await db
             .collection("Submissions")
             .find({})
