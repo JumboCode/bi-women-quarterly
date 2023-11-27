@@ -16,10 +16,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         // replace database name with whatever you are testing
         const db = client.db("BiWomenQuarterly");
         const user_collection = db.collection("Users"); 
-        
-        // Delete the user test 
-        //user_collection.deleteMany({})
-
         const result = await user_collection.insertOne(user); 
 
         console.log("Printing collection:"); 
