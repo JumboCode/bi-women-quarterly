@@ -1,5 +1,5 @@
 /**
- * Submission File Preview compoment that displays the title, 
+ * Submission File Preview component that displays the title, 
  * description, and image
  * @author Lydia Chen
  */
@@ -18,10 +18,16 @@ export default function SubmissionPreview (props : Preview) {
     /*----------------------------------------*/
     return (
         <div>
-            <div className="fill-sky-100">{props.name}</div>
-            <div><img src={props.image}></img></div>
-            <div>{props.title}</div>
-            <div>{props.description}</div>
+            <div className="py-6">{props.name}</div>
+            
+            <div className="flex">
+                <div className="max-w-xl min-w-min w-1/3 bg-gray-200"><img src={props.image} className="max-w-full"></img></div>
+
+                <div className= "ps-12">
+                    <div className="font-bold">{props.title}</div>
+                    <div className="py-6 pr-6 max-w-xl">{props.description}</div>
+                </div>
+            </div>
             <br />
         </div>
     );
