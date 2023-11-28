@@ -1,7 +1,9 @@
 /**
  * Type representing information about a submission.
- * @author Walid and Geneva
+ * @author Walid
+ * @author Geneva
  * @typedef {Object} Submission
+ * @property {string} author - The username of the author of the submission.
  * @property {string} title - The title of the submission.
  * @property {string} issue - The issue associated with the submission.
  * @property {string} date - The date of the submission.
@@ -12,6 +14,8 @@
  */
 
 type Submission = {
+    id: string; // "author|title|date"
+    author: string;
     title: string;
     issue: string;
     date: string;
