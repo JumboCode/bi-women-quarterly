@@ -1,7 +1,7 @@
+import ReviewSubmission from '@/components/ReviewSubmission';
+
 export default function Home() {
     return (
-        <div>
-            Hello
-        </div>
+        <ReviewSubmission></ReviewSubmission>
     )
 }
