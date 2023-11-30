@@ -10,49 +10,36 @@
 import SubmissionPreview from "./SubmissionFilePreview";
 
 // import types
-import PreviewType from '@/types/PreviewType';
 import Preview from '@/types/Preview';
 
-export default function ReviewSubmission() {
-    const preview1: Preview = {
-        type: PreviewType.Submission,
-        title: "title of piece",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sollicitudin sagittis ex. Fusce pellentesque libero vitae urna tincidunt tempus. Proin orci odio, dapibus nec pulvinar sit amet, egestas ut sapien. Nunc vulputate tellus at sapien tempus, eget ultricies mauris accumsan. Suspendisse a pulvinar sapien, ut aliquet neque. Curabitur venenatis tristique vulputate. Donec imperdiet purus mi, nec scelerisque magna interdum sit amet. Morbi diam enim, placerat et nulla sed, rhoncus fringilla nisl. Duis blandit lectus et odio tempus pulvinar. Morbi ornare nisl ipsum, a porta odio lobortis eu. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras a varius enim, in ultricies odio. ",
-        imageUrl: "a.JPG",
-    };
+// Props definition
+type Props = {
+    previews: Preview[],
+  };
 
-    const preview2: Preview = {
-        type: PreviewType.AdditionalReference,
-        title: "title of reference",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sollicitudin sagittis ex. Fusce pellentesque libero vitae urna tincidunt tempus. Proin orci odio, dapibus nec pulvinar sit amet, egestas ut sapien. Nunc vulputate tellus at sapien tempus, eget ultricies mauris accumsan. Suspendisse a pulvinar sapien, ut aliquet neque. Curabitur venenatis tristique vulputate. Donec imperdiet purus mi, nec scelerisque magna interdum sit amet. Morbi diam enim, placerat et nulla sed, rhoncus fringilla nisl. Duis blandit lectus et odio tempus pulvinar. Morbi ornare nisl ipsum, a porta odio lobortis eu. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras a varius enim, in ultricies odio. ",
-        imageUrl: "b.JPG",
-    };
+const ReviewSubmission: React.FC<Props> = (props) => {
 
-    const issue = "Some issue";
-    const type = "Some type";
+    /* -------------- Props ------------- */
+
+  // Destructure all props
+  const {
+    previews
+  } = props;
 
     return (
         <div className="m-10 mx-12">
-            <b>New Submission</b><br/>
-
-            <div>
-                <div>*Issue: <label>{issue}</label></div>
-                <div>*Type: <label>{type}</label></div>
-            </div>
-            <br/>
-
-            <SubmissionPreview 
-                type = {preview1.type}
-                title = {preview1.title}
-                description = {preview1.description}
-                imageUrl = {preview1.imageUrl}
-            ></SubmissionPreview>
-            <SubmissionPreview 
-                type = {preview2.type}
-                title = {preview2.title}
-                description = {preview2.description}
-                imageUrl = {preview2.imageUrl}
-            ></SubmissionPreview>
+            {previews.map((preview) => {
+                return (
+                    <SubmissionPreview 
+                        type = {preview.type}
+                        title = {preview.title}
+                        description = {preview.description}
+                        imageUrl = {preview.imageUrl}
+                    ></SubmissionPreview>
+                );
+            })}
         </div>
     )
 }
+
+export default ReviewSubmission;
