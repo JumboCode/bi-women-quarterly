@@ -10,15 +10,15 @@
  * @property {string} headshot - The link to the user's headshot image.
  */
 
-import socialMedias from "./socials";
+import SocialMedias from "./SocialMedias";
 
 type User = {
-    username: string,
-    penname: string,
-    email: string,
-    bio: string,
-    socials: socialMedias,
-    headshot: string,
+    username: string;
+    penname: string;
+    email: string;
+    bio: string;
+    socials: SocialMedias;
+    headshot: string;
 };
 
 export default User;
