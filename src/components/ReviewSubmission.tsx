@@ -1,7 +1,5 @@
 /**
  * Page for reviewing a submission before submitting. 
- * @notes This is a test page only; no actual submission data is being 
- *        retrieved.
  * @author Lydia Chen
  * @author Austen Money
  */

@@ -4,7 +4,7 @@
  */
 
 // Import React
-import React, { useReducer } from 'react';
+import React from 'react';
 
 // Import clerk
 import { UserButton, useUser } from "@clerk/nextjs";
@@ -58,14 +58,15 @@ export default function HomePage() {
         isApproved: false,
         mainSubmission: {
           type: PreviewType.Submission,
-          title: "new title 2",
-          description: randomId,
+          title: `Title Here (${randomId})`,
+          description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
           imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
           contentDriveUrl: "placeholder link",
         }
     }
 
-    submissions.push(newSubmission);
+    // push new submission to front of array
+    submissions.unshift(newSubmission);
 
     try {
       user.update({
@@ -103,21 +104,21 @@ export default function HomePage() {
   /*----------------------------------------*/
     return (
         <div className="relative flex flex-col">
-          <div className="absolute bg-gray-400 h-6 t-0">
-            <div className="fixed m-5 mx-5 right-0 top-0">
-                <li className="flex items-center space-x-2">
-                  <button onClick={onClearWork} className="HomePage-submit-button">
-                    Clear Work
-                  </button>
-                  <button onClick={onSubmitWork} className="HomePage-submit-button">
-                    Submit Work
-                  </button>
-                  <div className="ml-4">
-                    <UserButton afterSignOutUrl="/"/>
-                  </div>
-                </li>
+          <div className="HomePage-top-bar"></div>
+            <div className="fixed m-3 mx-5 right-0 top-0">
+              <li className="flex items-center space-x-2">
+                <button onClick={onClearWork} className="HomePage-submit-button">
+                  Clear Work
+                </button>
+                <button onClick={onSubmitWork} className="HomePage-submit-button">
+                  Submit Work
+                </button>
+                <div className="ml-4">
+                  <UserButton afterSignOutUrl="/"/>
+                </div>
+              </li>
             </div>
-            <div className="fixed top-20 left-20">
+            <div className="fixed top-16 left-20">
               <li className="flex justify-center space-x-20">
                 <button>
                   All Submissions
@@ -130,19 +131,18 @@ export default function HomePage() {
                 </button>
               </li>
             </div>
+          <div className="pt-14 pl-8">
+            <div className="flex">
+              {(submissions.length < 1)
+                ? <div className="absolute top-40 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-600">You have no submissions.</div>
+                : <ReviewSubmission
+                    previews={submissions.map((submission) => {
+                      return submission.mainSubmission;
+                    })}
+                  />
+                }
             </div>
-            <div className="pt-14 pl-8">
-              <div className="flex">
-                {(submissions.length < 1)
-                  ? <div className="absolute top-40 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-600">You have no submissions.</div>
-                  : <ReviewSubmission
-                      previews={submissions.map((submission) => {
-                        return submission.mainSubmission;
-                      })}
-                    />
-                  }
-              </div>
-            </div>
+          </div>
         </div>
     )
 }
