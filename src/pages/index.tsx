@@ -1,6 +1,3 @@
-import User from "@/types/User"; 
-import SocialMedias from "@/types/SocialMedias"; 
-
 export default function Home() {  
     const fetchData = async () => {
        const userDocument = {
