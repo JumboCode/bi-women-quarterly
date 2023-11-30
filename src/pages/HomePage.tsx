@@ -158,7 +158,17 @@ export default function HomePage() {
     * Add new submission
     * @author Austen Money
    */
-  const onSubmitWork = () => {
+  const onSubmitWork = async () => {
+
+    // TODO: blocked by cors, figure out later
+    // const users = await fetch("https://api.clerk.com/v1/users", {
+    //   method: "GET",
+    //   headers: {
+    //     Authorization: "Bearer " + process.env.CLERK_SECRET_KEY,
+    //   },
+    // })
+    // console.log(users);
+
     const randomId = String(Math.random());
   
     const newSubmission: Submission = {

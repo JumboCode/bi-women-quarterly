@@ -33,6 +33,7 @@ const ReviewSubmission: React.FC<Props> = (props) => {
             {previews.map((preview) => {
                 return (
                     <SubmissionFilePreview 
+                        key={preview.contentDriveUrl}
                         preview={preview}
                     ></SubmissionFilePreview>
                 );
