@@ -1,11 +1,9 @@
-import { UserButton } from "@clerk/nextjs";
-import ReviewSubmission from '@/components/ReviewSubmission';
+import HomePage from './HomePage';
 
 export default function Home() {
     return (
         <div>
-          <UserButton afterSignOutUrl="/"/>
-          <ReviewSubmission></ReviewSubmission>
+          <HomePage></HomePage>
         </div>
     )
 }

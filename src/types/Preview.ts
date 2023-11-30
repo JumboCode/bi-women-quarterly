@@ -3,10 +3,11 @@
  * @author Lydia Chen
  * @author Austen Money
  * @typedef {Object} Preview
- * @property {string} name - The name/type of the submission (either "Submission" or "Additional References")
+ * @property {string} type - The name/type of the submission (either "Submission" or "Additional References")
  * @property {string} title - The title of the submission
  * @property {string} description - The description of the submission
  * @property {string} imageUrl - The preview image of the submission
+ * @property {string} contentDriveUrl - The content of the submission in Drive
  */
 
 import PreviewType from './PreviewType';
@@ -16,6 +17,7 @@ type Preview = {
     title: string;
     description: string;
     imageUrl: string;
+    contentDriveUrl: string;
 }
 
 export default Preview;
