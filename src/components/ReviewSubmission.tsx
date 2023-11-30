@@ -7,7 +7,8 @@
  */
 
 // import components
-import SubmissionPreview from "./SubmissionFilePreview";
+import PreviewType from '@/types/PreviewType';
+import SubmissionFilePreview from "./SubmissionFilePreview";
 
 // import types
 import Preview from '@/types/Preview';
@@ -21,21 +22,21 @@ const ReviewSubmission: React.FC<Props> = (props) => {
 
     /* -------------- Props ------------- */
 
-  // Destructure all props
-  const {
-    previews
-  } = props;
+    // Destructure all props
+    const {
+        previews
+    } = props;
 
+    /*----------------------------------------*/
+    /* --------------- Main UI -------------- */
+    /*----------------------------------------*/
     return (
         <div className="m-10 mx-12">
             {previews.map((preview) => {
                 return (
-                    <SubmissionPreview 
-                        type = {preview.type}
-                        title = {preview.title}
-                        description = {preview.description}
-                        imageUrl = {preview.imageUrl}
-                    ></SubmissionPreview>
+                    <SubmissionFilePreview 
+                        preview={preview}
+                    ></SubmissionFilePreview>
                 );
             })}
         </div>
