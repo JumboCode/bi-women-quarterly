@@ -4,7 +4,7 @@
  */
 
 // Import React
-import React from 'react';
+import React, { useReducer } from 'react';
 
 // Import clerk
 import { UserButton, useUser } from "@clerk/nextjs";
@@ -14,8 +14,103 @@ import ReviewSubmission from '@/components/ReviewSubmission';
 
 // Import types
 import Submission from '@/types/Submission';
-import Preview from '@/types/Preview';
 import PreviewType from '@/types/PreviewType';
+
+enum FilterType {
+  // No filtering of submissions
+  None = 'None',
+  // Filter to just approved submissions
+  Approved = 'Approved',
+  // Filter to just current submissions
+  Current = 'Current',
+}
+
+/*------------------------------------------------------------------------*/
+/* -------------------------------- State ------------------------------- */
+/*------------------------------------------------------------------------*/
+
+/* -------- State Definition -------- */
+
+type State = (
+  {
+    // How the submissions should be filtered
+    filter: FilterType,
+  }
+);
+
+/* ------------- Actions ------------ */
+
+// Types of actions
+enum ActionType {
+  ChangeFilter = 'ChangeFilter',
+}
+
+// Action definitions
+type Action = (
+  {
+    // Action type
+    type: ActionType.ChangeFilter,
+    // Add description of required payload property
+    newFilter: FilterType,
+  }
+);
+
+/**
+  * Reducer that executes actions
+  * @author Austen Money
+  * @param state current state
+  * @param action action to execute
+  * @returns updated state
+ */
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case ActionType.ChangeFilter: {
+      return {
+        ...state,
+        filter: action.newFilter,
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
+/*------------------------------------------------------------------------*/
+/* --------------------------- Static Helpers --------------------------- */
+/*------------------------------------------------------------------------*/
+
+/**
+  * Filters given Submission array to just the given type.
+  * @author Austen Money
+  * @param submissions submissions to filter
+  * @param filter how to filter the submissions
+  * @returns filtered submissions
+ */
+const filterSubmissions = (
+  submissions: Submission[],
+  filter: FilterType,
+): Submission[] => {
+  switch (filter) {
+    case FilterType.Approved: {
+      return submissions.filter((submission) => {
+        return (submission.isApproved);
+      });
+    }
+    case FilterType.Current: {
+      return submissions.filter((submission) => {
+        return (submission.issue === "Current Issue"); //TODO: connect to backend
+      });
+    }
+    case FilterType.None: {
+      return submissions;
+    }
+    default: {
+      return submissions;
+    }
+  }
+
+};
 
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
@@ -23,6 +118,10 @@ import PreviewType from '@/types/PreviewType';
 
 export default function HomePage() {
 
+  /*------------------------------------------------------------------------*/
+  /* -------------------------------- Setup ------------------------------- */
+  /*------------------------------------------------------------------------*/
+  
   const { user } = useUser();
 
   let submissions: Submission[] = [];
@@ -30,13 +129,26 @@ export default function HomePage() {
       submissions = user.unsafeMetadata.submissions as Submission[];
   }
 
-  /*------------------------------------------------------------------------*/
-  /* -------------------------------- Setup ------------------------------- */
-  /*------------------------------------------------------------------------*/
-
   if (!user) {
     return;
   }
+
+  /* -------------- State ------------- */
+
+  // Initial state
+  const initialState: State = {
+    filter: FilterType.None,
+  };
+
+  // Initialize state
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  // Destructure common state
+  const {
+    filter,
+  } = state;
+
+  submissions = filterSubmissions(submissions, filter);
 
   /*------------------------------------------------------------------------*/
   /* ------------------------- Component Functions ------------------------ */
@@ -54,7 +166,7 @@ export default function HomePage() {
         author: "who?",
         title: "a NEWW title",
         date: "today",
-        issue: "my ISSUES",
+        issue: "Current Issue",
         isApproved: false,
         mainSubmission: {
           type: PreviewType.Submission,
@@ -120,13 +232,22 @@ export default function HomePage() {
             </div>
             <div className="fixed top-16 left-20">
               <li className="flex justify-center space-x-20">
-                <button>
+                <button onClick={() => {dispatch({
+                  type: ActionType.ChangeFilter,
+                  newFilter: FilterType.None
+                })}}>
                   All Submissions
                 </button>
-                <button>
+                <button onClick={() => {dispatch({
+                  type: ActionType.ChangeFilter,
+                  newFilter: FilterType.Approved
+                })}}>
                   Approved Works
                 </button>
-                <button>
+                <button onClick={() => {dispatch({
+                  type: ActionType.ChangeFilter,
+                  newFilter: FilterType.Current
+                })}}>
                   Current Submissions
                 </button>
               </li>
