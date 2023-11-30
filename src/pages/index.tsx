@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import User from "@/types/User"; 
 import SocialMedias from "@/types/SocialMedias"; 
 
@@ -39,15 +38,3 @@ export default function Home() {
 
     return <div>Hello</div>;
 }  
-=======
-import React, { useState } from "react";
-import UploadFile from "./components/UploadFile";
-
-export default function Home() {
-    return (
-        <div>
-            Hello
-        </div>
-    )
-}
->>>>>>> main
