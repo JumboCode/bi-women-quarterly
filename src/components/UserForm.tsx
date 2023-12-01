@@ -4,7 +4,6 @@
 import {useState} from 'react';
 import User from "../types/User";
 import SocialMedias from "../types/SocialMedias"
-import UploadFile from '@/pages/components/UploadFile';
 
 
 /**
