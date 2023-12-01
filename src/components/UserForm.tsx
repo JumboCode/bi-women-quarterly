@@ -39,7 +39,8 @@ export default function UserForm() {
         e.preventDefault();
         console.log(user);
     }              
-            
+        
+    //TODO: make checkbox element functional
     return (
         <form onSubmit={handleSubmit}>
             <label class="block">
@@ -75,6 +76,9 @@ export default function UserForm() {
                       onChange={onChangeUser}/>
             </label>
             <br></br>
+            <input type="checkbox"></input>
+            Same as First and Last Name
+            <br></br>
             <label>*Bio
                 <input type="text" 
                       value={user.bio}
@@ -96,6 +100,7 @@ export default function UserForm() {
                       onChange={onChangeUser}/>
             </label>
             <br></br>
+            Socials
             <label>X
                 <input type="text" 
                       value={user.socials.X}
