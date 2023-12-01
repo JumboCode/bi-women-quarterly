@@ -39,19 +39,11 @@ function UploadFile() {
                 </label>
                 <input type="file" multiple onChange={handleChange}/>
                 <br></br>
-                <div className="grid grid-flow-row-dense grid-cols-4 gap-8">
-                    <div className="col-span-2 gap-4"> 
                         <button 
                             type="submit"  
                             disabled={!canSubmit}>
                             Upload Photo
                         </button>
-                    </div>
-                    <div className="col-span-2 gap-4">
-                        <button 
-                            type="reset">Delete</button>
-                    </div>
-                </div> 
             </form>
         </div>
     );

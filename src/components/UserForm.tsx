@@ -49,8 +49,7 @@ export default function UserForm() {
     //TODO: make checkbox element functional
     return (
         <form onSubmit={handleSubmit} className="w-full max-w-lg">
-            <h3 className="text-xl font-bold">Photo Upload</h3>
-            <UploadFile></UploadFile>
+            <h3 className="text-xl font-bold">Headshot</h3>
             <h3 className="text-xl font-bold">Personal Information</h3>
             <div className="flex w-full flex-wrap mb-6">
             <div className="w-full -mx-3  px-3">
