@@ -32,7 +32,7 @@ function UploadFile() {
     return (
         <div className="UploadFile">
             <form onSubmit={handleSubmit}>
-                <h1>File Upload</h1>
+                <h1 className="font-bold text-xl">Photo Upload</h1>
                 <label> <b>Number of Files to Upload: </b>
                     <input type="number"
                            value={numberOfFiles}
@@ -40,10 +40,19 @@ function UploadFile() {
                 </label>
                 <input type="file" multiple onChange={handleChange}/>
                 <br></br>
-                <br></br>
-                <button type="submit" disabled={!canSubmit}>
-                    Upload here
-                </button>
+                <div className="grid grid-flow-row-dense grid-cols-4 gap-8">
+                    <div className="col-span-2 gap-4"> 
+                        <button 
+                            type="submit"  
+                            disabled={!canSubmit}>
+                            Upload Photo
+                        </button>
+                    </div>
+                    <div className="col-span-2 gap-4">
+                        <button 
+                            type="reset">Delete</button>
+                    </div>
+                </div> 
             </form>
         </div>
     );

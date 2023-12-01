@@ -51,7 +51,22 @@
       button[type="submit"]:hover {
         background-color: #45a049;
       }
+
+      button[type="reset"] {
+        background-color: #dd3861;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        display: block;
+        margin-top: 20px;
+        width: 100%;
+      }
       
+      button[type="reset"]:hover {
+        background-color: #c7385c;
+      }
       /* Additional styles */
       /* You can add additional styles for your form here. For example, for the required asterisks: */
       label:before {

@@ -4,6 +4,7 @@
 import {useState} from 'react';
 import User from "../types/User";
 import SocialMedias from "../types/SocialMedias"
+import UploadFile from '@/pages/components/UploadFile';
 
 
 /**
@@ -42,45 +43,46 @@ export default function UserForm() {
         
     //TODO: make checkbox element functional
     return (
-        <form onSubmit={handleSubmit} class="w-full max-w-lg">
-            <h3 class="text-xl font-bold">Personal Information</h3>
-            <div class="flex w-full flex-wrap mb-6">
-            <div class="w-full -mx-3  px-3">
-            <label class="block">
-                <span class="text-gray-700  text-sm ">*Email</span>
-                <input type="text" class="form-input font-normal mt-1 bg-gray-50 block w-full" placeholder="abcde@gmail.com"
+        <form onSubmit={handleSubmit} className="w-full max-w-lg">
+            <UploadFile></UploadFile>
+            <h3 className="text-xl font-bold">Personal Information</h3>
+            <div className="flex w-full flex-wrap mb-6">
+            <div className="w-full -mx-3  px-3">
+            <label className="block">
+                <span className="text-gray-700  text-sm ">*Email</span>
+                <input type="text" className="form-input font-normal mt-1 bg-gray-50 block w-full" placeholder="abcde@gmail.com"
                       value={user.email}
                       name="email"
                       onChange={onChangeUser}/>
             </label>
             </div>
             </div>
-            <div class="flex flex-wrap mb-6 w-full">
-                <div class="w-full md:w-1/2 -mx-3 px-3 mb-6 md:mb-0">
-                <label class=" text-sm text-gray-700  ">First Name
-                    <input type="text" class="form-input font-normal mt-1 bg-gray-50 block w-full" placeholder="James"
+            <div className="flex flex-wrap mb-6 w-full">
+                <div className="w-full md:w-1/2 -mx-3 px-3 mb-6 md:mb-0">
+                <label className=" text-sm text-gray-700  ">First Name
+                    <input type="text" className="form-input font-normal mt-1 bg-gray-50 block w-full" placeholder="James"
                         value={user.firstname}
                         name="firstname"      
                         onChange={onChangeUser}/>
                 </label>
                 </div>
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                <label class=" text-sm text-gray-700  ">Last Name 
-                    <input type="text" class="form-input font-normal mt-1 bg-gray-50 block w-full" placeholder="Smith"
+                <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label className=" text-sm text-gray-700  ">Last Name 
+                    <input type="text" className="form-input font-normal mt-1 bg-gray-50 block w-full" placeholder="Smith"
                         value={user.lastname}
                         name="lastname"      
                         onChange={onChangeUser}/>
                 </label>
                 </div>
-                <p class="italic text-xs text-gray-500 dark:text-white">Disclaimer: For identity protection purposes, first and last name is required.</p>
+                <p className="italic text-xs text-gray-500 dark:text-white">Disclaimer: For identity protection purposes, first and last name is required.</p>
             </div>
             
-            <div class="flex flex-wrap mb-6 w-full">
-                <div class="w-full -mx-3  px-3">
-                <label class="block">
-                    <span class="text-gray-700  text-sm ">*Author Name</span>
+            <div className="flex flex-wrap mb-6 w-full">
+                <div className="w-full -mx-3  px-3">
+                <label className="block">
+                    <span className="text-gray-700  text-sm ">*Author Name</span>
                     <input type="text" 
-                        class="form-input 
+                        className="form-input 
                                 mt-1 
                                 w-full 
                                 p-2.5 
@@ -96,16 +98,16 @@ export default function UserForm() {
                         onChange={onChangeUser}/>
                 </label>
                 <input type="checkbox"></input> 
-                <span class="italic 
+                <span className="italic 
                             text-xs 
                             text-gray-500 
                             dark:text-white"> Same as First and Last Name</span>
                 </div>
             </div>
 
-            <div class="flex flex-wrap mb-6 w-95">
-                <div class="w-full -mx-3  px-3">
-                    <label for="bio" class="block text-gray-700 text-sm ">*Bio
+            <div className="flex flex-wrap mb-6 w-95">
+                <div className="w-full -mx-3  px-3">
+                    <label htmlFor="bio" class="block text-gray-700 text-sm ">*Bio
                         <textarea id="bio" 
                                 value={user.bio} 
                                 onChange={onChangeUser} 
@@ -121,48 +123,47 @@ export default function UserForm() {
                                         border
                                         font-normal
                                         border-gray-300" placeholder="Write your bio description here..."></textarea>
-                        <p class="italic text-xs font-normal text-gray-500 dark:text-white">Word Count xxx/xxx</p>
+                        <p className="italic text-xs font-normal text-gray-500 dark:text-white">Word Count xxx/xxx</p>
                     </label>
                 </div>
             </div>
 
-            <div class="grid grid-flow-row-dense grid-cols-5">
-                <div class="col-span-1"><label for="age" class="text-left text-gray-700 text-sm mt-5">Age</label></div> 
-                <div class="col-span-4"> 
-                    <input id="x" type="text" class="form-input font-normal mt-1 bg-gray-50 block w-full"
+            <div className="grid grid-flow-row-dense grid-cols-5">
+                <div className="col-span-1"><label htmlFor="age" class="text-left text-gray-700 text-sm mt-5">Age</label></div> 
+                <div className="col-span-4"> 
+                    <input id="x" type="text" className="form-input font-normal mt-1 bg-gray-50 block w-full"
                         value={user.age}
                         name="age"
                         onChange={onChangeUser}/>
                 </div>
-                <div class="col-span-1"><label for="demographic" class="text-left text-gray-700 text-sm mt-5">Demographic</label></div> 
-                <div class="col-span-4">
-                    <input type="text" class="form-input font-normal mt-1 bg-gray-50 block w-full"
+                <div className="col-span-1"><label htmlFor="demographic" class="text-left text-gray-700 text-sm mt-5">Demographic</label></div> 
+                <div className="col-span-4">
+                    <input type="text" className="form-input font-normal mt-1 bg-gray-50 block w-full"
                         value={user.demographic}
                         name="demographic"
                         onChange={onChangeUser}/>
                 </div> 
             </div>
             <br></br>
-            <br></br>
-            <h3 class="text-xl font-bold">Socials</h3>
-            <div class="grid grid-flow-row-dense grid-cols-5">
-                <div class="col-span-1"><label for="x" class="text-left text-gray-700 text-sm mt-5">X</label></div> 
-                <div class="col-span-4"> 
-                    <input id="x" type="text" class="form-input font-normal mt-1 bg-gray-50 block w-full"
+            <h3 className="text-sm font-bold text-align text-gray-700">Socials</h3>
+            <div className="grid grid-flow-row-dense grid-cols-5">
+                <div className="col-span-1"><label htmlFor="x" class="text-align font-light text-gray-700 text-sm mt-5">X{"       "}</label></div> 
+                <div className="col-span-4"> 
+                    <input id="x" type="text" className="form-input font-normal mt-1 bg-gray-50 block w-full"
                         value={user.socials.X}
                         name="X"
                         onChange={onChangeUser}/>
                 </div>
-                <div class="col-span-1"><label for="Instagram" class="text-left text-gray-700 text-sm mt-5">Instagram</label></div> 
-                <div class="col-span-4">
-                    <input type="text" class="form-input font-normal mt-1 bg-gray-50 block w-full"
+                <div className="col-span-1"><label htmlFor="Instagram" class="text-align font-light  text-gray-700 text-sm mt-5">Instagram</label></div> 
+                <div className="col-span-4">
+                    <input type="text" className="form-input font-normal mt-1 bg-gray-50 block w-full"
                         value={user.socials.Instagram}
                         name="Instagram"
                         onChange={onChangeUser}/>
                 </div> 
-                <div class="col-span-1"><label for="Faceboook" class="text-left text-sm text-gray-700 mt-5">Facebook</label></div> 
-                <div class="col-span-4"> 
-                    <input type="text" class="form-input font-normal mt-1 bg-gray-50 block w-full"
+                <div className="col-span-1"><label htmlFor="Faceboook" class="text-align font-light text-sm text-gray-700 mt-5">Facebook</label></div> 
+                <div className="col-span-4"> 
+                    <input type="text" className="form-input font-normal mt-1 bg-gray-50 block w-full"
                         value={user.socials.Facebook}
                         name="facebook"
                         onChange={onChangeUser}/>
