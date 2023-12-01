@@ -22,7 +22,7 @@ export default function SubmissionForm() {
     /* -------------- State ------------- */
 
     // Initialize state
-    const [states, setStates] = useState<Submission>({title : "", issue: "", date: "", image : "", wordDoc : ""})
+    const [states, setStates] = useState<Submission>({id: "", author : "", title : "", issue: "", date: "", image : "", wordDoc : ""})
 
     /*------------------------------------------------------------------------*/
     /* ------------------------- Lifecycle Functions ------------------------ */
@@ -34,11 +34,19 @@ export default function SubmissionForm() {
      * @author Alana Sendlakowski, Vanessa Rose
      * @param event the event that has been changed
      */
-    const handleSubmit = (event : any) => {
+    const handleSubmit = async (event : any) => {
         event.preventDefault();
+        const response = await fetch("/api/submissions/add", {
+            method: "POST", // or 'PUT'
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(states),
+        });
         console.log('title: ' + states.title);
         console.log("issue: " + states.issue);
         console.log("date: " + states.date);
+        console.log(response);
     }
     
     /**
