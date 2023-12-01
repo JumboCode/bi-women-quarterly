@@ -1,9 +1,9 @@
-import HomePage from './HomePage';
+import DriveUpload from "@/components/DriveUpload";
 
 export default function Home() {
     return (
         <div>
-          <HomePage></HomePage>
+            <DriveUpload></DriveUpload>
         </div>
     )
 }
