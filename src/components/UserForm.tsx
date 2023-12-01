@@ -36,6 +36,7 @@ export default function UserForm() {
         setUser({...user, [e.target.name] : e.target.value});
     }
 
+    // Word Count function for the Bio section
     const calculateWordCount = (text: string) => {
         const words = text.trim().split(/\s+/); 
         return words.length; 

@@ -42,9 +42,9 @@ export default function UserForm() {
             
     return (
         <form onSubmit={handleSubmit}>
-            <label class="block">
-                <span class="text-gray-700">Email</span>
-                <input type="text" class="form-input mt-1 block w-full" placeholder="@gmail.com"
+            <label className="block">
+                <span className="text-gray-700">Email</span>
+                <input type="text" className="form-input mt-1 block w-full" placeholder="@gmail.com"
                       value={user.email}
                       name="email"
                       onChange={onChangeUser}/>
