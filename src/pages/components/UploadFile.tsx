@@ -32,7 +32,6 @@ function UploadFile() {
     return (
         <div className="UploadFile">
             <form onSubmit={handleSubmit}>
-                <h1 className="font-bold text-xl">Photo Upload</h1>
                 <label> <b>Number of Files to Upload: </b>
                     <input type="number"
                            value={numberOfFiles}

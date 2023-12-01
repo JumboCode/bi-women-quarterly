@@ -30,7 +30,7 @@
         width: calc(100% - 22px); /* Full width minus padding and border */
         padding: 10px;
         margin-top: 5px;
-        border: 1px solid #ccc;
+        border: 1px solid #f6f6f6;
         border-radius: 4px;
         display: block;
       }
@@ -75,9 +75,8 @@
       }
       
       /* Example of styling the optional 'X' social media input differently */
-      input[name="X"] {
+      input[name="sample"] {
         background: #f8f8f8;
-        border: 1px solid #ddd;
       }
       
       /* Style the input when it's focused */
