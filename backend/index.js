@@ -3,7 +3,7 @@ const { google } = require("googleapis");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
-const fs = require('fs')
+const fs = require("fs");
 
 const app = express();
 app.use(cors());
@@ -15,23 +15,23 @@ const storage = multer.diskStorage({
     filename: function (req, file, callback) {
         const extension = file.originalname.split(".").pop();
         callback(null, `${file.fieldname}-${Date.now()}.${extension}`);
-    },
+    }
 });
 
 const upload = multer({ storage: storage });
 
 app.use(express.static("public"));
 
-app.post("/upload", upload.single('file'), async (req, res) => {
+app.post("/upload", upload.single("file"), async (req, res) => {
     try {
         const auth = new google.auth.GoogleAuth({
             keyFile: "key.json",
-            scopes: ["https://www.googleapis.com/auth/drive"],
+            scopes: ["https://www.googleapis.com/auth/drive"]
         });
 
         const drive = google.drive({
             version: "v3",
-            auth,
+            auth
         });
 
         const file = req.file;
@@ -42,8 +42,8 @@ app.post("/upload", upload.single('file'), async (req, res) => {
             },
             media: {
                 mimeType: file.mimetype,
-                body: fs.createReadStream(file.path),
-            },
+                body: fs.createReadStream(file.path)
+            }
         });
 
         res.json({ body: response.data });
@@ -51,12 +51,14 @@ app.post("/upload", upload.single('file'), async (req, res) => {
         fs.unlink(file.path, err => {
             if (err) {
                 console.error(err);
-                return res.status(500).send('Error deleting local file.');
+                return res.status(500).send("Error deleting local file.");
             }
         });
     } catch (error) {
         console.error("Error uploading files:", error);
-        res.status(500).json({ error: "An error occurred during file upload." });
+        res.status(500).json({
+            error: "An error occurred during file upload."
+        });
     }
 });
 

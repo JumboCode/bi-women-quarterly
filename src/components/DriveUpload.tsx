@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useState } from "react";
 
 const DriveUpload: FC<any> = () => {
     const [file, setFile] = useState<any>(null);
@@ -8,18 +8,18 @@ const DriveUpload: FC<any> = () => {
 
         console.log(file.name);
         let formData = new FormData();
-        formData.append('file', file);
+        formData.append("file", file);
 
         console.log(formData);
 
         // api call
-        await fetch('http://localhost:3001/upload', {
-            method: 'POST',
+        await fetch("http://localhost:3001/upload", {
+            method: "POST",
             body: formData
         })
-        .then(res => res.json())
-        .then(res => console.log(res))
-        .catch(err => console.error(err));
+            .then(res => res.json())
+            .then(res => console.log(res))
+            .catch(err => console.error(err));
     };
 
     const handleFileChange = (e: any) => {
@@ -27,13 +27,11 @@ const DriveUpload: FC<any> = () => {
     };
 
     return (
-        <form
-            onSubmit={handleSubmit}
-        >
-            <input type='file' name='file' onChange={handleFileChange}></input>
+        <form onSubmit={handleSubmit}>
+            <input type="file" name="file" onChange={handleFileChange}></input>
             <button>Submit</button>
         </form>
     );
-}
+};
 
 export default DriveUpload;
