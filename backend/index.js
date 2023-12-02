@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
     },
     filename: function (req, file, callback) {
         const extension = file.originalname.split(".").pop();
-        callback(null, `${file.fieldname}-${Date.now()}.${extension}`);
+        callback(null, `${file.originalname}-${Date.now()}.${extension}`);
     }
 });
 
@@ -38,7 +38,7 @@ app.post("/upload", upload.single("file"), async (req, res) => {
         const response = await drive.files.create({
             requestBody: {
                 name: file.originalname,
-                parents: ["1CIlKUq9Y7q7DhovYLcvhcLFWCetkumqW"]
+                parents: ["<parent_directory_id>"]
             },
             media: {
                 mimeType: file.mimetype,

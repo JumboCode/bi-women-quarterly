@@ -13,13 +13,14 @@ const DriveUpload: FC<any> = () => {
         console.log(formData);
 
         // api call
-        await fetch("http://localhost:3001/upload", {
+        const response = await fetch("http://localhost:3001/upload", {
             method: "POST",
             body: formData
         })
             .then(res => res.json())
-            .then(res => console.log(res))
             .catch(err => console.error(err));
+
+        console.log(response);
     };
 
     const handleFileChange = (e: any) => {
