@@ -42,7 +42,7 @@ export default function SubmissionForm() {
      */
     const handleSubmit = async (event : any) => {
         event.preventDefault();
-        const response = await fetch("../pages/api/submissions/add", {
+        const response = await fetch("../api/submissions/add", {
             method: "POST", // or 'PUT'
             body: JSON.stringify({
                 title: states.title,
