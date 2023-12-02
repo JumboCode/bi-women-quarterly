@@ -17,14 +17,13 @@
 // Import types
 import Preview from './Preview';
 
-type Submission = {
+type  Submission = {
     id: string; // "author|title|date"
     author: string;
     title: string;
     date: string;
     issue: string;
     isApproved: boolean;
-    mainSubmission: Preview;
     additionalReferences?: Preview[];
 };
 

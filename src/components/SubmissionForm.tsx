@@ -8,7 +8,7 @@
 import { useState } from 'react';
 
 // Import Submission type
-import Submission from "../types/Submission"
+import Submission from "../types/Submission";
 
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
@@ -22,30 +22,34 @@ export default function SubmissionForm() {
     /* -------------- State ------------- */
 
     // Initialize state
-    const [states, setStates] = useState<Submission>({id: "", author : "", title : "", issue: "", date: "", image : "", wordDoc : ""})
+    const [states, setStates] = useState<Submission>({
+        id: "", 
+        author : "",
+        title : "", 
+        issue: "", 
+        date: "", 
+        isApproved: false});
 
     /*------------------------------------------------------------------------*/
     /* ------------------------- Lifecycle Functions ------------------------ */
     /*------------------------------------------------------------------------*/
 
     /**
-     * Prints the title, issue, and type of the publication to the console
-     * when the form is submitted
+     * Sends title, issue, and date of the submission to the Submissions database
+     * when the form is submitted, 
      * @author Alana Sendlakowski, Vanessa Rose
      * @param event the event that has been changed
      */
     const handleSubmit = async (event : any) => {
         event.preventDefault();
-        const response = await fetch("/api/submissions/add", {
+        const response = await fetch("../pages/api/submissions/add", {
             method: "POST", // or 'PUT'
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(states),
+            body: JSON.stringify({
+                title: states.title,
+                issue: states.issue,
+                date: states.date
+            }),
         });
-        console.log('title: ' + states.title);
-        console.log("issue: " + states.issue);
-        console.log("date: " + states.date);
         console.log(response);
     }
     
@@ -96,7 +100,9 @@ export default function SubmissionForm() {
             </label>
 
             {/* submission button */}
-            <input type="submit" />
+            <button type = "submit">
+                Submit Query
+            </button>
         </form>
     )
 }

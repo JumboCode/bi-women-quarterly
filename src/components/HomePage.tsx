@@ -180,7 +180,7 @@ export default function HomePage() {
         isApproved: false,
         mainSubmission: {
           type: PreviewType.Submission,
-          title: `Title Here (${randomId})`,
+          titlePreview: `Title Here (${randomId})`,
           description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
           imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
           contentDriveUrl: "placeholder link",

@@ -1,9 +1,10 @@
-import HomePage from './HomePage';
+import HomePage from '../components/HomePage';
+import SubmissionForm from '../components/SubmissionForm'
 
 export default function Home() {
     return (
         <div>
-          <HomePage></HomePage>
+          <SubmissionForm/>
         </div>
     )
 }
