@@ -4,19 +4,17 @@ import clientPromise from "@/lib/mongodb";
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const client = await clientPromise;
-        // replace database name with whatever you are testing
-        const db = client.db("sample_mflix");
+        const db = client.db("BiWomenQuarterly");
 
         const collection = await db
-            // replace collection name with whatever you are testing
-            .collection("movies")
+            .collection("Submissions")
             .find({})
-            .limit(10)
             .toArray();
 
         console.log(collection);
-        res.json("Successfully connected to the database!");
+
+        res.status(201).json({ success: true, data: collection });
     } catch (e) {
-        console.error(e);
+        res.status(400).json({ success: false });
     }
 };

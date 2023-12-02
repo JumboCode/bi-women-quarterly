@@ -2,20 +2,17 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import User from "@/types/User";
-import SocialMedias from "@/types/SocialMedias";
 
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
+    // Takes in incoming response and save to database 
     try {
-        // Receive the data from fetch() 
-        const user_example = JSON.parse(req.body);  
-        const user: User = user_example; 
+        const user_to_add: User = JSON.parse(req.body);  
 
         const client = await clientPromise;
-        // replace database name with whatever you are testing
         const db = client.db("BiWomenQuarterly");
         const user_collection = db.collection("Users"); 
-        const result = await user_collection.insertOne(user); 
+        const result = await user_collection.insertOne(user_to_add); 
 
         console.log("Printing collection:"); 
         console.log(result);

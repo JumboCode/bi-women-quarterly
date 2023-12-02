@@ -1,11 +1,9 @@
-import React, { useState } from "react";
-import UploadFile from "./components/UploadFile";
-import UserForm from "../components/UserForm";
+import HomePage from './HomePage';
 
 export default function Home() {
     return (
         <div>
-            <UserForm/>
+          <HomePage></HomePage>
         </div>
         
     )

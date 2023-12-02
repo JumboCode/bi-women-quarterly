@@ -1,4 +1,20 @@
-/* Adding Tailwind directives into main css file */
 @tailwind base;
 @tailwind components;
-@tailwind utilities; 
+@tailwind utilities;
+
+.HomePage-submit-button {
+  padding-left: 5%;
+  padding-right: 5%;
+  width: 8rem;
+  height: 2rem;
+  background-color: lightgrey;
+}
+
+.HomePage-top-bar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 7rem;
+  background-color: whitesmoke;
+}
