@@ -8,14 +8,14 @@
  * @property {string} title - The title of the submission.
  * @property {string} date - The date of the submission.
  * @property {string} issue - The issue associated with the submission.
- * @property {boolean} isApproved - Whether the submission is approved for the 
+ * @property {boolean} isApproved - Whether the submission is approved for the
  *                                  current issue.
  * @property {Preview} mainSubmission - The main item being submitted.
  * @property {Preview[]} additionalReferences - Additional items to be submitted.
  */
 
 // Import types
-import Preview from './Preview';
+import Preview from "./Preview";
 
 type Submission = {
     id: string; // "author|title|date"
