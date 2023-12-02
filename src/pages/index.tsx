@@ -5,5 +5,5 @@ export default function Home() {
         <div>
             <DriveUpload></DriveUpload>
         </div>
-    )
+    );
 }
