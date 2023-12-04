@@ -15,7 +15,13 @@ const storage = multer.diskStorage({
     },
     filename: function (req, file, callback) {
         const extension = file.originalname.split(".").pop();
-        callback(null, `${file.originalname}-${Date.now()}.${extension}`);
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, '0');
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const year = today.getFullYear();
+
+        const date = year + "-" + month + "-" + day;
+        callback(null, `${file.originalname.split(".")[0]}-${date}.${extension}`);
     }
 });
 
@@ -26,7 +32,7 @@ app.use(express.static("public"));
 app.post("/upload", upload.any("files"), async (req, res) => {
     try {
         const auth = new google.auth.GoogleAuth({
-            keyFile: "key.json",
+            keyFile: "backend/key.json",
             scopes: ["https://www.googleapis.com/auth/drive"]
         });
 
@@ -43,7 +49,7 @@ app.post("/upload", upload.any("files"), async (req, res) => {
             const response = await drive.files
                 .create({
                     requestBody: {
-                        name: file.originalname,
+                        name: file.filename,
 
                         // update parent ID based on dest google drive folder
                         parents: ["1GWQygniBTLm7aE4jPFWi3jIt8v7NJiK0"]
