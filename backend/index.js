@@ -22,6 +22,7 @@ const upload = multer({ storage: storage });
 
 app.use(express.static("public"));
 
+// use .array to upload an array of files
 app.post("/upload", upload.single("file"), async (req, res) => {
     try {
         const auth = new google.auth.GoogleAuth({
