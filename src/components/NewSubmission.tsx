@@ -77,8 +77,9 @@ export default function SubmissionForm() {
                 {/* drop down element for issue selection */}
                 <select name="type" className="h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" value={states.title} onChange={handleSubmissionChange}>
                     <option selected>Select Type</option>
-                    <option value="Type1">Submission Piece</option>
-                    <option value="Type2">Optional Related Photo</option>
+                    <option value="Type1">Type 1</option>
+                    <option value="Type2">Type 2</option>
+                    <option value="Type3">Type 3</option>
                 </select>
             </div>
 
