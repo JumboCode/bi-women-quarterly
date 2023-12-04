@@ -12,7 +12,9 @@
     "dependencies": {
         "@google-cloud/local-auth": "^2.1.0",
         "child_process": "^1.0.2",
+        "clerk": "^0.8.3",
         "googleapis": "^105.0.0",
+        "js": "^0.1.0",
         "mongodb": "^6.2.0",
         "next": "13.5.4",
         "prettier": "^3.0.3",
