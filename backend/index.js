@@ -22,7 +22,7 @@ const upload = multer({ storage: storage });
 
 app.use(express.static("public"));
 
-app.post("/upload", upload.single("file"), async (req, res) => {
+app.post("/upload", upload.array("files"), async (req, res) => {
     try {
         const auth = new google.auth.GoogleAuth({
             keyFile: "key.json",
@@ -34,26 +34,29 @@ app.post("/upload", upload.single("file"), async (req, res) => {
             auth
         });
 
-        const file = req.file;
-        const response = await drive.files.create({
-            requestBody: {
-                name: file.originalname,
-                parents: ["1GWQygniBTLm7aE4jPFWi3jIt8v7NJiK0"]
-            },
-            media: {
-                mimeType: file.mimetype,
-                body: fs.createReadStream(file.path)
-            }
-        });
+        const files = req.files;
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const response = await drive.files.create({
+                requestBody: {
+                    name: file.originalname,
+                    parents: ["1GWQygniBTLm7aE4jPFWi3jIt8v7NJiK0"]
+                },
+                media: {
+                    mimeType: file.mimetype,
+                    body: fs.createReadStream(file.path)
+                }
+            });
 
-        res.json({ body: response.data });
+            res.json({ body: response.data });
 
-        fs.unlink(file.path, err => {
-            if (err) {
-                console.error(err);
-                return res.status(500).send("Error deleting local file.");
-            }
-        });
+            fs.unlink(file.path, err => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).send("Error deleting local file.");
+                }
+            });
+        }
     } catch (error) {
         console.error("Error uploading files:", error);
         res.status(500).json({
