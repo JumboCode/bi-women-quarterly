@@ -10,7 +10,8 @@ app.use(cors());
 
 const storage = multer.diskStorage({
     destination: function (req, file, callback) {
-        callback(null, `${__dirname}`);
+        const uploadDir = path.dirname(__dirname) + "/uploads";
+        callback(null, `${uploadDir}`);
     },
     filename: function (req, file, callback) {
         const extension = file.originalname.split(".").pop();
@@ -22,7 +23,7 @@ const upload = multer({ storage: storage });
 
 app.use(express.static("public"));
 
-app.post("/upload", upload.array("files"), async (req, res) => {
+app.post("/upload", upload.any("files"), async (req, res) => {
     try {
         const auth = new google.auth.GoogleAuth({
             keyFile: "key.json",
@@ -35,28 +36,38 @@ app.post("/upload", upload.array("files"), async (req, res) => {
         });
 
         const files = req.files;
+        const responses = [];
+
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
-            const response = await drive.files.create({
-                requestBody: {
-                    name: file.originalname,
-                    parents: ["1GWQygniBTLm7aE4jPFWi3jIt8v7NJiK0"]
-                },
-                media: {
-                    mimeType: file.mimetype,
-                    body: fs.createReadStream(file.path)
-                }
-            });
+            const response = await drive.files
+                .create({
+                    requestBody: {
+                        name: file.originalname,
 
-            res.json({ body: response.data });
+                        // update parent ID based on dest google drive folder
+                        parents: ["1GWQygniBTLm7aE4jPFWi3jIt8v7NJiK0"]
+                    },
+                    media: {
+                        mimeType: file.mimetype,
+                        body: fs.createReadStream(file.path)
+                    }
+                })
+                .then(response => {
+                    fs.unlink(file.path, err => {
+                        if (err) {
+                            console.error(err);
+                            return res
+                                .status(500)
+                                .send("Error deleting local file.");
+                        }
+                    });
+                    return response;
+                });
 
-            fs.unlink(file.path, err => {
-                if (err) {
-                    console.error(err);
-                    return res.status(500).send("Error deleting local file.");
-                }
-            });
+            responses.push(response);
         }
+        res.json({ body: responses });
     } catch (error) {
         console.error("Error uploading files:", error);
         res.status(500).json({

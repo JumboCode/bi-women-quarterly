@@ -27,11 +27,9 @@ function UploadFile() {
 
             let formData = new FormData();
 
-            for (let i = 0; i < files.length; i++) {
+            for (let i = 0; i < numberOfFiles; i++) {
                 formData.append(files[i].name, files[i]);
             }
-
-            console.log(formData);
 
             // api call
             const response = await fetch("http://localhost:3001/upload", {
@@ -40,8 +38,6 @@ function UploadFile() {
             })
                 .then(res => res.json())
                 .catch(err => console.error(err));
-
-            console.log(response);
         } else {
             alert("Please select ${numberOfFiles} file(s) before submission");
         }
@@ -60,7 +56,12 @@ function UploadFile() {
                         onChange={e => setNumberOfFiles(Number(e.target.value))}
                     />
                 </label>
-                <input type="file" name="files" multiple onChange={handleChange} />
+                <input
+                    type="file"
+                    name="files"
+                    multiple
+                    onChange={handleChange}
+                />
                 <br></br>
                 <br></br>
                 <button type="submit" disabled={!canSubmit}>

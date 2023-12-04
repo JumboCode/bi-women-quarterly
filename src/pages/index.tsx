@@ -1,9 +1,9 @@
-import DriveUpload from "@/components/DriveUpload";
+import UploadFile from "@/components/UploadFile";
 
 export default function Home() {
     return (
         <div>
-            <DriveUpload></DriveUpload>
+            <UploadFile />
         </div>
     );
 }
