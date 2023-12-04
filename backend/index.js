@@ -38,7 +38,7 @@ app.post("/upload", upload.single("file"), async (req, res) => {
         const response = await drive.files.create({
             requestBody: {
                 name: file.originalname,
-                parents: ["<parent_directory_id>"]
+                parents: ["1GWQygniBTLm7aE4jPFWi3jIt8v7NJiK0"]
             },
             media: {
                 mimeType: file.mimetype,

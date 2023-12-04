@@ -1,13 +1,13 @@
 {
-    "type": "service_account",
-    "project_id": "",
-    "private_key_id": "",
-    "private_key": "",
-    "client_email": "",
-    "client_id": "",
-    "auth_uri": "",
-    "token_uri": "",
-    "auth_provider_x509_cert_url": "",
-    "client_x509_cert_url": "",
-    "universe_domain": ""
+  "type": "service_account",
+  "project_id": "bwq-app-402809",
+  "private_key_id": "86ec45922703d055d02bb657521fa0c89c489e3a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDBGIawv1xBbqek\nHoR7z8zwM7OI/dLj73R8ZL1i1/p3/VN4+f/2SpvQu7zc1RHw6r9iqxiZ46guPt+R\nxrv0sXTNukl3gPyGBLyqDS96MTUWfMk9de6G7T5BIw8oDZw8e5RJQYIJsPv1v66u\nHMg818Dv6CRgWFZ0Wgu04wlzBRczRb+oV6c2JBwqDDmL77qR47tEcjylyvNGXpWE\ns5LwVhJ6L7pOg7Y/LTHf0/bPl/jNVHwGnPJcTD3nDCxg6EiuttQ6Pp9ONjpPbxSg\nAQ2qa5H1+SBXGrFkj0OvL4D87L6CILGmcqrx9KGUAP8xPFVqF1droFyXHL+hPffV\n6/qyC8SbAgMBAAECggEAF/AO7oVijfgGT0m7OdAag2KdbKuuw7QROESS19iXg92D\nRhmT+jfolhlYAfZmGXw4iqZUT+uRk14XAC7naR/Ar6pa5jY21/RpYRluW9MS1j1V\nA0oF7nMlxxRuEhSR3Eujp+s3kDUBH0eKg6osxqImmHcqX0lEOntZPSzyJHCqnh/d\nxkrEYZYe+nLOo29qz9+O8rKn2NJmmrQjdsYpJ7afxNBJtPot+TkqSTkFM+gtB2us\nfOTajnmBaIVbSC4drMhsHkPCDcUk9QifKl02E+WhFPh3H2Cwlr40dlhRetIR1W4j\nCC6m0/i0CFfliWOCeUozN96Kp9CSAHhxjE+lgLRY0QKBgQDnKfCyORA9xGmi8WLF\nPzD0byZxMtYKgYqXqpD3fa7g2v0jVeoCE8jDc6XojhFeeVJUi4F17UjU/Z8ygy5p\nw9ZAGgFdL7bVSl72Rms35T84nL6A6x42PQ/7B7qk2yXWmKEChnmJP2lcaMmTELDQ\neKxlr14NWC3ORpGMQdFGiLGcEQKBgQDV14qm5YYq+p6RbbHlQn2gJaRyFqQzHM+j\nU+JsoOaDVAucllNQFQwwNdj/btcow7AbJIomQp1CX+zRG3Tml+C5OP53HhDmH/g+\nZUuFevIesLLAEhxmwQC8EoRyaaomBIDh9KRClvDLScBmBWHaJsIRcpjZl+jR6AL+\nCwP5tT5x6wKBgQC+UYxm345cnEowqjYcmYMvrBdlWWpZ6f92ESsbaHHDlOiW4BQy\ns6E2Mg/lYJoyQwairtzef4bYPRuF1fUvhNnvmrmGxFLuVjXK431A3tBnRr2dnHYa\nR7nRfrKPKhKEFNNzJc4ITpnrSCa1mydH7CJb8b8ok3HbA8SvSj0HqmE4UQKBgH0M\nUjROvCqd6+Q3NXRPcY8Y9BUTUGnjSzjDcQD9Bk998lxbO9T0ue/nTUHx2zgnVvBI\nadD922BZH+8YE0BVSECIJ6YYmuE3iL9UFNm1j6iKw7y12o3sBzXzzifpymn48DUy\nDmwyQBVgx3XhZ9teFtaFIQT9ZFR7TGSqpGR9rEqJAoGBAJ0dIZ/oT1rbRCmgbUih\nDUDqRMZd1aydYgs0ifIyFHz26o725eMyx17Ycpr3/fGt75GRbZqwNgQOMjxw0AM0\nsuBgw+EKYEIFiZYtGp9cyDQCMmEgbDzH/XQIm8t/msmRJZNM5zyThHxWDkAC2+5H\nbpkcbhI5mM2nyyvsVllKtSbx\n-----END PRIVATE KEY-----\n",
+  "client_email": "jumbocodetest@bwq-app-402809.iam.gserviceaccount.com",
+  "client_id": "105428563670441927940",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/jumbocodetest%40bwq-app-402809.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
 }
