@@ -1,5 +1,5 @@
 /**
- * Submission File Preview component that displays the title,
+ * Submission Preview component that displays the title,
  * description, and image
  * @author Lydia Chen
  */
@@ -16,7 +16,7 @@ type Props = {
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
 
-const SubmissionFilePreview: React.FC<Props> = props => {
+const PreviewCard: React.FC<Props> = props => {
     /* -------------- Props ------------- */
 
     // Destructure all props
@@ -46,4 +46,4 @@ const SubmissionFilePreview: React.FC<Props> = props => {
     );
 };
 
-export default SubmissionFilePreview;
+export default PreviewCard;

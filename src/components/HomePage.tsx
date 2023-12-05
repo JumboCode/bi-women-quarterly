@@ -10,7 +10,7 @@ import React, { useReducer } from "react";
 import { UserButton, useUser } from "@clerk/nextjs";
 
 // Import components
-import ReviewSubmission from "@/components/ReviewSubmission";
+import ShowSubmissionThumbnails from "@/components/ShowSubmissionThumbnails";
 
 // Import types
 import Submission from "@/types/Submission";
@@ -280,7 +280,7 @@ export default function HomePage() {
                             You have no submissions.
                         </div>
                     ) : (
-                        <ReviewSubmission
+                        <ShowSubmissionThumbnails
                             previews={submissions.map(submission => {
                                 return submission.mainSubmission;
                             })}
