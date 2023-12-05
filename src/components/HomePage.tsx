@@ -10,7 +10,7 @@ import React, { useReducer } from 'react';
 import { UserButton, useUser } from "@clerk/nextjs";
 
 // Import components
-import ReviewSubmission from '@/components/ReviewSubmission';
+import ReviewSubmission from '@/components/ReviewSubmissionUpdate';
 
 // Import types
 import Submission from '@/types/Submission';

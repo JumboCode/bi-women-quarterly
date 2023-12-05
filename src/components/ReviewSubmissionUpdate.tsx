@@ -6,7 +6,7 @@
 
 // import components
 import PreviewType from '@/types/PreviewType';
-import SubmissionFilePreview from "./SubmissionFilePreview";
+import SubmissionFilePreview from "./SubmissionFilePreviewUpdate";
 
 // import types
 import Preview from '@/types/Preview';
