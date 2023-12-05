@@ -37,10 +37,9 @@ const SubmissionFilePreview: React.FC<Props> = (props) => {
     return (
         <div>
             <div className="py-6">{type}</div>
-            
-            <div className="flex">
+            <div className="flex-col items-start">
                 <div className="max-w-md min-w-min w-1/3 bg-gray-200"><img src={imageUrl} className="max-w-full"></img></div>
-                <div className= "ps-12">
+                <div className= "max-w-md min-w-min w-1/3">
                     <div className="font-normal">{title}</div> 
                 </div>
             </div>
