@@ -2,12 +2,12 @@
  * Page for reviewing a submission before submitting. 
  * @author Lydia Chen
  * @author Austen Money
+ * @author Avery Hanna and So Hyun Kim
  */
 
 // import components
 import PreviewType from '@/types/PreviewType';
-import SubmissionFilePreview from "./SubmissionFilePreview";
-
+import SubmissionFilePreview from "./SubmissionFilePreview"; 
 // import types
 import Preview from '@/types/Preview';
 
@@ -29,15 +29,17 @@ const ReviewSubmission: React.FC<Props> = (props) => {
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
     return (
-        <div className="m-10 mx-12">
-            {previews.map((preview) => {
-                return (
-                    <SubmissionFilePreview 
-                        key={preview.contentDriveUrl}
-                        preview={preview}
-                    ></SubmissionFilePreview>
-                );
-            })}
+        <div className="w-3/4 p-4 mx-auto">
+            <div className="grid gap-y-1 grid-cols-3 gap-0.01 mx-20 place-items-center h-screen">
+                {previews.map((preview) => {
+                    return (
+                        <SubmissionFilePreview
+                            key={preview.contentDriveUrl}
+                            preview={preview}
+                        ></SubmissionFilePreview>
+                    );
+                })}
+            </div>
         </div>
     )
 }

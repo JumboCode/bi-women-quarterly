@@ -10,7 +10,7 @@ import React, { useReducer } from 'react';
 import { UserButton, useUser } from "@clerk/nextjs";
 
 // Import components
-import ReviewSubmission from '@/components/ReviewSubmissionUpdate';
+import ReviewSubmission from '@/components/ReviewSubmission';
 
 // Import types
 import Submission from '@/types/Submission';
@@ -263,7 +263,6 @@ export default function HomePage() {
               </li>
             </div>
           <div className="pt-14 pl-8">
-            hello
             <div className="flex">
               {(submissions.length < 1)
                 ? <div className="absolute top-40 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-600">You have no submissions.</div>

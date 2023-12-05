@@ -1,7 +1,7 @@
 /**
  * Submission File Preview component that displays the title, 
  * description, and image
- * @author Lydia Chen
+ * @author Lydia Chen, Avery Hanna and So Hyun Kim
  */
 
 // Import types
@@ -37,14 +37,10 @@ const SubmissionFilePreview: React.FC<Props> = (props) => {
     /*----------------------------------------*/
     return (
         <div>
-            <div className="py-6">{type}</div>
-            
-            <div className="flex">
-                <div className="max-w-xl min-w-min w-1/3 bg-gray-200"><img src={imageUrl} className="max-w-full"></img></div>
-
-                <div className= "ps-12">
-                    <div className="font-bold">{title}</div>
-                    <div className="py-6 pr-6 max-w-xl">{description}</div>
+            <div className="flex-col items-start">
+                <div className="max-w-md min-w-min w-2/4 bg-gray-200"><img src={imageUrl} className="max-w-full"></img></div>
+                <div className="max-w-md min-w-min w-2/4">
+                    <div className="font-normal">{title}</div>
                 </div>
             </div>
             <br />
