@@ -123,29 +123,29 @@ export default function HomePage() {
         submissions = user.unsafeMetadata.submissions as Submission[];
     }
 
-    if (!user) {
-        return;
-    }
-
+    
     /* -------------- State ------------- */
-
+    
     // Initial state
     const initialState: State = {
         filter: FilterType.None
     };
-
+    
     // Initialize state
     const [state, dispatch] = useReducer(reducer, initialState);
-
+    
     // Destructure common state
     const { filter } = state;
-
+    
     submissions = filterSubmissions(submissions, filter);
-
+    
     /*------------------------------------------------------------------------*/
     /* ------------------------- Component Functions ------------------------ */
     /*------------------------------------------------------------------------*/
-
+    
+    if (!user) {
+        return;
+    }
     /**
      * Add new submission
      * @author Austen Money
