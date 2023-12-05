@@ -1,3 +1,4 @@
+import UserEditableSubmission from '@/components/UserEditableSubmission';
 import HomePage from '../components/HomePage';
 
 export default function Home() {
