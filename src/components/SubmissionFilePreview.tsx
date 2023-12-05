@@ -1,37 +1,29 @@
 /**
- * Submission File Preview component that displays the title, 
+ * Submission File Preview component that displays the title,
  * description, and image
  * @author Lydia Chen, Avery Hanna and So Hyun Kim
  */
 
 // Import types
-import Preview from "@/types/Preview"
+import Preview from "@/types/Preview";
 
 // Props definition
 type Props = {
-    preview: Preview,
-  };
+    preview: Preview;
+};
 
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
 
-const SubmissionFilePreview: React.FC<Props> = (props) => {
-
+const SubmissionFilePreview: React.FC<Props> = props => {
     /* -------------- Props ------------- */
 
     // Destructure all props
-    const {
-        preview
-    } = props;
+    const { preview } = props;
 
-    const {
-        type,
-        imageUrl,
-        title,
-        description
-    } = preview;
-                                                
+    const { type, imageUrl, title, description } = preview;
+
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/

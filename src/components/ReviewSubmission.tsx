@@ -1,5 +1,5 @@
 /**
- * Page for reviewing a submission before submitting. 
+ * Page for reviewing a submission before submitting.
  * @author Lydia Chen
  * @author Austen Money
  * @author Avery Hanna and So Hyun Kim
@@ -9,21 +9,18 @@
 import PreviewType from '@/types/PreviewType';
 import SubmissionFilePreview from "./SubmissionFilePreview"; 
 // import types
-import Preview from '@/types/Preview';
+import Preview from "@/types/Preview";
 
 // Props definition
 type Props = {
-    previews: Preview[],
-  };
+    previews: Preview[];
+};
 
-const ReviewSubmission: React.FC<Props> = (props) => {
-
+const ReviewSubmission: React.FC<Props> = props => {
     /* -------------- Props ------------- */
 
     // Destructure all props
-    const {
-        previews
-    } = props;
+    const { previews } = props;
 
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
@@ -41,7 +38,7 @@ const ReviewSubmission: React.FC<Props> = (props) => {
                 })}
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default ReviewSubmission;
