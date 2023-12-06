@@ -1,9 +1,9 @@
-import UploadFile from "@/components/UploadFile";
+import HomePage from "@/components/HomePage";
 
 export default function Home() {
     return (
         <div>
-            <UploadFile />
+            <HomePage></HomePage>
         </div>
     );
 }
