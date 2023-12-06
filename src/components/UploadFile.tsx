@@ -1,3 +1,8 @@
+/**
+ * Uploads a copy of all selected files into the client's Google Drive folder
+ * @author Shreyas Ravi, Lydia Chen, Lucien Bao
+ */
+
 import React, { useState } from "react";
 
 // User file selection
@@ -18,12 +23,26 @@ function UploadFile() {
         }
     }
 
-    function handleSubmit(event: any) {
+    async function handleSubmit(event: any) {
         event.preventDefault();
 
         if (canSubmit) {
             // Log the file information to the console
             console.log("Selected files:", files);
+
+            let formData = new FormData();
+
+            for (let i = 0; i < numberOfFiles; i++) {
+                formData.append(files[i].name, files[i]);
+            }
+
+            // api call
+            const response = await fetch("http://localhost:3001/upload", {
+                method: "POST",
+                body: formData
+            })
+                .then(res => res.json())
+                .catch(err => console.error(err));
         } else {
             alert("Please select ${numberOfFiles} file(s) before submission");
         }
@@ -42,7 +61,12 @@ function UploadFile() {
                         onChange={e => setNumberOfFiles(Number(e.target.value))}
                     />
                 </label>
-                <input type="file" multiple onChange={handleChange} />
+                <input
+                    type="file"
+                    name="files"
+                    multiple
+                    onChange={handleChange}
+                />
                 <br></br>
                 <br></br>
                 <button type="submit" disabled={!canSubmit}>
