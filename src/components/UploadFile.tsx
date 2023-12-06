@@ -1,3 +1,8 @@
+/**
+ * Uploads a copy of all selected files into the client's Google Drive folder
+ * @author Shreyas Ravi, Lydia Chen, Lucien Bao
+ */
+
 import React, { useState } from "react";
 
 // User file selection
