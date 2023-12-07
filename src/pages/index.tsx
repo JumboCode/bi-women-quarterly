@@ -1,8 +1,9 @@
-import React, {useState} from "react";
-import FileUploadForm from "@/components/FileUploadForm";
+import HomePage from '@/components/HomePage';
 
 export default function Home() {
     return (
-        <FileUploadForm/>
-    )
+        <div>
+            <HomePage></HomePage>
+        </div>
+    );
 }

@@ -1,9 +1,3 @@
-/**
- * Submission upload endpoint for mongoDB Submissions collection
- * @author Alana Sendlakowski
- * @author Vanessa Rose
- */
-
 // Import NextApiRequest and NextApiResponse
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -16,17 +10,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         // acesses database BiWomenQuarterly
         const db = client.db("BiWomenQuarterly");
         // acesses collection Submissions
-        const collect = db.collection("Submissions");
+        const collect = db.collection("Users");
 
         // Insert the defined document into the "Submissions" collection
         const body = JSON.parse(req.body);
         await collect.insertOne(body);
 
         // accesses collection to verify that everything was inserted correct
-        const collection = await db
-            .collection("Submissions")
-            .find({})
-            .toArray();
+        const collection = await db.collection("Users").find({}).toArray();
 
         res.status(201).json({ success: true, data: collection });
     } catch (e) {
