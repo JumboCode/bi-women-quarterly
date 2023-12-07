@@ -1,9 +1,9 @@
-import HomePage from '@/components/HomePage';
+import FileUploadForm from '@/components/FileUploadForm';
 
 export default function Home() {
     return (
         <div>
-            <HomePage></HomePage>
+            <FileUploadForm></FileUploadForm>
         </div>
     );
 }
