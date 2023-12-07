@@ -144,7 +144,7 @@ export default function HomePage() {
     /*------------------------------------------------------------------------*/
     
     if (!user) {
-        return;
+        return null;
     }
     /**
      * Add new submission
