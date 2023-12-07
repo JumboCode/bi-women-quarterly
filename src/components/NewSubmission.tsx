@@ -7,8 +7,11 @@
 // Import React
 import { useState } from 'react';
 
-// Import Submission type
+// Import types
 import Submission from "../types/Submission"
+import PreviewType from "../types/PreviewType"
+import Mediums from '@/types/Mediums';
+import Issues from '@/types/Issues';
 
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
@@ -22,7 +25,23 @@ export default function SubmissionForm() {
     /* -------------- State ------------- */
 
     // Initialize state
-    const [states, setStates] = useState<Submission>({id : "", author : "", title : "", issue: "", date: "", image : "", wordDoc : ""})
+    const [submission, setSubmission] = useState<Submission>(
+        {
+            id : "",
+            author : "",
+            title : "",
+            date: "",
+            issue: Issues.None,
+            medium: Mediums.None,
+            isApproved : false,
+            mainSubmission: {
+                type: PreviewType.Submission,
+                title: "",
+                description: "",
+                imageUrl: "",
+                contentDriveUrl: "",
+            },
+        })
 
     /*------------------------------------------------------------------------*/
     /* ------------------------- Lifecycle Functions ------------------------ */
@@ -36,9 +55,9 @@ export default function SubmissionForm() {
      */
     const handleSubmit = (event : any) => {
         event.preventDefault();
-        console.log('title: ' + states.title);
-        console.log("issue: " + states.issue);
-        console.log("date: " + states.date);
+        console.log('title: ' + submission.title);
+        console.log("issue: " + submission.issue);
+        console.log("date: " + submission.date);
     }
     
     /**
@@ -48,7 +67,7 @@ export default function SubmissionForm() {
      * @returns new states of all the elements in the form
      */
     const handleSubmissionChange = (event : any) => {
-        setStates( prevValues => {
+        setSubmission( prevValues => {
             return { ...prevValues,[event.target.name]: event.target.value}
          })
     }
@@ -60,31 +79,27 @@ export default function SubmissionForm() {
     return (
       // Creates a form to retrieve title, issue, and name information
         <form onSubmit={handleSubmit}>
-
             {/* drop down element for issue selection */}
             <div className="pb-[20px]">
-                {/* <div>*Issue</div> */}
-{/* <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></select> */}
                 <label className="pr-[6px] font-bold"> *Input: </label>
-                <select name="issue" className="inline-block h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" value={states.issue} onChange={handleSubmissionChange}>
+                <select name="issue" className="inline-block h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" value={submission.issue} onChange={handleSubmissionChange}>
                     <option selected>Select Issue</option>
-                    <option value="Issue1">Issue 1</option>
-                    <option value="Issue2">Issue 2</option>
-                    <option value="Issue3">Issue 3</option>
+                    <option value={Issues.None}>{Issues.None}</option>
+                    <option value={Issues.Current}>{Issues.Current}</option>
+                    <option value={Issues.Next}>{Issues.Next}</option>
                 </select>
 
             <label className="pl-[50px] pr-[6px] font-bold">*Type: </label>
                 {/* drop down element for issue selection */}
-                <select name="type" className="h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" value={states.title} onChange={handleSubmissionChange}>
+                <select name="medium" className="h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" value={submission.medium} onChange={handleSubmissionChange}>
                     <option selected>Select Type</option>
-                    <option value="Type1">Type 1</option>
-                    <option value="Type2">Type 2</option>
-                    <option value="Type3">Type 3</option>
+                    <option value={Mediums.Fiction}>Fiction</option>
+                    <option value={Mediums.Nonfiction}>Nonfiction</option>
+                    <option value={Mediums.Poetry}>Poetry</option>
+                    <option value={Mediums.VisualArt}>Visual Art</option>
+                    <option value={Mediums.Other}>Other</option>
                 </select>
             </div>
-
-            {/* submission button */}
-            {/* <input type="submit" /> */}
         </form>
     )
 }
