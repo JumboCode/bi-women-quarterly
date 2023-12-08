@@ -1,10 +1,17 @@
 import React, { useState } from "react";
 
 import SubmissionModal from "../../components/SubmissionModal"
+import Preview from '@/types/Preview';
 
+// Props definition
+type Props = {
+    handleNewPreview: (newPreview: Preview) => void;
+};
 
 // NEW User file selection 
-function LocalFile() {
+function LocalFile(props: Props) {
+    const { handleNewPreview } = props;
+
     const [showModal, setShowModal] = React.useState(false);
     const [showFile, setShowFile] = React.useState(false);
     const [fileName, setFileName] = useState(""); 
@@ -30,7 +37,7 @@ function LocalFile() {
                     </label>
                 </div>
                 
-                <div> {showModal ? ( <SubmissionModal/> ) : null} </div>
+                <div> {showModal ? ( <SubmissionModal handleNewPreview={handleNewPreview}/> ) : null} </div>
                 
                 <br></br>
                 <br></br>

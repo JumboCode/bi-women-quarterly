@@ -3,12 +3,19 @@ import React, { useState } from "react";
 
 import LocalFile from "../pages/components/LocalFile"
 import Mediums from '@/types/Mediums';
+import Preview from '@/types/Preview';
 import PreviewType from '@/types/PreviewType';
 
+// Props definition
+type Props = {
+  handleNewPreview: (newPreview: Preview) => void;
+};
 
-export default function SubmissionModal() {
+export default function SubmissionModal(props: Props) {
+    const { handleNewPreview } = props;
+
     const [showModal, setShowModal] = React.useState(true);
-    const [type, setType] = useState(Mediums.None); 
+    const [type, setType] = useState(PreviewType.Submission); 
     const [title, setTitle] = useState(""); 
     const [description, setDescription] = useState(""); 
 
@@ -19,7 +26,13 @@ export default function SubmissionModal() {
      * @param event the event that has been changed
      */
     const handleSubmit = (event : any) => {
-      console.log("here");
+      handleNewPreview({
+        type,
+        title,
+        description,
+        imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
+        contentDriveUrl: "",
+      })
       setShowModal(false);
       event.preventDefault();
       console.log('type: ' + type);
@@ -129,7 +142,7 @@ export default function SubmissionModal() {
           </>
         ) : null}
         
-        <div><LocalFile/></div>
+        <div><LocalFile handleNewPreview={handleNewPreview}/></div>
       </>
     );
 }
