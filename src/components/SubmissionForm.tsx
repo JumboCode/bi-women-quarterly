@@ -22,13 +22,7 @@ export default function SubmissionForm() {
     /* -------------- State ------------- */
 
     // Initialize state
-    const [states, setStates] = useState<Submission>({
-        title: "",
-        issue: "",
-        date: "",
-        image: "",
-        wordDoc: ""
-    });
+    const [states, setStates] = useState<Submission>({id : "", author : "", title : "", issue: "", date: "", image : "", wordDoc : ""})
 
     /*------------------------------------------------------------------------*/
     /* ------------------------- Lifecycle Functions ------------------------ */

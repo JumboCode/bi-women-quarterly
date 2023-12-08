@@ -6,6 +6,9 @@
 // Import React
 import React, { useReducer } from "react";
 
+// Import Next
+import Link from 'next/link';
+
 // Import clerk
 import { UserButton, useUser } from "@clerk/nextjs";
 
@@ -15,6 +18,7 @@ import ShowSubmissionThumbnails from "@/components/ShowSubmissionThumbnails";
 // Import types
 import Submission from "@/types/Submission";
 import PreviewType from "@/types/PreviewType";
+import Issues from '@/types/Issues';
 
 enum FilterType {
     // No filtering of submissions
@@ -95,7 +99,7 @@ const filterSubmissions = (
         }
         case FilterType.Current: {
             return submissions.filter(submission => {
-                return submission.issue === "Current Issue"; //TODO: connect to backend
+                return submission.issue === Issues.Current; //TODO: connect to backend
             });
         }
         case FilterType.None: {
@@ -146,53 +150,6 @@ export default function HomePage() {
     if (!user) {
         return null;
     }
-    /**
-     * Add new submission
-     * @author Austen Money
-     */
-    const onSubmitWork = async () => {
-        // TODO: blocked by cors, figure out later
-        // const users = await fetch("https://api.clerk.com/v1/users", {
-        //   method: "GET",
-        //   headers: {
-        //     Authorization: "Bearer " + process.env.CLERK_SECRET_KEY,
-        //   },
-        // })
-        // console.log(users);
-
-        const randomId = String(Math.random());
-
-        const newSubmission: Submission = {
-            id: randomId,
-            author: "who?",
-            title: "a NEWW title",
-            date: "today",
-            issue: "Current Issue",
-            isApproved: false,
-            mainSubmission: {
-                type: PreviewType.Submission,
-                title: `Title Here (${randomId})`,
-                description:
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                imageUrl:
-                    "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
-                contentDriveUrl: "placeholder link"
-            }
-        };
-
-        // push new submission to front of array
-        submissions.unshift(newSubmission);
-
-        try {
-            user.update({
-                unsafeMetadata: {
-                    submissions
-                }
-            });
-        } catch (error) {
-            console.log(error);
-        }
-    };
 
     /**
      * Clear all submissions.
@@ -221,7 +178,12 @@ export default function HomePage() {
         <div className="relative flex flex-col">
             <div className="HomePage-top-bar"></div>
             <div className="fixed m-3 mx-5 right-0 top-0">
-                <li className="flex items-center space-x-2">
+                <li className="flex items-center space-x-5">
+                    <button
+                        className="HomePage-submit-button"
+                    >
+                        <Link href="/previews">Review Work</Link>
+                    </button>
                     <button
                         onClick={onClearWork}
                         className="HomePage-submit-button"
@@ -229,10 +191,9 @@ export default function HomePage() {
                         Clear Work
                     </button>
                     <button
-                        onClick={onSubmitWork}
                         className="HomePage-submit-button"
                     >
-                        Submit Work
+                        <Link href="/submit">Submit Work</Link>
                     </button>
                     <div className="ml-4">
                         <UserButton afterSignOutUrl="/" />
