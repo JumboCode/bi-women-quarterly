@@ -6,6 +6,9 @@
 // Import React
 import React, { useReducer } from "react";
 
+// Import Next
+import Link from 'next/link';
+
 // Import clerk
 import { UserButton, useUser } from "@clerk/nextjs";
 
@@ -232,7 +235,7 @@ export default function HomePage() {
                         onClick={onSubmitWork}
                         className="HomePage-submit-button"
                     >
-                        Submit Work
+                        <Link href="/submit">Submit Work</Link>
                     </button>
                     <div className="ml-4">
                         <UserButton afterSignOutUrl="/" />

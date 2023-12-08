@@ -2,11 +2,13 @@
 import React, { useState } from "react";
 
 import LocalFile from "../pages/components/LocalFile"
+import Mediums from '@/types/Mediums';
+import PreviewType from '@/types/PreviewType';
 
 
 export default function SubmissionModal() {
     const [showModal, setShowModal] = React.useState(true);
-    const [type, setType] = useState(""); 
+    const [type, setType] = useState(Mediums.None); 
     const [title, setTitle] = useState(""); 
     const [description, setDescription] = useState(""); 
 
@@ -64,8 +66,8 @@ export default function SubmissionModal() {
                   
               <div className="absolute absolute right-[10px]">
                 <button onClick={() => setShowModal(false)}> 
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" className="w-6 h-6">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="black" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
                 </button>
               </div>
@@ -79,7 +81,7 @@ export default function SubmissionModal() {
                     <div className="flex flex-col">
                       <div className="inline-flex items-center">
                         <label className="relative flex items-center p-3 rounded-full cursor-pointer">
-                          <input name="terms" type="radio" value="Submission Piece" className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full bg-white border border-black checked:border-[#395fbb]"/>
+                          <input name="terms" type="radio" value={PreviewType.Submission} className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full bg-white border border-black checked:border-[#395fbb]"/>
                           <span className="absolute transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="#395fbb">
                               <circle data-name="ellipse" cx="8" cy="8" r="8"></circle>
@@ -91,7 +93,7 @@ export default function SubmissionModal() {
 
                       <div className="inline-flex items-center">
                         <label className="relative flex items-center p-3 rounded-full cursor-pointer">
-                          <input name="terms" type="radio" value="Optional Related Photo" className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full bg-white border border-black checked:border-[#395fbb]"/>
+                          <input name="terms" type="radio" value={PreviewType.AdditionalReference} className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full bg-white border border-black checked:border-[#395fbb]"/>
                           <span className="absolute transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 16 16" fill="#395fbb">
                               <circle data-name="ellipse" cx="8" cy="8" r="8"></circle>

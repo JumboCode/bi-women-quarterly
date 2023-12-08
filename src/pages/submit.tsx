@@ -1,4 +1,4 @@
-import LocalFile from "../pages/components/LocalFile"
+import LocalFile from "./components/LocalFile"
 import NewSubmission from "../components/NewSubmission"
 
 export default function FileUploadForm() {

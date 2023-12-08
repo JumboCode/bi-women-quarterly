@@ -93,11 +93,11 @@ export default function SubmissionForm() {
                 {/* drop down element for issue selection */}
                 <select name="medium" className="h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" value={submission.medium} onChange={handleSubmissionChange}>
                     <option selected>Select Type</option>
-                    <option value={Mediums.Fiction}>Fiction</option>
-                    <option value={Mediums.Nonfiction}>Nonfiction</option>
-                    <option value={Mediums.Poetry}>Poetry</option>
-                    <option value={Mediums.VisualArt}>Visual Art</option>
-                    <option value={Mediums.Other}>Other</option>
+                    <option value={Mediums.Fiction}>{Mediums.Fiction}</option>
+                    <option value={Mediums.Nonfiction}>{Mediums.Nonfiction}</option>
+                    <option value={Mediums.Poetry}>{Mediums.Poetry}</option>
+                    <option value={Mediums.VisualArt}>{Mediums.VisualArt}</option>
+                    <option value={Mediums.Other}>{Mediums.Other}</option>
                 </select>
             </div>
         </form>
