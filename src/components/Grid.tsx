@@ -19,9 +19,9 @@ export default function Grid() {
         { field: "title", headerName: "Title of Piece", width: 250 },
         { field: "name", headerName: "BWQ Name", width: 200 },
         { field: "status", headerName: "Status", width: 100, type: "singleSelect", valueOptions: ["Accepted", "Pending", "Rejected"], editable: true },
-        { field: "demographics", headerName: "Demographics", width: 200, type: "singleSelect", valueOptions: ["United States", "Canada", "Antarctica"], editable: true},
-        { field: "tags", headerName: "Tags", width: 200, editable: true},
-        { field: "ratings", headerName: "Rating", width: 100, type: "singleSelect", valueOptions: [1, 2, 3, 4, 5], editable: true},
+        { field: "demographics", headerName: "Demographics", width: 200, type: "singleSelect", valueOptions: ["United States", "Canada", "Antarctica"], editable: true },
+        { field: "tags", headerName: "Tags", width: 200, editable: true },
+        { field: "ratings", headerName: "Rating", width: 100, type: "singleSelect", valueOptions: [1, 2, 3, 4, 5], editable: true },
         { field: "notes", headerName: "Notes", width: 250, editable: true }
     ];
 
