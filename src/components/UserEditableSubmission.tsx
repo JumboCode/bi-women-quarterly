@@ -136,7 +136,6 @@ const UserEditableSubmission = () => {
       </div>
 
       <div style={styles.relatedPhotos}>
-        <div style={styles.photoBox2}></div>
         <div style={styles.photoBox}></div>
       </div>
 
