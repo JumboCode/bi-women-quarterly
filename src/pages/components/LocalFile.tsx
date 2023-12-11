@@ -14,7 +14,9 @@ function LocalFile(props: Props) {
 
     const [showModal, setShowModal] = React.useState(false);
     const [showFile, setShowFile] = React.useState(false);
-    const [fileName, setFileName] = useState(""); 
+    const [fileName, setFileName] = useState([""]); 
+
+    const [fileArray, setFileArray] = useState<File[]>();
 
     const handleSubmit = (event : any) => {
         event.preventDefault();
@@ -23,9 +25,13 @@ function LocalFile(props: Props) {
 
     const handleSubmissionChange = (event : any) => {
         event.preventDefault();
-        setFileName(event.target.files[0].name);
+        fileName.push(event.target.files[0].name);
+        // setFileName(event.target.files[0].name);
         setShowModal(true);
         setShowFile(true);
+        for (let item of fileName) {
+            console.log("item: " + item);
+        }
     }
 
     return (
