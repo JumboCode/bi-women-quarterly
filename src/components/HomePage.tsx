@@ -178,22 +178,22 @@ export default function HomePage() {
     /*----------------------------------------*/
     return (
         <div className="relative flex flex-col">
-            <div className="HomePage-top-bar"></div>
+            <div className="HomePage-top-bar border-b border-gray-400"></div>
             <div className="fixed m-3 mx-5 right-0 top-0">
                 <li className="flex items-center space-x-5">
-                    <button
-                        className="HomePage-submit-button"
+                    <button 
+                        className="HomePage-submit-button shadow-md"
                     >
                         <Link href="/previews">Review Work</Link>
                     </button>
                     <button
                         onClick={onClearWork}
-                        className="HomePage-submit-button"
+                        className="HomePage-submit-button shadow-md"
                     >
                         Clear Work
                     </button>
                     <button
-                        className="HomePage-submit-button"
+                        className="HomePage-submit-button shadow-md"
                     >
                         <Link href="/submit">Submit Work</Link>
                     </button>
@@ -211,6 +211,7 @@ export default function HomePage() {
                                 newFilter: FilterType.None
                             });
                         }}
+                        className={filter === FilterType.None ? 'font-bold' : ''}
                     >
                         All Submissions
                     </button>
@@ -221,6 +222,7 @@ export default function HomePage() {
                                 newFilter: FilterType.Approved
                             });
                         }}
+                        className={filter === FilterType.Approved ? 'font-bold' : ''}
                     >
                         Approved Works
                     </button>
@@ -231,6 +233,7 @@ export default function HomePage() {
                                 newFilter: FilterType.Current
                             });
                         }}
+                        className={filter === FilterType.Current ? 'font-bold' : ''}
                     >
                         Current Submissions
                     </button>
@@ -240,9 +243,9 @@ export default function HomePage() {
                 <div className="flex item-center justify-center">
                     {submissions.length < 1 ? (
                         <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-600">
-                            <div className="box-content h-40 w-80 bg-gray-200"> </div>
+                            <div className="box-content h-40 w-80 bg-gray-300"> </div>
                             <br></br>
-                            <div className="text-gray-300 text-center">
+                            <div className="text-gray-400 text-center">
                             You have no submissions
                             </div>
                         </div> 
