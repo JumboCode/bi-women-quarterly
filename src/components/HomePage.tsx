@@ -1,6 +1,8 @@
 /**
  * Home page that shows all of a user's submissions.
  * @author Austen Money
+ * @author Avery Hanna 
+ * @author So Hyun Kim
  */
 
 // Import React
@@ -234,12 +236,16 @@ export default function HomePage() {
                     </button>
                 </li>
             </div>
-            <div className="pt-14 pl-8">
-                <div className="flex">
+            <div className="pt-60 pl-8">
+                <div className="flex items-center justify-center">
                     {submissions.length < 1 ? (
-                        <div className="absolute top-40 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-600">
-                            You have no submissions.
-                        </div>
+                        <div className="absolute top-80 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-600">
+                            <div className="box-content h-40 w-80 bg-gray-200"> </div>
+                            <br></br>
+                            <div className="text-gray-300 text-center">
+                            You have no submissions
+                            </div>
+                        </div> 
                     ) : (
                         <ShowSubmissionThumbnails
                             previews={submissions.map(submission => {
