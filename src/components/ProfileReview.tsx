@@ -3,30 +3,15 @@
  * @author Lucien Bao, Lydia Chen
  */
 
-import { User } from "@clerk/nextjs/server";
+import { IdentificationLink, User } from "@clerk/nextjs/server";
 import { useUser } from "@clerk/nextjs";
+import { EmailAddress } from "@clerk/nextjs/server";
 
-/*
-Here are the user properties we should be able to
-display in the profile view:
+import { useState } from "react";
 
-Email - text
-First Name - text
-Last Name - text
-Author Name - text (additionally, checkbox)
-Pronouns - text
-Bio - text
-Birthday - date
-Racial/Ethnicity - dropdown
-Gender - dropdown
-Country - dropdown
-State/Province - dropdown
-City - dropdown
-
-Instagram - text/link
-X/Twitter - text/link
-Facebook - text/link
-*/
+import RaceEthnicity from "@/types/RaceEthnicity";
+import Gender from "@/types/Gender";
+import SocialMedias from "@/types/SocialMedias";
 
 /*------------------------------------------------------------------------*/
 /* -------------------------------- State ------------------------------- */
@@ -42,32 +27,40 @@ enum View {
 
 /* -------- State Definition -------- */
 
-type State = {
+type UserInfo = {
     view: View.Preview,
-    // TODO: add state variables for each of the user props
-    /*
-    Email - text
-    First Name - text
-    Last Name - text
-    Author Name - text (additionally, checkbox)
-    Pronouns - text
-    Bio - text
-    Birthday - date
-    Racial/Ethnicity - dropdown
-    Gender - dropdown
-    Country - dropdown
-    State/Province - dropdown
-    City - dropdown
 
-    Instagram - text/link
-    X/Twitter - text/link
-    Facebook - text/link
+    /*
+    Optional fields:
+    ---
+    email
+    author name
+    bio
+    socials
     */
-   
+
+    email: EmailAddress,
+    firstName: string,
+    lastName: string,
+    authorName?: string
+    pronouns: string,
+
+    bio: string,
+
+    birthday: Date,
+    raceEthnicity: RaceEthnicity,
+    gender: Gender,
+
+    country: number, // use a number as index for "countries-list"
+    stateProvince: string, // probably easier than implementing dropdowns
+    cityTown: string, // same as stateProvince
+
+    socialMedias: SocialMedias
+
     // Add description of require state variable
-    addStateVariableName: addStateVariableValue,
+    // addStateVariableName: addStateVariableValue,
     // Add description of optional state variable
-    addStateVariableName?: addStateVariableValue,
+    // addStateVariableName?: addStateVariableValue,
 };
 
 
@@ -80,7 +73,7 @@ const ProfileReview: React.FC = () => {
     // Get current user; requires a user so if there isn't one then stop
     const { user } = useUser();
     if (!user)
-        return (<div>No user :(</div>);
+        return (<div>No user found!</div>);
 
     // user.createEmailAddress()
     // user.firstName()
@@ -100,24 +93,50 @@ const ProfileReview: React.FC = () => {
 
     /* -------------- State ------------- */
 
+    // TODO: temporary
+    let exampleSocialMedias: SocialMedias = {
+        LinkedIn: "linkedin.com",
+        Facebook: "facebook.com",
+        Instagram: "instagram.com",
+        X: "twitter.com",
+        TikTok: "tiktok.com"
+    };
+
     // Initialize state
-    const [users, setUsers] = useState<User>({
-        email: "",
-        first_name: "",
-        last_name: "",
-        author_name: "",
-        pronouns: "",
-        bio: "",
-        birthday: "",
-        race_ethnicity: "",
-        gender: "",
-        country: "",
-        state_province: "",
-        city: "",
-        "Instagram": "",
-        "Twitter": "",
-        "Facebook": ""
+    const [userInfo, setUserInfo] = useState<UserInfo>({
+        view: View.Preview,
+
+        email: new EmailAddress("id", "example@example.com", null, []),
+        firstName: "First",
+        lastName: "Last",
+        authorName: "PenName",
+        pronouns: "they/them",
+
+        bio: "I'm an example!",
+
+        birthday: new Date(0),
+        raceEthnicity: RaceEthnicity.Other,
+        gender: Gender.Other,
+
+        country: 0, // Andorra!
+        stateProvince: "Province",
+        cityTown: "Placeville",
+
+        socialMedias: exampleSocialMedias
     });
+
+    /*------------------------------------------------------------------------*/
+    /* ------------------------- Lifecycle Functions ------------------------ */
+    /*------------------------------------------------------------------------*/
+
+    /**
+     * Update view on form submit and print some debug information to the console.
+     * @author Lucien Bao, Alana Sendlakowski, Vanessa Rose
+     * @param event the event that has been changed
+     */
+    const handleSubmit = (event: any) => {
+        // TODO: implement
+    }
 
 
     /*----------------------------------------*/
@@ -125,7 +144,7 @@ const ProfileReview: React.FC = () => {
     /*----------------------------------------*/
 
     return (
-        <form onSubmit={View.Edit}>
+        <form onSubmit={handleSubmit}>
             <button type="submit">Edit</button>
         </form>
     );
