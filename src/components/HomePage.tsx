@@ -239,11 +239,11 @@ export default function HomePage() {
                     </button>
                 </li>
             </div>
-            <div className="pt-80 pl-8">
+            <div className="pt-14 pl-8">
                 <div className="flex item-center justify-center">
                     {submissions.length < 1 ? (
-                        <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-600">
-                            <div className="box-content h-40 w-80 bg-gray-300"> </div>
+                        <div className="absolute left-1/2 pt-96 transform -translate-x-1/2 -translate-y-1/2 text-gray-600">
+                            <div className="box-content border-8 bg-gray-300 box-border box-sizing md:h-40 md:w-80"> </div>
                             <br></br>
                             <div className="text-gray-400 text-center">
                             You have no submissions
