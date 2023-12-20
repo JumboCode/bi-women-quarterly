@@ -178,7 +178,7 @@ export default function HomePage() {
     /*----------------------------------------*/
     return (
         <div className="relative flex flex-col">
-            <div className="HomePage-top-bar border-b border-gray-400"></div>
+            <div className="HomePage-top-bar border-b border-gray-300"></div>
             <div className="fixed m-3 mx-5 right-0 top-0">
                 <li className="flex items-center space-x-5">
                     <button 
