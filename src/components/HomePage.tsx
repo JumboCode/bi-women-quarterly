@@ -242,13 +242,13 @@ export default function HomePage() {
             <div className="pt-14 pl-8">
                 <div className="flex item-center justify-center">
                     {submissions.length < 1 ? (
-                        <div className="absolute left-1/2 pt-96 transform -translate-x-1/2 -translate-y-1/2 text-gray-600">
-                            <div className="box-content border-8 bg-gray-300 box-border box-sizing md:h-40 md:w-80"> </div>
+                        <div className="relative pt-20">
+                            <div className="box-content bg-gray-300 relative w-96 h-56 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"></div> 
                             <br></br>
-                            <div className="text-gray-400 text-center">
-                            You have no submissions
+                            <div className="text-gray-400 text-center relative left-1/2 bottom-1/12 transform -translate-x-1/2 -translate-y-1/8">
+                                You have no submissions
                             </div>
-                        </div> 
+                        </div>
                     ) : (
                         <ShowSubmissionThumbnails
                             previews={submissions.map(submission => {
