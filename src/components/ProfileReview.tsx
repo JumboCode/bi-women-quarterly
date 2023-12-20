@@ -12,6 +12,7 @@ import { useState } from "react";
 import RaceEthnicity from "@/types/RaceEthnicity";
 import Gender from "@/types/Gender";
 import SocialMedias from "@/types/SocialMedias";
+import { profile } from "console";
 
 /*------------------------------------------------------------------------*/
 /* -------------------------------- State ------------------------------- */
@@ -39,13 +40,15 @@ type UserInfo = {
     socials
     */
 
-    email: EmailAddress,
+    profilePicture: string | null;
+
+    email: string | null,
     firstName: string,
     lastName: string,
-    authorName?: string
+    authorName: string | null,
     pronouns: string,
 
-    bio: string,
+    bio: string | null,
 
     birthday: Date,
     raceEthnicity: RaceEthnicity,
@@ -55,6 +58,8 @@ type UserInfo = {
     stateProvince: string, // probably easier than implementing dropdowns
     cityTown: string, // same as stateProvince
 
+    // NOTE: for socialMedias to be optional means that the
+    // strings it contains are allowed to be empty
     socialMedias: SocialMedias
 
     // Add description of require state variable
@@ -93,36 +98,33 @@ const ProfileReview: React.FC = () => {
 
     /* -------------- State ------------- */
 
-    // TODO: temporary
-    let exampleSocialMedias: SocialMedias = {
-        LinkedIn: "linkedin.com",
-        Facebook: "facebook.com",
-        Instagram: "instagram.com",
-        X: "twitter.com",
-        TikTok: "tiktok.com"
-    };
+    const userProps = user.unsafeMetadata;
 
     // Initialize state
     const [userInfo, setUserInfo] = useState<UserInfo>({
         view: View.Preview,
 
-        email: new EmailAddress("id", "example@example.com", null, []),
-        firstName: "First",
-        lastName: "Last",
-        authorName: "PenName",
-        pronouns: "they/them",
+        // TODO: we assume some things are not null, is this okay?
+        profilePicture: userProps.profilePicture as string | null,
 
-        bio: "I'm an example!",
+        email: user.primaryEmailAddressId,
+        firstName: user.firstName!,
+        lastName: user.lastName!,
 
-        birthday: new Date(0),
-        raceEthnicity: RaceEthnicity.Other,
-        gender: Gender.Other,
+        authorName: userProps.authorName as string | null, // TODO: make sure these are set?
+        pronouns: userProps.pronouns as string,
 
-        country: 0, // Andorra!
-        stateProvince: "Province",
-        cityTown: "Placeville",
+        bio: userProps.bio as string | null,
 
-        socialMedias: exampleSocialMedias
+        birthday: userProps.birthday as Date,
+        raceEthnicity: userProps.raceEthnicity as RaceEthnicity,
+        gender: userProps.gender as Gender,
+
+        country: userProps.country as number,
+        stateProvince: userProps.stateProvince as string,
+        cityTown: userProps.cityTown as string,
+
+        socialMedias: userProps.socialMedias as SocialMedias
     });
 
     /*------------------------------------------------------------------------*/
@@ -138,16 +140,61 @@ const ProfileReview: React.FC = () => {
         // TODO: implement
     }
 
+    /**
+     * Change to edit mode.
+     * @author Lucien Bao
+     * @param event the event that has been changed
+     */
+    const switchToEdit = (event: any) => {
+        // TODO
+    }
+
+    /**
+     * Upload new profile picture.
+     * @author Lucien Bao
+     * @param event the event that has been changed
+     */
+    const uploadPicture = (event: any) => {
+        // TODO
+    }
+
+    /**
+     * Delete current profile picture.
+     * @author Lucien Bao
+     * @param event the event that has been changed
+     */
+    const deletePicture = (event: any) => {
+        // TODO
+    }
+
 
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
 
-    return (
-        <form onSubmit={handleSubmit}>
-            <button type="submit">Edit</button>
-        </form>
-    );
+    if (userInfo.view == View.Preview) {
+        return (
+            <form onSubmit={handleSubmit}>
+                {/* Header portion */}
+                <div>
+                    <img src={userInfo.profilePicture as string} alt="" />
+                    <button type="submit" onClick={switchToEdit}>🖉 Edit</button>
+                </div>
+            </form>
+        );
+    } else { // userInfo.view == View.Edit
+        return (
+            <form onSubmit={handleSubmit}>
+                {/* Header portion */}
+                <div>
+                    <img src={userInfo.profilePicture as string} alt="" />
+                    <button type="button" onClick={uploadPicture}>Upload Photo</button>
+                    <button type="button" onClick={deletePicture}>Delete Photo</button>
+                    <button type="submit">Edit</button>
+                </div>
+            </form>
+        );
+    }
 };
 
 /*------------------------------------------------------------------------*/
