@@ -8,7 +8,7 @@ import { IdentificationLink, User } from "@clerk/nextjs/server";
 import { useUser } from "@clerk/nextjs";
 
 // React imports
-import React, { useReducer, useEffect, } from 'react';
+import React, { useReducer, useEffect, useRef } from 'react';
 
 // Custom types, etc.
 import RaceEthnicity from "@/types/RaceEthnicity";
@@ -166,7 +166,7 @@ const ProfileReview: React.FC<{}> = () => {
             // TODO: we assume some things are not null, is this okay?
             profilePicture: userProps.profilePicture as string | null,
 
-            email: user.primaryEmailAddressId,
+            email: user!.primaryEmailAddressId || null,            
             firstName: user.firstName!,
             lastName: user.lastName!,
 
@@ -229,7 +229,7 @@ const ProfileReview: React.FC<{}> = () => {
                 // TODO: we assume some things are not null, is this okay?
                 profilePicture: userProps.profilePicture as string | null,
 
-                email: user!.primaryEmailAddressId,
+                email: user!.primaryEmailAddressId || null,
                 firstName: user!.firstName!,
                 lastName: user!.lastName!,
 
@@ -266,30 +266,67 @@ const ProfileReview: React.FC<{}> = () => {
 
     /**
      * Change to edit mode.
-     * @author Lucien Bao
+     * @author Lucien Bao, Lydia Chen
      * @param event the event that has been changed
      */
     const switchToEdit = (event: any) => {
-        // TODO
+        dispatch({type: ActionType.ToggleView});
     }
 
     /**
      * Upload new profile picture.
-     * @author Lucien Bao
+     * @author Lucien Bao, Lydia Chen
      * @param event the event that has been changed
      */
-    const uploadPicture = (event: any) => {
-        // TODO
+    const uploadPicture = (event: React.ChangeEvent<HTMLInputElement>) => {
+        try {
+            const uploadedImage = event.target.files?.[0];
+            /* 
+            Had issues with using the shallow copy (...userInfo) when 
+            updating profilePicture. I think it was due to customized types?
+            So, did a "deep copy" using parse and stringify, but there are limitations
+            Some online recommendations were to use libraries like:
+            { import cloneDeep from 'lodash/cloneDeep'; }
+            But I don't know the secure it may be.
+            - Lydia
+            */
+            const deepCopy = JSON.parse(JSON.stringify(userInfo)); 
+
+            if (uploadedImage) {
+                const newProfilePicture = URL.createObjectURL(uploadedImage);
+
+                dispatch({
+                    type: ActionType.UpdateUserInfo,
+                    updatedUserInfo: {
+                        ...deepCopy,
+                        profilePicture: newProfilePicture,
+                    },
+                });
+            }
+        } catch (error) {
+            console.error('Error Uploading New Profile Picture: ', error);
+        }
     }
 
     /**
      * Delete current profile picture.
-     * @author Lucien Bao
+     * @author Lucien Bao, Lydia Chen
      * @param event the event that has been changed
      */
     const deletePicture = (event: any) => {
-        // TODO
+        const deepCopy = JSON.parse(JSON.stringify(userInfo));
+
+        dispatch({
+            type: ActionType.UpdateUserInfo,
+            updatedUserInfo: {
+                ...deepCopy,
+                profilePicture: null,
+            },
+        });
     }
+
+    // Initializes a null reference
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // END STUFF NOT LOOKED AT
 
@@ -324,7 +361,14 @@ const ProfileReview: React.FC<{}> = () => {
                 {/* Header portion */}
                 <div>
                     <img src={userInfo!.profilePicture as string} alt="" />
-                    <button type="button" onClick={uploadPicture}>Upload Photo</button>
+                    {/* 
+                    Added an input for the user to select a new profile picture. 
+                    The "fileInputRef" provides a reference to the file input element 
+                    and is used to trigger the click event, allowing the user to select 
+                    a file.
+                    */}
+                    <input type="file" accept="image/*" ref={fileInputRef} onChange={uploadPicture}/>
+                    <button type="button" onClick={() => fileInputRef.current?.click()}>Upload Photo</button>
                     <button type="button" onClick={deletePicture}>Delete Photo</button>
                     <button type="submit">Edit</button>
                 </div>
