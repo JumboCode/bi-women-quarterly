@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-    background-color: rgb(229, 236, 251);
+    background-color: rgb(237, 239, 244);
     margin: 0;
 }
 
@@ -23,7 +23,5 @@ body {
     top: 0;
     width: 100%;
     height: 7rem;
-    background-color: rgb(229,
-        236,
-        251);
+    background-color:  rgb(237, 239, 244);
 }
