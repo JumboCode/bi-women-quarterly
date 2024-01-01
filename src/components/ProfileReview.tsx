@@ -4,13 +4,14 @@
  */
 
 // Clerk imports
-import { IdentificationLink, User } from "@clerk/nextjs/server";
 import { useUser } from "@clerk/nextjs";
 
 // React imports
 import React, { useReducer, useEffect, useRef } from 'react';
 
 // Custom types, etc.
+import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
+
 import RaceEthnicity from "@/types/RaceEthnicity";
 import Gender from "@/types/Gender";
 import SocialMedias from "@/types/SocialMedias";
@@ -31,7 +32,6 @@ type State = {
 /* ----------- View Definition ------------- */
 
 enum View {
-    // Add conditionals here
     Preview = "PreviewView",
     Edit = "EditView"
 }
@@ -40,49 +40,41 @@ enum View {
 
 type UserInfo = {
     /*
-    Optional fields:
+    Required fields:
     ---
     email
     author name
     bio
-    socials
     */
 
-    profilePicture: string | null;
+    profilePicture?: string;
 
-    email: string | null,
-    firstName: string,
-    lastName: string,
-    authorName: string | null,
-    pronouns: string,
+    email: string, // required
+    firstName?: string,
+    lastName?: string,
+    authorName: string, // required
+    pronouns?: string,
 
-    bio: string | null,
+    bio: string,  // required
 
-    birthday: Date,
-    raceEthnicity: RaceEthnicity,
-    gender: Gender,
+    birthday?: Date,
+    raceEthnicity?: RaceEthnicity,
+    gender?: Gender,
 
-    country: number, // use a number as index for "countries-list"
-    stateProvince: string, // probably easier than implementing dropdowns
-    cityTown: string, // same as stateProvince
+    country?: string,
+    stateProvince?: string,
+    cityTown?: string,
 
     // NOTE: for socialMedias to be optional means that the
     // strings it contains are allowed to be empty
     socialMedias: SocialMedias
-
-    // Add description of require state variable
-    // addStateVariableName: addStateVariableValue,
-    // Add description of optional state variable
-    // addStateVariableName?: addStateVariableValue,
 };
 
 /* ------------- Actions ------------ */
 
 // Types of actions
 enum ActionType {
-    // Switch between views
     ToggleView = "ToggleView",
-    // Update user info
     UpdateUserInfo = "UpdateUserInfo"
 }
 
@@ -164,22 +156,22 @@ const ProfileReview: React.FC<{}> = () => {
         view: View.Preview,
         userInfo: {
             // TODO: we assume some things are not null, is this okay?
-            profilePicture: userProps.profilePicture as string | null,
+            profilePicture: userProps.profilePicture as string,
 
-            email: user!.primaryEmailAddressId || null,            
+            email: user.primaryEmailAddressId!,
             firstName: user.firstName!,
             lastName: user.lastName!,
 
-            authorName: userProps.authorName as string | null, // TODO: make sure these are set?
+            authorName: userProps.authorName as string,
             pronouns: userProps.pronouns as string,
 
-            bio: userProps.bio as string | null,
+            bio: userProps.bio as string,
 
             birthday: userProps.birthday as Date,
             raceEthnicity: userProps.raceEthnicity as RaceEthnicity,
             gender: userProps.gender as Gender,
 
-            country: userProps.country as number,
+            country: userProps.country as string,
             stateProvince: userProps.stateProvince as string,
             cityTown: userProps.cityTown as string,
 
@@ -227,22 +219,22 @@ const ProfileReview: React.FC<{}> = () => {
             type: ActionType.UpdateUserInfo,
             updatedUserInfo: {
                 // TODO: we assume some things are not null, is this okay?
-                profilePicture: userProps.profilePicture as string | null,
+                profilePicture: userProps.profilePicture as string,
 
-                email: user!.primaryEmailAddressId || null,
+                email: user!.primaryEmailAddressId!,
                 firstName: user!.firstName!,
                 lastName: user!.lastName!,
 
-                authorName: userProps.authorName as string | null, // TODO: make sure these are set?
+                authorName: userProps.authorName as string,
                 pronouns: userProps.pronouns as string,
 
-                bio: userProps.bio as string | null,
+                bio: userProps.bio as string,
 
                 birthday: userProps.birthday as Date,
                 raceEthnicity: userProps.raceEthnicity as RaceEthnicity,
                 gender: userProps.gender as Gender,
 
-                country: userProps.country as number,
+                country: userProps.country as string,
                 stateProvince: userProps.stateProvince as string,
                 cityTown: userProps.cityTown as string,
 
@@ -252,8 +244,6 @@ const ProfileReview: React.FC<{}> = () => {
     },
         [],
     );
-
-    // BEGIN STUFF NOT LOOKED AT
 
     /**
      * Update view on form submit and print some debug information to the console.
@@ -270,7 +260,43 @@ const ProfileReview: React.FC<{}> = () => {
      * @param event the event that has been changed
      */
     const switchToEdit = (event: any) => {
-        dispatch({type: ActionType.ToggleView});
+        dispatch({ type: ActionType.ToggleView });
+    }
+
+    /**
+     * Select a country.
+     * @author Lucien Bao, Ben Keen, Lydia Chen
+     * @param value Updated country value.
+     */
+    const selectCountry = (value: string) => {
+        const deepCopy = JSON.parse(JSON.stringify(userInfo));
+        dispatch(
+            {
+                type: ActionType.UpdateUserInfo,
+                updatedUserInfo: {
+                    ...deepCopy,
+                    country: value
+                }
+            }
+        )
+    }
+
+    /**
+     * Select a state/province.
+     * @author Lucien Bao, Ben Keen, Lydia Chen
+     * @param value Updated state/province value.
+     */
+    const selectStateProvince = (value: string) => {
+        const deepCopy = JSON.parse(JSON.stringify(userInfo));
+        dispatch(
+            {
+                type: ActionType.UpdateUserInfo,
+                updatedUserInfo: {
+                    ...deepCopy,
+                    stateProvince: value
+                }
+            }
+        )
     }
 
     /**
@@ -290,7 +316,7 @@ const ProfileReview: React.FC<{}> = () => {
             But I don't know the secure it may be.
             - Lydia
             */
-            const deepCopy = JSON.parse(JSON.stringify(userInfo)); 
+            const deepCopy = JSON.parse(JSON.stringify(userInfo));
 
             if (uploadedImage) {
                 const newProfilePicture = URL.createObjectURL(uploadedImage);
@@ -328,8 +354,6 @@ const ProfileReview: React.FC<{}> = () => {
     // Initializes a null reference
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // END STUFF NOT LOOKED AT
-
     /*------------------------------------------------------------------------*/
     /* ------------------------------- Render ------------------------------- */
     /*------------------------------------------------------------------------*/
@@ -341,7 +365,10 @@ const ProfileReview: React.FC<{}> = () => {
     // Body that will be filled with the current view
     let body: React.ReactNode;
 
-    // Edit mode //
+    const country = userInfo!.country;
+    const stateProvince = userInfo!.stateProvince;
+
+    // Preview mode //
     if (view == View.Preview) {
         body = (
             <form onSubmit={handleSubmit}>
@@ -354,10 +381,10 @@ const ProfileReview: React.FC<{}> = () => {
         );
     }
 
-    // Preview mode //
+    // Edit mode //
     else { // view == View.Edit
         body = (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} id="profileEdit">
                 {/* Header portion */}
                 <div>
                     <img src={userInfo!.profilePicture as string} alt="" />
@@ -367,10 +394,70 @@ const ProfileReview: React.FC<{}> = () => {
                     and is used to trigger the click event, allowing the user to select 
                     a file.
                     */}
-                    <input type="file" accept="image/*" ref={fileInputRef} onChange={uploadPicture}/>
+                    <input type="file" accept="image/*" ref={fileInputRef} onChange={uploadPicture} />
                     <button type="button" onClick={() => fileInputRef.current?.click()}>Upload Photo</button>
                     <button type="button" onClick={deletePicture}>Delete Photo</button>
-                    <button type="submit">Edit</button>
+                    <button type="submit">Done</button>
+                </div>
+
+                {/* Biographical info */}
+                <div>
+                    <label htmlFor="email">Email</label>
+                    <input type="text" id="email" required /> <br></br>
+
+                    <label htmlFor="fname">First name</label>
+                    <input type="text" id="fname" />
+                    <label htmlFor="lname">Last name</label>
+                    <input type="text" id="lname" /> <br></br>
+
+                    <label htmlFor="aname">Author name</label>
+                    <input type="text" id="aname" required />
+                    <label htmlFor="pronouns">Pronouns</label>
+                    <input type="text" id="pronouns" /> <br></br>
+
+                    <label htmlFor="bio">Bio</label>
+                    <textarea id="bio" name="profileEdit" rows={4} cols={50}
+                        placeholder="Tell us about yourself!" required /> <br></br>
+
+                    <label htmlFor="birthday">Birthday</label>
+                    <input type="date" id="birthday" />
+                    <label htmlFor="raceEthnicity">Race/Ethnicity</label>
+                    <select form="profileEdit" name="profileEdit" id="raceEthnicity">
+                        <option value="americanIndian">{RaceEthnicity.AmericanIndian}</option>
+                        <option value="asian">{RaceEthnicity.Asian}</option>
+                        <option value="black">{RaceEthnicity.Black}</option>
+                        <option value="nativeHawaiian">{RaceEthnicity.NativeHawaiian}</option>
+                        <option value="white">{RaceEthnicity.White}</option>
+                        <option value="other">{RaceEthnicity.Other}</option>
+                    </select>
+                    <label htmlFor="gender">Gender</label>
+                    <select form="profileEdit" name="profileEdit" id="gender">
+                        <option value="female">{Gender.Female}</option>
+                        <option value="male">{Gender.Male}</option>
+                        <option value="non-binary">{Gender.Nonbinary}</option>
+                        <option value="other">{Gender.Other}</option>
+                    </select> <br></br>
+
+                    <CountryDropdown
+                        value={country!}
+                        onChange={selectCountry}
+                        priorityOptions={["US"]} />
+                    <RegionDropdown
+                        country={country!}
+                        value={stateProvince!}
+                        onChange={selectStateProvince} />
+                    <label htmlFor="cityTown">City/Town</label>
+                    <input type="text" id="cityTown" />
+                </div>
+
+                {/* Social media */}
+                <div>
+                    <label htmlFor="facebook">Facebook</label>
+                    <input type="text" id="facebook" />
+                    <label htmlFor="instagram">Instagram</label>
+                    <input type="text" id="instagram" />
+                    <label htmlFor="xTwitter">X/Twitter</label>
+                    <input type="text" id="xTwitter" />
                 </div>
             </form>
         );

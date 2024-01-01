@@ -20,6 +20,7 @@
         "ngrok": "^5.0.0-beta.2",
         "prettier": "^3.0.3",
         "react": "^18",
+        "react-country-region-selector": "^3.6.1",
         "react-dom": "^18",
         "svix": "^1.14.0",
         "tsx": "^3.14.0"

@@ -6,6 +6,7 @@
 enum Gender {
     Male = "Male",
     Female = "Female",
+    Nonbinary = "Non-binary",
     Other = "Other or prefer not to say"
     // might want to revise or add to this list
 }
