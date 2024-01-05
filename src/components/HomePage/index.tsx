@@ -13,7 +13,7 @@ import Link from 'next/link';
 import { UserButton, useUser } from "@clerk/nextjs";
 
 // Import components
-import ShowSubmissionThumbnails from "@/components/ShowSubmissionThumbnails";
+import ShowSubmissionThumbnails from "@/components/HomePage/ShowSubmissionThumbnails";
 
 // Import types
 import Submission from "@/types/Submission";

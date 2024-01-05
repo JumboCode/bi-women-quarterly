@@ -1,7 +1,7 @@
-import NewSubmission from "../components/NewSubmission"
+import SubmissionForm from "@/components/SubmissionForm"
 
 export default function FileUploadForm() {
     return (
-        <NewSubmission />
+        <SubmissionForm />
     )
 }

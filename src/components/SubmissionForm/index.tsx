@@ -8,8 +8,8 @@
 import { useState } from 'react';
 
 // Import types
-import Submission from "../types/Submission"
-import PreviewType from "../types/PreviewType"
+import Submission from "@/types/Submission"
+import PreviewType from "@/types/PreviewType"
 import Mediums from '@/types/Mediums';
 import Issues from '@/types/Issues';
 
@@ -20,7 +20,7 @@ import Link from 'next/link'
 import { useUser } from "@clerk/nextjs";
 
 // Import components
-import LocalFile from '@/pages/components/LocalFile';
+import LocalFile from '@/components/SubmissionForm/LocalFile';
 import Preview from '@/types/Preview';
 
 /*------------------------------------------------------------------------*/
