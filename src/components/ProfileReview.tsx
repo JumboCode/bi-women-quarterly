@@ -368,16 +368,94 @@ const ProfileReview: React.FC<{}> = () => {
     const country = userInfo!.country;
     const stateProvince = userInfo!.stateProvince;
 
+    // Helper function for Preview mode display of user birthday
+    const extractDateString = (date: Date) => {
+        return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
+    };
+
     // Preview mode //
     if (view == View.Preview) {
         body = (
-            <form onSubmit={handleSubmit}>
+            <div>
                 {/* Header portion */}
                 <div>
-                    <img src={userInfo!.profilePicture as string} alt="" />
-                    <button type="submit" onClick={switchToEdit}>🖉 Edit</button>
+                    <img src={userInfo!.profilePicture as string} alt="Your profile picture" />
+                    <button type="button" onClick={switchToEdit}>🖉 Edit</button>
                 </div>
-            </form>
+
+                {/* Biographical info */}
+                <div>
+                    <table>
+                        <tr>
+                            <th align="left">Email</th>
+                        </tr>
+                        <tr>
+                            <td>{userInfo!.email}</td>
+                        </tr>
+
+                        <tr>
+                            <th align="left">First name</th>
+                            <th align="left">Last name</th>
+                        </tr>
+                        <tr>
+                            <td>{userInfo!.firstName}</td>
+                            <td>{userInfo!.lastName}</td>
+                        </tr>
+
+                        <tr>
+                            <th align="left">Author name</th>
+                            <th align="left">Pronouns</th>
+                        </tr>
+                        <tr>
+                            <td>{userInfo!.authorName}</td>
+                            <td>{userInfo!.pronouns}</td>
+                        </tr>
+
+                        <tr>
+                            <th align="left">Bio</th>
+                        </tr>
+                        <tr>
+                            <td>{userInfo!.bio}</td>
+                        </tr>
+
+                        <tr>
+                            <th align="left">Birthday</th>
+                            <th align="left">Race/Ethnicity</th>
+                            <th align="left">Gender</th>
+                        </tr>
+                        <tr>
+                            <td>{extractDateString(userInfo!.birthday!)}</td>
+                            <td>{userInfo!.raceEthnicity}</td>
+                            <td>{userInfo!.gender}</td>
+                        </tr>
+
+                        <tr>
+                            <th align="left">Country</th>
+                            <th align="left">State</th>
+                            <th align="left">City</th>
+                        </tr>
+                        <tr>
+                            <td>{userInfo!.country}</td>
+                            <td>{userInfo!.stateProvince}</td>
+                            <td>{userInfo!.cityTown}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                {/* Social media */}
+                <div>
+                    <table>
+                        <tr>
+                            <th>Month</th>
+                            <th>Savings</th>
+                        </tr>
+                        <tr>
+                            <td>January</td>
+                            <td>$100</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         );
     }
 
@@ -387,7 +465,7 @@ const ProfileReview: React.FC<{}> = () => {
             <form onSubmit={handleSubmit} id="profileEdit">
                 {/* Header portion */}
                 <div>
-                    <img src={userInfo!.profilePicture as string} alt="" />
+                    <img src={userInfo!.profilePicture as string} alt="Your profile picture" />
                     {/* 
                     Added an input for the user to select a new profile picture. 
                     The "fileInputRef" provides a reference to the file input element 
@@ -397,7 +475,7 @@ const ProfileReview: React.FC<{}> = () => {
                     <input type="file" accept="image/*" ref={fileInputRef} onChange={uploadPicture} />
                     <button type="button" onClick={() => fileInputRef.current?.click()}>Upload Photo</button>
                     <button type="button" onClick={deletePicture}>Delete Photo</button>
-                    <button type="submit">Done</button>
+                    <button type="submit">✓ Done</button>
                 </div>
 
                 {/* Biographical info */}
