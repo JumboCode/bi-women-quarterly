@@ -39,28 +39,16 @@ enum View {
 /* -------- User Info Definition -------- */
 
 type UserInfo = {
-    /*
-    Required fields:
-    ---
-    email
-    author name
-    bio
-    */
-
     profilePicture?: string;
-
     email: string, // required
     firstName?: string,
     lastName?: string,
     authorName: string, // required
     pronouns?: string,
-
     bio: string,  // required
-
     birthday?: Date,
     raceEthnicity?: RaceEthnicity,
     gender?: Gender,
-
     country?: string,
     stateProvince?: string,
     cityTown?: string,
@@ -131,53 +119,60 @@ const ProfileReview: React.FC<{}> = () => {
 
     // Get current user; requires a user so if there isn't one then stop
     const { user } = useUser();
-    if (!user)
-        return (<div>No user found!</div>);
+    // if (!user)
+    //     return (<div>No user found!</div>);
+    const currentUser = user ?? {
+        unsafeMetadata: {
+            profilePicture: "dummy.png",
+            email: "alexandra_orange@test.com",
+            firstName: "Alexandra",
+            lastName: "Orange",
+            authorName: "capybaraOrange",
+            pronouns: "they/them",
+            bio: "#ART #AMAZINGBIO",
+            birthday: new Date('1990-01-01'),
+            raceEthnicity: "Asian" as RaceEthnicity,
+            gender: "Non-binary" as Gender,
+            country: "United States",
+            stateProvince: "California",
+            cityTown: "Los Angeles",
+            socialMedias: {
+              LinkedIn: "@alexandra_linkedin",
+              Facebook: "@alexandra_facebook",
+              Instagram: "@alexandra_instagram",
+              X: "@alexandra_twitter",
+              TikTok: "@alexandra_tiktok",
+            },
+        },
+      };
 
-    /* Begin stuff Lucien doesn't understand and has left commented for now
-    // user.createEmailAddress()
-    // user.firstName()
-    // user.fullName()
-    // user.
- 
-    // try {
-    //     user.update({
- 
-    //     });
-    // } catch (error) {
-    //     console.log(error);
-    // }
-    // end stuff Lucien commented out
-    */
-
-    const userProps = user.unsafeMetadata;
+    const userProps = currentUser.unsafeMetadata;
 
     const initialState: State = {
         view: View.Preview,
         userInfo: {
-            // TODO: we assume some things are not null, is this okay?
-            profilePicture: userProps.profilePicture as string,
-
-            email: user.primaryEmailAddressId!,
-            firstName: user.firstName!,
-            lastName: user.lastName!,
-
-            authorName: userProps.authorName as string,
-            pronouns: userProps.pronouns as string,
-
-            bio: userProps.bio as string,
-
-            birthday: userProps.birthday as Date,
-            raceEthnicity: userProps.raceEthnicity as RaceEthnicity,
-            gender: userProps.gender as Gender,
-
-            country: userProps.country as string,
-            stateProvince: userProps.stateProvince as string,
-            cityTown: userProps.cityTown as string,
-
-            socialMedias: userProps.socialMedias as SocialMedias
-        }
-    }
+          profilePicture: userProps.profilePicture as string || '',
+          email: userProps?.primaryEmailAddressId || '',
+          firstName: userProps?.firstName || '',
+          lastName: userProps?.lastName || '',
+          authorName: userProps.authorName as string || '',
+          pronouns: userProps.pronouns as string || '',
+          bio: userProps.bio as string || '',
+          birthday: userProps.birthday as Date || new Date(),
+          raceEthnicity: userProps.raceEthnicity as RaceEthnicity || '',
+          gender: userProps.gender as Gender || '',
+          country: userProps.country as string || '',
+          stateProvince: userProps.stateProvince as string || '',
+          cityTown: userProps.cityTown as string || '',
+          socialMedias: userProps.socialMedias as SocialMedias || {
+            LinkedIn: '',
+            Facebook: '',
+            Instagram: '',
+            X: '',
+            TikTok: '',
+          },
+        },
+      };
 
     const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -194,56 +189,49 @@ const ProfileReview: React.FC<{}> = () => {
      * Mount
      * @author Lucien Bao, Austen Money
      */
-    useEffect(() => {
+    useEffect(() => {   
         (async () => {
             // This function is a specialized function that will only be called once,
             // when the component first renders. 
-            // 
+            
             // This is where you'll first set the user info. The same
             // stuff you're already doing to pull the user info into 
             // your state will happen in this function instead, so that
             // you're only doing it once (you're essentially caching the 
             // data you get from Clerk in your state). 
-            //
+            
             // Any edits to the state will not be pushed to the Clerk database
             // unless the user clicks "submit", and no new info will be pulled from
             // the Clerk database after this one function is called. (We know what
             // the state looks like at the beginning of the component's lifecycle,
-            // and we control anything that might change.)
-
+            // and we control anything that might change.)      
         })();
-
-        const { user } = useUser();
-
         dispatch({
             type: ActionType.UpdateUserInfo,
             updatedUserInfo: {
                 // TODO: we assume some things are not null, is this okay?
+
                 profilePicture: userProps.profilePicture as string,
-
-                email: user!.primaryEmailAddressId!,
-                firstName: user!.firstName!,
-                lastName: user!.lastName!,
-
+                email: userProps!.email!,
+                firstName: userProps!.firstName!,
+                lastName: userProps!.lastName!,
                 authorName: userProps.authorName as string,
                 pronouns: userProps.pronouns as string,
-
                 bio: userProps.bio as string,
-
                 birthday: userProps.birthday as Date,
                 raceEthnicity: userProps.raceEthnicity as RaceEthnicity,
                 gender: userProps.gender as Gender,
-
                 country: userProps.country as string,
                 stateProvince: userProps.stateProvince as string,
                 cityTown: userProps.cityTown as string,
-
                 socialMedias: userProps.socialMedias as SocialMedias
             }
         });
+        
     },
         [],
     );
+    
 
     /**
      * Update view on form submit and print some debug information to the console.
@@ -307,15 +295,6 @@ const ProfileReview: React.FC<{}> = () => {
     const uploadPicture = (event: React.ChangeEvent<HTMLInputElement>) => {
         try {
             const uploadedImage = event.target.files?.[0];
-            /* 
-            Had issues with using the shallow copy (...userInfo) when 
-            updating profilePicture. I think it was due to customized types?
-            So, did a "deep copy" using parse and stringify, but there are limitations
-            Some online recommendations were to use libraries like:
-            { import cloneDeep from 'lodash/cloneDeep'; }
-            But I don't know the secure it may be.
-            - Lydia
-            */
             const deepCopy = JSON.parse(JSON.stringify(userInfo));
 
             if (uploadedImage) {
@@ -373,87 +352,125 @@ const ProfileReview: React.FC<{}> = () => {
         return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
     };
 
+    const handleUploadButtonClick = () => {
+        // Trigger click event on the hidden file input
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        // Handle file selection here
+        const selectedFile = event.target.files?.[0];
+        if (selectedFile) {
+            uploadPicture(selectedFile)
+            console.log('Selected file:', selectedFile);
+        }
+    };
+
     // Preview mode //
     if (view == View.Preview) {
         body = (
-            <div>
+            <div className="p-10 px-20 bg-[#BFCAE6]">
                 {/* Header portion */}
-                <div>
-                    <img src={userInfo!.profilePicture as string} alt="Your profile picture" />
-                    <button type="button" onClick={switchToEdit}>🖉 Edit</button>
+                <div className="grid grid-cols-2 pb-8">
+                    <img className="rounded-full bg-gray-500 w-24 h-24" src={userInfo!.profilePicture as string} alt="Your profile picture" onError={(e) => {
+                        (e.target as HTMLImageElement).onerror = null; 
+                        (e.target as HTMLImageElement).src = '#';       // Add src link to default img
+                    }}/>
+                    <button className="text-right pr-4" type="button" onClick={switchToEdit}>🖉 Edit</button>
                 </div>
 
                 {/* Biographical info */}
-                <div>
-                    <table>
-                        <tr>
-                            <th align="left">Email</th>
-                        </tr>
-                        <tr>
-                            <td>{userInfo!.email}</td>
-                        </tr>
+                <div className="border border-solid border-slate-400 rounded-xl mb-5 p-5">
+                    <div>
+                        <label className="font-bold">Email*</label>
+                        <div className="py-4">{userInfo!.email}</div>
+                    </div>
 
-                        <tr>
-                            <th align="left">First name</th>
-                            <th align="left">Last name</th>
-                        </tr>
-                        <tr>
-                            <td>{userInfo!.firstName}</td>
-                            <td>{userInfo!.lastName}</td>
-                        </tr>
+                    <div className="grid grid-cols-2 lg:pr-96">
+                        <div>
+                            <label className="font-bold">First Name</label>
+                            <div className="py-4">{userInfo!.firstName}</div>
+                        </div>
+                    
+                        <div>
+                            <label className="font-bold">Last Name</label>
+                            <div className="py-4">{userInfo!.lastName}</div>
+                        </div>
+                    </div>
 
-                        <tr>
-                            <th align="left">Author name</th>
-                            <th align="left">Pronouns</th>
-                        </tr>
-                        <tr>
-                            <td>{userInfo!.authorName}</td>
-                            <td>{userInfo!.pronouns}</td>
-                        </tr>
+                    <div className="grid grid-cols-2 lg:pr-96">
+                        <div>
+                            <div className="font-bold">Author Name*</div>
+                            <div className="py-4">{userInfo!.authorName}</div>
+                        </div>
 
-                        <tr>
-                            <th align="left">Bio</th>
-                        </tr>
-                        <tr>
-                            <td>{userInfo!.bio}</td>
-                        </tr>
+                        <div>
+                            <div className="font-bold">Pronouns</div>
+                            <div className="py-4">{userInfo!.pronouns}</div>
+                        </div>
+                    </div>
 
-                        <tr>
-                            <th align="left">Birthday</th>
-                            <th align="left">Race/Ethnicity</th>
-                            <th align="left">Gender</th>
-                        </tr>
-                        <tr>
-                            <td>{extractDateString(userInfo!.birthday!)}</td>
-                            <td>{userInfo!.raceEthnicity}</td>
-                            <td>{userInfo!.gender}</td>
-                        </tr>
+                    <div className="font-bold">Bio*</div>
+                    <div className="py-4">{userInfo!.bio}</div>
 
-                        <tr>
-                            <th align="left">Country</th>
-                            <th align="left">State</th>
-                            <th align="left">City</th>
-                        </tr>
-                        <tr>
-                            <td>{userInfo!.country}</td>
-                            <td>{userInfo!.stateProvince}</td>
-                            <td>{userInfo!.cityTown}</td>
-                        </tr>
-                    </table>
+                    <div  className="grid md:grid-cols-3 grid-cols-2 lg:pr-96">
+                        <div>
+                            <div className="font-bold">Birthday</div>
+                            <div className="py-4">{extractDateString(userInfo!.birthday!)}</div>
+                        </div>
+
+                        <div>
+                            <div className="font-bold">Race/Ethnicity</div>
+                            <div className="py-4">{userInfo!.raceEthnicity}</div>
+                        </div>
+
+                        <div>
+                            <div className="font-bold">Gender</div>
+                            <div className="py-4">{userInfo!.gender}</div>
+                        </div>
+
+                        <div>
+                            <div className="font-bold">Country</div>
+                            <div className="py-4">{userInfo!.country}</div>
+                        </div>
+
+                        <div>
+                            <div className="font-bold">State</div>
+                            <div className="py-4">{userInfo!.stateProvince}</div>
+                        </div>
+
+                        <div>
+                            <div className="font-bold">City</div>
+                            <div className="py-4">{userInfo!.cityTown}</div>
+                        </div>
+                    </div>
                 </div>
-
+                
                 {/* Social media */}
-                <div>
-                    <table>
-                        <tr>
-                            <th>Month</th>
-                            <th>Savings</th>
-                        </tr>
-                        <tr>
-                            <td>January</td>
-                            <td>$100</td>
-                        </tr>
-                    </table>
+                <div className="border border-solid border-slate-400 rounded-xl p-5">
+                    <label className="font-bold">Socials</label>
+
+                    <div className="grid md:grid-cols-2 grid-cols-1">
+                        <div className="py-4">
+                            <label className="font-bold inline mr-5">LinkedIn</label>
+                            <div className="inline">{userInfo!.socialMedias.LinkedIn}</div>
+                        </div>
+                        
+                        <div className="py-4">
+                            <label className="font-bold inline mr-5">Instragram</label>
+                            <div className="inline">{userInfo!.socialMedias.Instagram}</div>
+                        </div>
+
+                        <div className="py-4">
+                            <label className="font-bold inline mr-5">X/Twitter</label>
+                            <div className="inline">{userInfo!.socialMedias.X}</div>
+                        </div>
+
+                        <div className="py-4">
+                            <label className="font-bold inline mr-5">Facebook</label>
+                            <div className="inline">{userInfo!.socialMedias.Facebook}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
@@ -462,80 +479,146 @@ const ProfileReview: React.FC<{}> = () => {
     // Edit mode //
     else { // view == View.Edit
         body = (
-            <form onSubmit={handleSubmit} id="profileEdit">
+            <form onSubmit={handleSubmit} id="profileEdit" className="p-10 px-20 bg-[#BFCAE6]">
                 {/* Header portion */}
-                <div>
-                    <img src={userInfo!.profilePicture as string} alt="Your profile picture" />
-                    {/* 
-                    Added an input for the user to select a new profile picture. 
-                    The "fileInputRef" provides a reference to the file input element 
-                    and is used to trigger the click event, allowing the user to select 
-                    a file.
-                    */}
-                    <input type="file" accept="image/*" ref={fileInputRef} onChange={uploadPicture} />
-                    <button type="button" onClick={() => fileInputRef.current?.click()}>Upload Photo</button>
-                    <button type="button" onClick={deletePicture}>Delete Photo</button>
-                    <button type="submit">✓ Done</button>
+                <div className="grid grid-cols-4 pb-8 gap-x-5">
+                    <img className="rounded-full bg-gray-500 w-24 h-24" src={userInfo!.profilePicture as string} alt="Your profile picture" onError={(e) => {
+                        (e.target as HTMLImageElement).onerror = null; 
+                        (e.target as HTMLImageElement).src = '#';       // Add src link to default img
+                    }}/>
+                    
+                    <input type="file" accept="image/*" ref={fileInputRef} onChange={uploadPicture}/>
+                    <button type="button" onClick={() => fileInputRef.current?.click()} className="hidden bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded h-10">Upload Photo</button>
+                    <button type="button" onClick={deletePicture} className="w-48 bg-transparent hover:bg-gray-500 text-gray-500 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded h-10">Delete Photo</button>
+                    <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-10 w-32">✓ Done</button>
                 </div>
 
                 {/* Biographical info */}
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input type="text" id="email" required /> <br></br>
+                <div className="bg-white border border-solid border-slate-400 rounded-xl mb-5 p-5">
+                    <label className="font-bold" htmlFor="email">Email</label><br />
+                    <input className="border-b-2 my-4 w-80" type="text" id="email" required /><br />
 
-                    <label htmlFor="fname">First name</label>
-                    <input type="text" id="fname" />
-                    <label htmlFor="lname">Last name</label>
-                    <input type="text" id="lname" /> <br></br>
+                    <div className="grid md:grid-cols-2 lg:pr-96 grid-cols-1">
+                        <div>
+                            <label className="font-bold" htmlFor="fname">First Name</label><br />
+                            <input className="border-b-2 my-4 w-80" type="text" id="fname" />
+                        </div>
+                        
+                        <div>
+                            <label className="font-bold" htmlFor="lname">Last Name</label><br />
+                            <input className="border-b-2 my-4 w-80" type="text" id="lname" /> 
+                        </div>
+                    </div>
 
-                    <label htmlFor="aname">Author name</label>
-                    <input type="text" id="aname" required />
-                    <label htmlFor="pronouns">Pronouns</label>
-                    <input type="text" id="pronouns" /> <br></br>
+                    <div className="grid md:grid-cols-2 lg:pr-96 grid-cols-1">
+                        <div>
+                            <label className="font-bold" htmlFor="aname">Author Name</label><br />
+                            <input className="border-b-2 my-4 w-80" type="text" id="aname" required />
+                        </div>
+                        
+                        <div>
+                            <label className="font-bold" htmlFor="pronouns">Pronouns</label><br />
+                            <input className="border-b-2 my-4 w-80" type="text" id="pronouns" />
+                        </div>  
+                    </div>
 
-                    <label htmlFor="bio">Bio</label>
-                    <textarea id="bio" name="profileEdit" rows={4} cols={50}
-                        placeholder="Tell us about yourself!" required /> <br></br>
+                    <div className="lg:pr-96">
+                        <label className="font-bold" htmlFor="bio">Bio</label><br />
+                        <textarea className="my-4 pl-2 border border-gray-400 rounded" id="bio" name="profileEdit" rows={4} cols={50}
+                        placeholder="Tell us about yourself!" required />
+                    </div>
+                   
+                    <div  className="grid md:grid-cols-3 grid-cols-2 lg:pr-96">
+                        <div>
+                            <label className="font-bold" htmlFor="birthday">Birthday</label><br />
+                            <input className="border-b-2 my-4 w-48" type="date" id="birthday" />
+                        </div>
+                        
+                        <div>
+                            <label className="font-bold" htmlFor="raceEthnicity">Race/Ethnicity</label><br />
+                            <select className="my-4 bg-gray-300 rounded w-48" form="profileEdit" name="profileEdit" id="raceEthnicity">
+                                <option value="default">Select</option>
+                                <option value="americanIndian">{RaceEthnicity.AmericanIndian}</option>
+                                <option value="asian">{RaceEthnicity.Asian}</option>
+                                <option value="black">{RaceEthnicity.Black}</option>
+                                <option value="nativeHawaiian">{RaceEthnicity.NativeHawaiian}</option>
+                                <option value="white">{RaceEthnicity.White}</option>
+                                <option value="other">{RaceEthnicity.Other}</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label className="font-bold" htmlFor="gender">Gender</label><br />
+                            <select className="my-4 bg-gray-300 rounded w-48" form="profileEdit" name="profileEdit" id="gender">
+                                <option value="default">Select</option>
+                                <option value="female">{Gender.Female}</option>
+                                <option value="male">{Gender.Male}</option>
+                                <option value="non-binary">{Gender.Nonbinary}</option>
+                                <option value="other">{Gender.Other}</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <div className="font-bold mb-4">Country</div>
+                            <div className="relative">
+                                <CountryDropdown
+                                value={country!}
+                                onChange={selectCountry}
+                                priorityOptions={["US"]}
+                                style={{ width: '192px' }}
+                                />
+                                <div className="border-b-2 border-gray-500 w-48"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div className="font-bold mb-4">State/Province</div>
+                            <div className="relative">
+                                <RegionDropdown
+                                country={country!}
+                                value={stateProvince!}
+                                onChange={selectStateProvince}
+                                style={{ width: '192px' }}
+                                />
+                                <div className="border-b-2 border-gray-500 w-48"></div>
+                            </div>
+                        </div>                        
 
-                    <label htmlFor="birthday">Birthday</label>
-                    <input type="date" id="birthday" />
-                    <label htmlFor="raceEthnicity">Race/Ethnicity</label>
-                    <select form="profileEdit" name="profileEdit" id="raceEthnicity">
-                        <option value="americanIndian">{RaceEthnicity.AmericanIndian}</option>
-                        <option value="asian">{RaceEthnicity.Asian}</option>
-                        <option value="black">{RaceEthnicity.Black}</option>
-                        <option value="nativeHawaiian">{RaceEthnicity.NativeHawaiian}</option>
-                        <option value="white">{RaceEthnicity.White}</option>
-                        <option value="other">{RaceEthnicity.Other}</option>
-                    </select>
-                    <label htmlFor="gender">Gender</label>
-                    <select form="profileEdit" name="profileEdit" id="gender">
-                        <option value="female">{Gender.Female}</option>
-                        <option value="male">{Gender.Male}</option>
-                        <option value="non-binary">{Gender.Nonbinary}</option>
-                        <option value="other">{Gender.Other}</option>
-                    </select> <br></br>
-
-                    <CountryDropdown
-                        value={country!}
-                        onChange={selectCountry}
-                        priorityOptions={["US"]} />
-                    <RegionDropdown
-                        country={country!}
-                        value={stateProvince!}
-                        onChange={selectStateProvince} />
-                    <label htmlFor="cityTown">City/Town</label>
-                    <input type="text" id="cityTown" />
+                        <div>
+                            <div className="font-bold" htmlFor="cityTown">City</div>
+                            <input className="border-b-2 border-gray-500 my-4" type="text" id="cityTown" />
+                        </div>
+                        
+                    </div>
+                    
                 </div>
 
                 {/* Social media */}
-                <div>
-                    <label htmlFor="facebook">Facebook</label>
-                    <input type="text" id="facebook" />
-                    <label htmlFor="instagram">Instagram</label>
-                    <input type="text" id="instagram" />
-                    <label htmlFor="xTwitter">X/Twitter</label>
-                    <input type="text" id="xTwitter" />
+                <div className="bg-white border border-solid border-slate-400 rounded-xl p-5">
+                    <label className="font-bold">Socials</label>
+
+                    <div className="grid md:grid-cols-2 grid-cols-1">
+                        <div>
+                            <label className="font-bold pr-4" htmlFor="linkedin">LinkedIn</label>
+                            <input className="border-b-2 my-4 w-80" type="text" id="linkedin" />
+                        </div>
+                        
+                        <div>
+                            <label className="font-bold pr-4" htmlFor="instagram">Instagram</label>
+                            <input className="border-b-2 my-4 w-80" type="text" id="instagram" />
+                        </div>
+                       
+                        <div>
+                            <label className="font-bold pr-4" htmlFor="xTwitter">X/Twitter</label>
+                            <input className="border-b-2 my-4 w-80" type="text" id="xTwitter" />
+                        </div>
+                        
+                        <div>
+                            <label className="font-bold pr-4" htmlFor="facebook">Facebook</label>
+                            <input className="border-b-2 my-4 w-80" type="text" id="facebook" />
+                        </div>
+                    </div>
+                    
                 </div>
             </form>
         );
