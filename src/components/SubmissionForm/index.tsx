@@ -79,10 +79,18 @@ export default function SubmissionForm() {
         submissions.unshift(submission);
 
         try {
+            // update user metadata with submission
             user.update({
                 unsafeMetadata: {
                     submissions
                 }
+            });
+            // add submission to database
+            await fetch("../api/submissions/add", {
+                method: "POST",
+                body: JSON.stringify({
+                    submission
+                }),
             });
         } catch (error) {
             console.log(error);
