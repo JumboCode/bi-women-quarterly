@@ -28,6 +28,7 @@ type  Submission = {
     issue: Issues;
     medium: Mediums;
     isApproved: boolean;
+    mainSubmission: Preview;
     additionalReferences?: Preview[];
 };
 
