@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import SubmissionModal from "../../components/SubmissionModal"
+import SubmissionModal from "./SubmissionModal"
 import Preview from '@/types/Preview';
 
 // Props definition

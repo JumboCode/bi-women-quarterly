@@ -2,8 +2,8 @@
 // On submission, prints user info to console
 
 import { useState } from "react";
-import User from "../types/User";
-import SocialMedias from "../types/SocialMedias";
+import User from "../../types/User";
+import SocialMedias from "../../types/SocialMedias";
 
 /**
  * Displays a user form that can handle 4 fields: name, email address, bio, and
