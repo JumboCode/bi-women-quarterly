@@ -10,13 +10,17 @@
  * @property {string} headshot - The link to the user's headshot image.
  */
 
+import internal from "stream";
 import SocialMedias from "./SocialMedias";
 
 type User = {
-    username: string;
-    penname: string;
     email: string;
+    firstname: string;
+    lastname: string;
+    authorname: string;
     bio: string;
+    age: string;
+    demographic: string;
     socials: SocialMedias;
     headshot: string;
 };

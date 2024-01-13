@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { AppProps } from "next/app";
+import '../styles/UserForm.css';
 
 /**
  * MyApp function is the root component for the Next.js application.
