@@ -177,69 +177,69 @@ export default function HomePage() {
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
     return (
-        <div className="relative flex flex-col">
-            <div className="HomePage-top-bar border-b border-gray-300"></div>
-            <div className="fixed m-3 mx-5 right-0 top-0">
-                <li className="flex items-center space-x-5">
-                    <button 
-                        className="HomePage-submit-button shadow-md"
-                    >
-                        <Link href="/previews">Review Work</Link>
-                    </button>
-                    <button
-                        onClick={onClearWork}
-                        className="HomePage-submit-button shadow-md"
-                    >
-                        Clear Work
-                    </button>
-                    <button
-                        className="HomePage-submit-button shadow-md"
-                    >
-                        <Link href="/submit">Submit Work</Link>
-                    </button>
-                    <div className="ml-4">
-                        <UserButton afterSignOutUrl="/" />
-                    </div>
-                </li>
+        <div className="h-screen w-screen flex flex-col">
+            <div className="HomePage-top-bar border-b border-gray-300">
+                <div className="m-3 mx-5 flex flex-row justify-end">
+                    <li className="flex items-center space-x-5">
+                        <button 
+                            className="HomePage-submit-button shadow-md"
+                        >
+                            <Link href="/previews">Review Work</Link>
+                        </button>
+                        <button
+                            onClick={onClearWork}
+                            className="HomePage-submit-button shadow-md"
+                        >
+                            Clear Work
+                        </button>
+                        <button
+                            className="HomePage-submit-button shadow-md"
+                        >
+                            <Link href="/submit">Submit Work</Link>
+                        </button>
+                        <div className="ml-4">
+                            <UserButton afterSignOutUrl="/" />
+                        </div>
+                    </li>
+                </div>
+                <div className="fixed top-16 left-20">
+                    <li className="flex justify-center space-x-20">
+                        <button
+                            onClick={() => {
+                                dispatch({
+                                    type: ActionType.ChangeFilter,
+                                    newFilter: FilterType.None
+                                });
+                            }}
+                            className={filter === FilterType.None ? 'font-bold' : ''}
+                        >
+                            All Submissions
+                        </button>
+                        <button
+                            onClick={() => {
+                                dispatch({
+                                    type: ActionType.ChangeFilter,
+                                    newFilter: FilterType.Approved
+                                });
+                            }}
+                            className={filter === FilterType.Approved ? 'font-bold' : ''}
+                        >
+                            Approved Works
+                        </button>
+                        <button
+                            onClick={() => {
+                                dispatch({
+                                    type: ActionType.ChangeFilter,
+                                    newFilter: FilterType.Current
+                                });
+                            }}
+                            className={filter === FilterType.Current ? 'font-bold' : ''}
+                        >
+                            Current Submissions
+                        </button>
+                    </li>
+                </div>
             </div>
-            <div className="fixed top-16 left-20">
-                <li className="flex justify-center space-x-20">
-                    <button
-                        onClick={() => {
-                            dispatch({
-                                type: ActionType.ChangeFilter,
-                                newFilter: FilterType.None
-                            });
-                        }}
-                        className={filter === FilterType.None ? 'font-bold' : ''}
-                    >
-                        All Submissions
-                    </button>
-                    <button
-                        onClick={() => {
-                            dispatch({
-                                type: ActionType.ChangeFilter,
-                                newFilter: FilterType.Approved
-                            });
-                        }}
-                        className={filter === FilterType.Approved ? 'font-bold' : ''}
-                    >
-                        Approved Works
-                    </button>
-                    <button
-                        onClick={() => {
-                            dispatch({
-                                type: ActionType.ChangeFilter,
-                                newFilter: FilterType.Current
-                            });
-                        }}
-                        className={filter === FilterType.Current ? 'font-bold' : ''}
-                    >
-                        Current Submissions
-                    </button>
-                </li>
-            </div>
-            <div className="pt-14 pl-8">
                 <div className="flex item-center justify-center">
                     {submissions.length < 1 ? (
                         <div className="relative pt-20">
@@ -256,7 +256,6 @@ export default function HomePage() {
                             })}
                         />
                     )}
-                </div>
             </div>
         </div>
     );
