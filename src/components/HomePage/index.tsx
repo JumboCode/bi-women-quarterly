@@ -202,8 +202,8 @@ export default function HomePage() {
                         </div>
                     </li>
                 </div>
-                <div className="fixed top-16 left-20">
-                    <li className="flex justify-center space-x-20">
+                <div className="top-16 left-20">
+                    <li className="flex pt-4 pl-16 space-x-20">
                         <button
                             onClick={() => {
                                 dispatch({
