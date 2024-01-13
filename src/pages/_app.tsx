@@ -1,4 +1,4 @@
-import '@/styles/globals.css'
+import "@/styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { AppProps } from "next/app";
 import '../styles/UserForm.css';
@@ -13,12 +13,11 @@ import '../styles/UserForm.css';
  * @returns {React.ReactElement} The rendered React element.
  */
 
-
 function MyApp({ Component, pageProps }: AppProps) {
-  return (
-    <ClerkProvider {...pageProps}>
-      <Component {...pageProps} />
-    </ClerkProvider>
-  );
+    return (
+        <ClerkProvider {...pageProps}>
+            <Component {...pageProps} />
+        </ClerkProvider>
+    );
 }
 export default MyApp;

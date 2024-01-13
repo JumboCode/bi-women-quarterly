@@ -10,7 +10,7 @@
  * @property {string} contentDriveUrl - The content of the submission in Drive
  */
 
-import PreviewType from './PreviewType';
+import PreviewType from "./PreviewType";
 
 type Preview = {
     type: PreviewType;
@@ -18,6 +18,6 @@ type Preview = {
     description: string;
     imageUrl: string;
     contentDriveUrl: string;
-}
+};
 
 export default Preview;
