@@ -11,7 +11,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-
     try {
         const client = await clientPromise;
         // acesses database BiWomenQuarterly
@@ -20,7 +19,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const collect = db.collection("Submissions");
 
         // Insert the defined document into the "Submissions" collection
-        const body = JSON.parse(req.body)
+        const body = JSON.parse(req.body);
         await collect.insertOne(body);
 
         // accesses collection to verify that everything was inserted correct
@@ -31,7 +30,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .toArray();
 
         res.status(201).json({ success: true, data: collection });
-
     } catch (e) {
         res.status(400).json({ success: false });
     }

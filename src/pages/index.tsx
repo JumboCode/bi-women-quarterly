@@ -1,10 +1,9 @@
-import HomePage from '../components/HomePage';
-import SubmissionForm from '../components/SubmissionForm'
+import HomePage from "@/components/HomePage";
 
 export default function Home() {
     return (
         <div>
-          <SubmissionForm/>
+            <HomePage></HomePage>
         </div>
-    )
+    );
 }

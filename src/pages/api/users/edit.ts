@@ -33,13 +33,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         await collect.replaceOne({ id: username }, body);
 
         // debugging info
-        const collection = await db
-            .collection("Users")
-            .find({})
-            .toArray();
+        const collection = await db.collection("Users").find({}).toArray();
 
         res.status(201).json({ success: true, data: collection });
-
     } catch (e) {
         res.status(400).json({ success: false });
     }

@@ -1,4 +1,3 @@
-
 // Import NextApiRequest and NextApiResponse
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -6,7 +5,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-
     try {
         const client = await clientPromise;
         // acesses database BiWomenQuarterly
@@ -15,18 +13,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const collect = db.collection("Users");
 
         // Insert the defined document into the "Submissions" collection
-        const body = JSON.parse(req.body)
+        const body = JSON.parse(req.body);
         await collect.insertOne(body);
 
         // accesses collection to verify that everything was inserted correct
-        const collection = await db
-            .collection("Users")
-            .find({})
-            .limit(30)
-            .toArray();
+        const collection = await db.collection("Users").find({}).toArray();
 
         res.status(201).json({ success: true, data: collection });
-
     } catch (e) {
         res.status(400).json({ success: false });
     }
