@@ -1,6 +1,8 @@
 /**
  * Home page that shows all of a user's submissions.
  * @author Austen Money
+ * @author Avery Hanna 
+ * @author So Hyun Kim
  */
 
 // Import React
@@ -175,70 +177,77 @@ export default function HomePage() {
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
     return (
-        <div className="relative flex flex-col">
-            <div className="HomePage-top-bar"></div>
-            <div className="fixed m-3 mx-5 right-0 top-0">
-                <li className="flex items-center space-x-5">
-                    <button
-                        className="HomePage-submit-button"
-                    >
-                        <Link href="/previews">Review Work</Link>
-                    </button>
-                    <button
-                        onClick={onClearWork}
-                        className="HomePage-submit-button"
-                    >
-                        Clear Work
-                    </button>
-                    <button
-                        className="HomePage-submit-button"
-                    >
-                        <Link href="/submit">Submit Work</Link>
-                    </button>
-                    <div className="ml-4">
-                        <UserButton afterSignOutUrl="/" />
-                    </div>
-                </li>
+        <div className="h-screen w-screen flex flex-col">
+            <div className="HomePage-top-bar border-b border-gray-300">
+                <div className="m-3 mx-5 flex flex-row justify-end">
+                    <li className="flex items-center space-x-5">
+                        <button 
+                            className="HomePage-submit-button shadow-md"
+                        >
+                            <Link href="/previews">Review Work</Link>
+                        </button>
+                        <button
+                            onClick={onClearWork}
+                            className="HomePage-submit-button shadow-md"
+                        >
+                            Clear Work
+                        </button>
+                        <button
+                            className="HomePage-submit-button shadow-md"
+                        >
+                            <Link href="/submit">Submit Work</Link>
+                        </button>
+                        <div className="ml-4">
+                            <UserButton afterSignOutUrl="/" />
+                        </div>
+                    </li>
+                </div>
+                <div className="top-16 left-20">
+                    <li className="flex pt-4 pl-16 space-x-20">
+                        <button
+                            onClick={() => {
+                                dispatch({
+                                    type: ActionType.ChangeFilter,
+                                    newFilter: FilterType.None
+                                });
+                            }}
+                            className={filter === FilterType.None ? 'font-bold' : ''}
+                        >
+                            All Submissions
+                        </button>
+                        <button
+                            onClick={() => {
+                                dispatch({
+                                    type: ActionType.ChangeFilter,
+                                    newFilter: FilterType.Approved
+                                });
+                            }}
+                            className={filter === FilterType.Approved ? 'font-bold' : ''}
+                        >
+                            Approved Works
+                        </button>
+                        <button
+                            onClick={() => {
+                                dispatch({
+                                    type: ActionType.ChangeFilter,
+                                    newFilter: FilterType.Current
+                                });
+                            }}
+                            className={filter === FilterType.Current ? 'font-bold' : ''}
+                        >
+                            Current Submissions
+                        </button>
+                    </li>
+                </div>
             </div>
-            <div className="fixed top-16 left-20">
-                <li className="flex justify-center space-x-20">
-                    <button
-                        onClick={() => {
-                            dispatch({
-                                type: ActionType.ChangeFilter,
-                                newFilter: FilterType.None
-                            });
-                        }}
-                    >
-                        All Submissions
-                    </button>
-                    <button
-                        onClick={() => {
-                            dispatch({
-                                type: ActionType.ChangeFilter,
-                                newFilter: FilterType.Approved
-                            });
-                        }}
-                    >
-                        Approved Works
-                    </button>
-                    <button
-                        onClick={() => {
-                            dispatch({
-                                type: ActionType.ChangeFilter,
-                                newFilter: FilterType.Current
-                            });
-                        }}
-                    >
-                        Current Submissions
-                    </button>
-                </li>
-            </div>
-            <div className="pt-14 pl-8">
-                <div className="flex">
+                <div className="flex item-center justify-center">
                     {submissions.length < 1 ? (
-                        <div className="absolute top-40 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-600">
-                            You have no submissions.
+                        <div className="relative pt-20">
+                            <div className="box-content bg-gray-300 relative w-full md:w-96 h-56 item-center left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"></div> 
+                            <br></br>
+                            <div className="text-gray-400 text-center relative left-1/2 bottom-1/12 transform -translate-x-1/2 -translate-y-1/8">
+                                You have no submissions
+                            </div>
                         </div>
                     ) : (
                         <ShowSubmissionThumbnails
@@ -247,7 +256,6 @@ export default function HomePage() {
                             })}
                         />
                     )}
-                </div>
             </div>
         </div>
     );
