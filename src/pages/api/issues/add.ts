@@ -1,3 +1,8 @@
+/**
+ * Submission upload endpoint for mongoDB Issues collection
+ * @author Walid Nejmi
+ */
+
 // Import NextApiRequest and NextApiResponse
 import { NextApiRequest, NextApiResponse } from "next";
 
