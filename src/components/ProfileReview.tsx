@@ -330,6 +330,20 @@ const ProfileReview: React.FC<{}> = () => {
         });
     }
 
+    /**
+     * Handle any new changes to existing user data
+     * @author Lydia Chen
+     * @param field the field to be updated in the user data
+     * @param value - The new value for the specified field
+     */
+    const handleChange = (field:string, value:any) => {
+        const deepCopy = JSON.parse(JSON.stringify(userInfo));
+        dispatch ({
+          ...deepCopy,
+          [field]: value,
+        });
+      };
+
     // Initializes a null reference
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -352,19 +366,14 @@ const ProfileReview: React.FC<{}> = () => {
         return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
     };
 
-    const handleUploadButtonClick = () => {
-        // Trigger click event on the hidden file input
-        fileInputRef.current?.click();
-    };
-
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        // Handle file selection here
-        const selectedFile = event.target.files?.[0];
-        if (selectedFile) {
-            uploadPicture(selectedFile)
-            console.log('Selected file:', selectedFile);
-        }
-    };
+    // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     // Handle file selection here
+    //     const selectedFile = event.target.files?.[0];
+    //     if (selectedFile) {
+    //         uploadPicture(selectedFile)
+    //         console.log('Selected file:', selectedFile);
+    //     }
+    // };
 
     // Preview mode //
     if (view == View.Preview) {
@@ -477,73 +486,74 @@ const ProfileReview: React.FC<{}> = () => {
     }
 
     // Edit mode //
-    else { // view == View.Edit
+    else {
         body = (
             <form onSubmit={handleSubmit} id="profileEdit" className="p-10 px-20 bg-[#BFCAE6]">
                 {/* Header portion */}
-                <div className="grid grid-cols-4 pb-8 gap-x-5">
+                <div className="flex flex-col-4 items-center gap-5 pb-8 gap-x-5">
                     <img className="rounded-full bg-gray-500 w-24 h-24" src={userInfo!.profilePicture as string} alt="Your profile picture" onError={(e) => {
                         (e.target as HTMLImageElement).onerror = null; 
                         (e.target as HTMLImageElement).src = '#';       // Add src link to default img
                     }}/>
                     
                     <input type="file" accept="image/*" ref={fileInputRef} onChange={uploadPicture}/>
-                    <button type="button" onClick={() => fileInputRef.current?.click()} className="hidden bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded h-10">Upload Photo</button>
-                    <button type="button" onClick={deletePicture} className="w-48 bg-transparent hover:bg-gray-500 text-gray-500 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded h-10">Delete Photo</button>
-                    <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-10 w-32">✓ Done</button>
+                    {/* <button type="button" onClick={() => fileInputRef.current?.click()} className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded h-10">Upload Photo</button> */}
+                    <button type="button" onClick={deletePicture} className="bg-transparent hover:bg-gray-400 text-gray-500 font-bold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded h-10">Delete Photo</button>
+                    <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-10">✓ Done</button>
                 </div>
 
                 {/* Biographical info */}
                 <div className="bg-white border border-solid border-slate-400 rounded-xl mb-5 p-5">
                     <label className="font-bold" htmlFor="email">Email</label><br />
-                    <input className="border-b-2 my-4 w-80" type="text" id="email" required /><br />
+                    <input className="border-b-2 my-4 w-80" type="text" id="email" defaultValue={userInfo?.email} onChange={(e) => handleChange('email', e.target.value)} required/><br />
 
-                    <div className="grid md:grid-cols-2 lg:pr-96 grid-cols-1">
+                    <div className="grid xl:grid-cols-2 lg:pr-96 grid-cols-1">
                         <div>
                             <label className="font-bold" htmlFor="fname">First Name</label><br />
-                            <input className="border-b-2 my-4 w-80" type="text" id="fname" />
+                            <input className="border-b-2 my-4 w-80" type="text" id="fname" defaultValue={userInfo?.firstName}/>
                         </div>
                         
                         <div>
                             <label className="font-bold" htmlFor="lname">Last Name</label><br />
-                            <input className="border-b-2 my-4 w-80" type="text" id="lname" /> 
+                            <input className="border-b-2 my-4 w-80" type="text" id="lname" defaultValue={userInfo?.lastName}/> 
                         </div>
                     </div>
 
-                    <div className="grid md:grid-cols-2 lg:pr-96 grid-cols-1">
+                    <div className="grid xl:grid-cols-2 lg:pr-96 grid-cols-1">
                         <div>
                             <label className="font-bold" htmlFor="aname">Author Name</label><br />
-                            <input className="border-b-2 my-4 w-80" type="text" id="aname" required />
+                            <input className="border-b-2 my-4 w-80" type="text" id="aname" defaultValue={userInfo?.authorName} required/>
                         </div>
                         
                         <div>
                             <label className="font-bold" htmlFor="pronouns">Pronouns</label><br />
-                            <input className="border-b-2 my-4 w-80" type="text" id="pronouns" />
+                            <input className="border-b-2 my-4 w-80" type="text" id="pronouns" defaultValue={userInfo?.pronouns}/>
                         </div>  
                     </div>
 
                     <div className="lg:pr-96">
                         <label className="font-bold" htmlFor="bio">Bio</label><br />
                         <textarea className="my-4 pl-2 border border-gray-400 rounded" id="bio" name="profileEdit" rows={4} cols={50}
-                        placeholder="Tell us about yourself!" required />
+                        placeholder="Tell us about yourself!" defaultValue={userInfo?.bio} required/>
                     </div>
                    
-                    <div  className="grid md:grid-cols-3 grid-cols-2 lg:pr-96">
+                    <div  className="grid md:grid-cols-3 grid-cols-2 xl:pr-96">
                         <div>
                             <label className="font-bold" htmlFor="birthday">Birthday</label><br />
-                            <input className="border-b-2 my-4 w-48" type="date" id="birthday" />
+                            <input className="border-b-2 my-4 w-48" type="date" id="birthday" defaultValue={userInfo?.birthday}/>
+                            {/* Need to make function to update birthday */}
                         </div>
                         
                         <div>
                             <label className="font-bold" htmlFor="raceEthnicity">Race/Ethnicity</label><br />
                             <select className="my-4 bg-gray-300 rounded w-48" form="profileEdit" name="profileEdit" id="raceEthnicity">
-                                <option value="default">Select</option>
-                                <option value="americanIndian">{RaceEthnicity.AmericanIndian}</option>
-                                <option value="asian">{RaceEthnicity.Asian}</option>
-                                <option value="black">{RaceEthnicity.Black}</option>
-                                <option value="nativeHawaiian">{RaceEthnicity.NativeHawaiian}</option>
-                                <option value="white">{RaceEthnicity.White}</option>
-                                <option value="other">{RaceEthnicity.Other}</option>
+                                <option value="default" selected={userInfo?.raceEthnicity?.toLowerCase() == "default" || undefined}>Select</option>
+                                <option value="americanindian" selected={userInfo?.raceEthnicity?.toLowerCase() == "americanindian"}>{RaceEthnicity.AmericanIndian}</option>
+                                <option value="asian" selected={userInfo?.raceEthnicity?.toLowerCase() == "asian"}>{RaceEthnicity.Asian}</option>
+                                <option value="black" selected={userInfo?.raceEthnicity?.toLowerCase() == "black"}>{RaceEthnicity.Black}</option>
+                                <option value="nativehawaiian" selected={userInfo?.raceEthnicity?.toLowerCase() == "nativehawaiian"}>{RaceEthnicity.NativeHawaiian}</option>
+                                <option value="white" selected={userInfo?.raceEthnicity?.toLowerCase() == "white"}>{RaceEthnicity.White}</option>
+                                <option value="other" selected={userInfo?.raceEthnicity?.toLowerCase() == "other"}>{RaceEthnicity.Other}</option>
                             </select>
                         </div>
                         
@@ -551,10 +561,10 @@ const ProfileReview: React.FC<{}> = () => {
                             <label className="font-bold" htmlFor="gender">Gender</label><br />
                             <select className="my-4 bg-gray-300 rounded w-48" form="profileEdit" name="profileEdit" id="gender">
                                 <option value="default">Select</option>
-                                <option value="female">{Gender.Female}</option>
-                                <option value="male">{Gender.Male}</option>
-                                <option value="non-binary">{Gender.Nonbinary}</option>
-                                <option value="other">{Gender.Other}</option>
+                                <option value="female" selected={userInfo?.gender?.toLowerCase() == "female"}>{Gender.Female}</option>
+                                <option value="male" selected={userInfo?.gender?.toLowerCase() == "male"}>{Gender.Male}</option>
+                                <option value="non-binary" selected={userInfo?.gender?.toLowerCase() == "non-binary"}>{Gender.Nonbinary}</option>
+                                <option value="other" selected={userInfo?.gender?.toLowerCase() == "other"}>{Gender.Other}</option>
                             </select>
                         </div>
                         
@@ -586,7 +596,7 @@ const ProfileReview: React.FC<{}> = () => {
 
                         <div>
                             <div className="font-bold" htmlFor="cityTown">City</div>
-                            <input className="border-b-2 border-gray-500 my-4" type="text" id="cityTown" />
+                            <input className="border-b-2 border-gray-500 my-4" type="text" id="cityTown" value={userInfo?.cityTown}/>
                         </div>
                         
                     </div>
@@ -597,25 +607,25 @@ const ProfileReview: React.FC<{}> = () => {
                 <div className="bg-white border border-solid border-slate-400 rounded-xl p-5">
                     <label className="font-bold">Socials</label>
 
-                    <div className="grid md:grid-cols-2 grid-cols-1">
+                    <div className="grid lg:grid-cols-2 grid-cols-1">
                         <div>
                             <label className="font-bold pr-4" htmlFor="linkedin">LinkedIn</label>
-                            <input className="border-b-2 my-4 w-80" type="text" id="linkedin" />
+                            <input className="border-b-2 my-4 w-80" type="text" id="linkedin" defaultValue={userInfo?.socialMedias.LinkedIn}/>
                         </div>
                         
                         <div>
                             <label className="font-bold pr-4" htmlFor="instagram">Instagram</label>
-                            <input className="border-b-2 my-4 w-80" type="text" id="instagram" />
+                            <input className="border-b-2 my-4 w-80" type="text" id="instagram" defaultValue={userInfo?.socialMedias.Instagram}/>
                         </div>
                        
                         <div>
                             <label className="font-bold pr-4" htmlFor="xTwitter">X/Twitter</label>
-                            <input className="border-b-2 my-4 w-80" type="text" id="xTwitter" />
+                            <input className="border-b-2 my-4 w-80" type="text" id="xTwitter" defaultValue={userInfo?.socialMedias.X}/>
                         </div>
                         
                         <div>
                             <label className="font-bold pr-4" htmlFor="facebook">Facebook</label>
-                            <input className="border-b-2 my-4 w-80" type="text" id="facebook" />
+                            <input className="border-b-2 my-4 w-80" type="text" id="facebook" defaultValue={userInfo?.socialMedias.Facebook}/>
                         </div>
                     </div>
                     
