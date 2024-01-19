@@ -1,29 +1,30 @@
-import Submission from "../types/Submission";
-import React, {useState} from "react";
+import React from "react";
 
-// // import './styles.css'; // Assuming styles.css is in the same directory
+
 
 const UserEditableSubmission = () => {
   // React component state and logic would go here
 
   return (
     <div className="container ">
-      <div className="title ">
-        Title of Piece
-      </div>
+        <div className= "static ">
+            <div className="title ms-40">
+                Title of Piece
+            </div>
+        </div>
 
-      <div className="medium relative">
+      <div className="medium ms-80">
         Medium
       </div>
-      <div className="content">
+      <div className="content ms-80">
         Lorem ipsum dolor sit amet consectetur. Pulvinar mus lectus congue adipiscing diam. Arcu lectus fringilla amet mauris fermentum tincidunt leo sed. Odio varius iaculis interdum ipsum sagittis enim amet integer. Diam tellus congue fermentum commodo at.
       </div>
 
-      <div className="author">
+      <div className="author ms-80">
         Author
       </div>
 
-      <div className="related-photos">
+      <div className="photosContainer">
         <div className="photoBox"></div>
         <div className="photoBox"></div>
         {/* Additional photo boxes can be added here */}
