@@ -150,7 +150,7 @@ const ProfileReview: React.FC<{}> = () => {
     const initialState: State = {
         view: View.Preview,
         userInfo: {
-            profilePicture: userProps.profilePicture as string || '',
+            profilePicture: userProps.profilePicture as string || "defaultpfp.png",
             email: currentUser?.primaryEmailAddressId || '',
             firstName: userProps?.firstName as string || '',
             lastName: userProps?.lastName as string || '',
@@ -389,7 +389,7 @@ const ProfileReview: React.FC<{}> = () => {
                 <div className="grid grid-cols-2 pb-8">
                     <img className="rounded-full bg-gray-500 w-24 h-24" src={userInfo!.profilePicture as string} alt="Your profile picture" onError={(e) => {
                         (e.target as HTMLImageElement).onerror = null;
-                        (e.target as HTMLImageElement).src = '#';       // Add src link to default img
+                        (e.target as HTMLImageElement).src = "defaultpfp.png";       // Add src link to default img
                     }} />
                     <button className="text-right pr-4" type="button" onClick={switchToEdit}>🖉 Edit</button>
                 </div>
@@ -499,7 +499,7 @@ const ProfileReview: React.FC<{}> = () => {
                 <div className="flex flex-col-4 items-center gap-5 pb-8 gap-x-5">
                     <img className="rounded-full bg-gray-500 w-24 h-24" src={userInfo!.profilePicture as string} alt="Your profile picture" onError={(e) => {
                         (e.target as HTMLImageElement).onerror = null;
-                        (e.target as HTMLImageElement).src = '#';       // Add src link to default img
+                        (e.target as HTMLImageElement).src = "defaultpfp.png";       // Add src link to default img
                     }} />
 
                     <input type="file" accept="image/*" ref={fileInputRef} onChange={uploadPicture} />
