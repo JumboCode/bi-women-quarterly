@@ -155,12 +155,12 @@ export default function SubmissionForm() {
                     </button>
                 </div>
             </div>
-            <button type="submit" className="absolute left-[10px] mt-[100px] rounded-lg bg-white  m-6 h-[40px] w-[90px]  items-center shadow-lg">
+            <button type="submit" className="absolute bottom-[10px] left-[10px] mt-[100px] rounded-lg bg-white  m-6 h-[40px] w-[90px]  items-center shadow-lg">
                 <Link href="/">
                     Cancel
                 </Link>
             </button>
-            <button type="submit" onClick={handleSubmit} className="absolute right-[10px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg">
+            <button type="submit" onClick={handleSubmit} className="absolute bottom-[10px] right-[10px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg">
                 <Link href="/">
                     Submit
                 </Link>

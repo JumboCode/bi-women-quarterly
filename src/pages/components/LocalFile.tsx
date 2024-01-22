@@ -248,19 +248,21 @@ function LocalFile(props: Props) {
                 <br></br>
 
                 <div> {showFile ? (
-                    <div>
+                    <div className="flex flex-col mt-[40px] ml-[0px] mr-[0px] absolute left-[30px] right-[30px]">
+                    <div className="overflow-y-auto h-[30vh]">
                         {fileName.map((file, index) => (
-                            <div className={`mt-[${index*50 + 50}px] flex items-center h-[40px] bg-[#c3cee3] ml-[0px] mr-[0px] absolute left-[30px] right-[30px] rounded-xl shadow-lg`}>
-                                <div className="pl-[10px] flex items-center text-black">
+                            <div className="flex items-center mt-[10px] h-[40px] my-auto bg-[#c3cee3] rounded-xl shadow-lg">
+                                <div className="pl-[10px] w-screen flex text-black">
                                     {file}
                                 </div>
-                                <div className="flex absolute absolute right-[10px]">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="black" className="w-6 h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
+                                <div>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="black" className="w-6 h-6 mr-[10px]">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
                                 </div>
                             </div>
                         ))}
+                    </div>
                     </div>
                 ) : null} </div>
             </form>
