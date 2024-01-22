@@ -5,7 +5,7 @@
  */
 
 // Import React
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 // Import types
 import Submission from "@/types/Submission"
@@ -23,34 +23,27 @@ import { useUser } from "@clerk/nextjs";
 import LocalFile from '@/components/SubmissionForm/LocalFile';
 import Preview from '@/types/Preview';
 
+
+// need to map these below without using the issues type, issue is string
+
+
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
 
-const SubmissionForm: React.FC<{}> = () => {
-    let issues: string[] = [];
-    useEffect( 
-        () => {
-        (async () => {
-                try {
-                    const response = await fetch("../api/issues/get");
-                    const data = await response.json();
-                    const data_array = await data.data;
-                    issues = data_array.map((object: any) => object.title);
-                    // return string_array;
-                } catch (error) {
-                    console.error("Error fetching issue themes: ", error);
-                    // return [];
-                }
-        })();
-        },
-        [],
-    );
-
+export default async function SubmissionForm() {
+    const fetchIssueThemes = async (): Promise<string[]> => {
+        try {
+            const response = await fetch("../api/issues/get");
+            const data = await response.json();
+            return await data.data;
+        } catch (error) {
+            console.error("Error fetching issue themes: ", error);
+            return [];
+        }
+    };
     const { user } = useUser();
-    // console.log("testing");
-    // const issues: string[] = await fetchIssueThemes();
-    console.log(issues);
+    const issues: string[] = await fetchIssueThemes();
 
     if (!user) {
         return null;
@@ -84,8 +77,12 @@ const SubmissionForm: React.FC<{}> = () => {
                 imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
                 contentDriveUrl: "",
             },
-        })  
+        })
 
+
+    // useEffect(() => {
+    //     fetchIssueThemes();
+    // }, []);
     /*------------------------------------------------------------------------*/
     /* ------------------------- Component Functions ------------------------ */
     /*------------------------------------------------------------------------*/
@@ -150,10 +147,12 @@ const SubmissionForm: React.FC<{}> = () => {
                 <div className="pb-[20px]">
                     <label className="pr-[6px] font-bold"> *Issue: </label>
                     <select name="issue" className="inline-block h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" value={submission.issue} onChange={handleSubmissionChange}>
-                        <option selected>Select Issue</option> 
-                        <option value={Issues.None}>{Issues.None}</option>
-                        <option value={Issues.Current}>{Issues.Current}</option>
-                        <option value={Issues.Next}>{Issues.Next}</option>
+                        <option selected>Select Issue</option> {
+                            issues.map((issue) => (
+                                <option key={issue} value={issue}>
+                                    {issue}
+                                </option>
+                            ))}
                     </select>
 
                 <label className="pl-[50px] pr-[6px] font-bold">*Type: </label>
@@ -198,5 +197,3 @@ const SubmissionForm: React.FC<{}> = () => {
         </div>
     )
 }
-
-export default SubmissionForm;
