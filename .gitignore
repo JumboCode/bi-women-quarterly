@@ -40,4 +40,3 @@ next-env.d.ts
 # credentials 
 key.json
 backend/key.json
-backend/node_modules
