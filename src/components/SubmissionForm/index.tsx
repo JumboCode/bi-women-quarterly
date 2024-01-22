@@ -48,8 +48,8 @@ export default function SubmissionForm() {
     // Initialize state
     const [submission, setSubmission] = useState<Submission>(
         {
-            id : "",
-            author : "",
+            id : user.id,
+            author : user.fullName,
             title : "",
             date: "",
             issue: Issues.None,
