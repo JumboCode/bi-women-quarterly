@@ -1,5 +1,4 @@
-import ReviewSubmission from '@/components/ReviewSubmission'
-import Preview from '@/types/Preview'
+import ReviewSubmission from '@/components/SubmissionForm/ReviewSubmission'
 import PreviewType from '@/types/PreviewType'
 
 import Link from 'next/link'
