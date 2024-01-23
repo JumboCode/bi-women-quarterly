@@ -28,29 +28,7 @@ import Preview from '@/types/Preview';
 /*------------------------------------------------------------------------*/
 
 const SubmissionForm: React.FC<{}> = () => {
-    let issues: string[] = [];
-    useEffect( 
-        () => {
-        (async () => {
-                try {
-                    const response = await fetch("../api/issues/get");
-                    const data = await response.json();
-                    const data_array = await data.data;
-                    issues = data_array.map((object: any) => object.title);
-                    // return string_array;
-                } catch (error) {
-                    console.error("Error fetching issue themes: ", error);
-                    // return [];
-                }
-        })();
-        },
-        [],
-    );
-
     const { user } = useUser();
-    // console.log("testing");
-    // const issues: string[] = await fetchIssueThemes();
-    console.log(issues);
 
     if (!user) {
         return null;
@@ -84,7 +62,8 @@ const SubmissionForm: React.FC<{}> = () => {
                 imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
                 contentDriveUrl: "",
             },
-        })  
+        }) 
+    const [issues, setIssues] = useState<string[]>([]); 
 
     /*------------------------------------------------------------------------*/
     /* ------------------------- Component Functions ------------------------ */
@@ -137,10 +116,32 @@ const SubmissionForm: React.FC<{}> = () => {
          })
     }
 
+    /*------------------------------------------------------------------------*/
+    /* ------------------------- Lifecycle Functions ------------------------ */
+    /*------------------------------------------------------------------------*/
+
+
+    useEffect( 
+        () => {
+        (async () => {
+                try {
+                    const response = await fetch("../api/issues/get");
+                    const data = await response.json();
+                    const data_array = await data.data;
+                    setIssues(data_array.map((object: any) => object.title));
+                } catch (error) {
+                    console.error("Error fetching issue themes: ", error);
+                }
+        })();
+        },
+        [],
+    );
+
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
 
+    console.log(`issues: ${issues}`);
     return (
         <div className="p-8 h-screen bg-[#ecf0f6]">
             <h1 className="text-2xl font-bold pb-8">New Submission</h1>
