@@ -34,10 +34,42 @@ export default function SubmissionForm() {
         return null;
     }
 
+    // TO DO: 
+    // 1. API Call to the database 
+    // 2. For loop ?? Use the user information to get the submission information 
+
+    // Get user id 
+    // let user_id = user.id; 
+
     let submissions: Submission[] = [];
     if (user && user.unsafeMetadata.submissions) {
         submissions = user.unsafeMetadata.submissions as Submission[];
     }
+
+    // Make API call to database 
+    /* 
+    export default async (req: NextApiRequest, res: NextApiResponse) => {
+    // Takes in incoming response and save to database
+    try {
+        const user_to_add: User = JSON.parse(req.body);
+
+        const client = await clientPromise;
+        const db = client.db("BiWomenQuarterly");
+        const submission_database = db.collection("Submissions");
+        const submissions = await user_collection.find(
+            {
+                id: user.id
+            }; 
+
+        console.log("Printing collection:");
+        console.log(submissions);
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+
+    */
 
     /*------------------------------------------------------------------------*/
     /* -------------------------------- Setup ------------------------------- */
@@ -49,7 +81,7 @@ export default function SubmissionForm() {
     const [submission, setSubmission] = useState<Submission>(
         {
             id : user.id,
-            author : user.fullName,
+            author : user.fullName, 
             title : "",
             date: "",
             issue: Issues.None,
@@ -86,6 +118,7 @@ export default function SubmissionForm() {
                 }
             });
             // add submission to database
+            console.log("here!!!")
             await fetch("../api/submissions/add", {
                 method: "POST",
                 body: JSON.stringify({
