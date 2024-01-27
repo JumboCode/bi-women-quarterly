@@ -83,7 +83,7 @@ export default function SubmissionForm() {
             id : user.id,
             author : user.fullName, 
             title : "",
-            date: "",
+            date: Date().toString(),
             issue: Issues.None,
             medium: Mediums.None,
             isApproved : false,
@@ -109,9 +109,11 @@ export default function SubmissionForm() {
     const handleSubmit = async () => {
         // push new submission to front of array
         submissions.unshift(submission);
+        submission.title = submission.mainSubmission.title;
 
         try {
             // update user metadata with submission
+            console.log(submissions); 
             user.update({
                 unsafeMetadata: {
                     submissions
