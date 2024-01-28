@@ -1,24 +1,41 @@
-import React, { useReducer } from 'react';
-import {useState} from 'react';
+import React from 'react';
+import { useState } from 'react';
 
 // Import types
 import Submission from '@/types/Submission';
-import e from 'express';
 
 
 type Props = {
-    submission: Submission,
+  submission: Submission,
 };
 
+
+/**
+   * Allows the fields of submission to be edited, has very basic css for the 
+   * display of the submission
+   * @author Allison Zhang
+   * @param submission Submission to be edited
+   */
 const UserEditableSubmission: React.FC<Props> = (props) => {
-  
-  //const { preview } = props;
+
+
+  /*------------------------------------------------------------------------*/
+  /* -------------------------------- States ------------------------------ */
+  /*------------------------------------------------------------------------*/
+
+  const [submission, setSubmission] = useState(props.submission);
+
+  const [editOn, setEditOn] = useState(false);
+
+
+
+  /* ------------- Actions ------------ */
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     console.log(submission);
     setEditOn(false);
-  }     
+  }
 
   const handleEdit = () => {
     setEditOn(true);
@@ -29,47 +46,44 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
     console.log('Changing', key, 'to', value);
     const newSubmission: Submission = {
       ...submission,
-      [key]: value 
+      [key]: value
     };
     setSubmission(newSubmission);
   }
 
-  //const [title, setTitle] = useState(props.preview.title);
-  
-  const [submission, setSubmission] = useState(props.submission);
 
-  
-  const [editOn, setEditOn] = useState(false);   
-
-  
+  /*----------------------------------------*/
+  /* --------------- Main UI -------------- */
+  /*----------------------------------------*/
   return (
-    
+
     <div className="relative flex flex-col">
-      <button onClick={handleEdit}>Edit
+      <button onClick={handleEdit}>
+        Edit
       </button>
       <button onClick={handleSave}>
         Save
       </button>
       <div className="static w-[70%]">
-        <div className= "ml-28 mt-28 font-bold text-3xl" contentEditable={editOn} 
-        onBlur={e => handleChange(e, 'title', e.currentTarget.textContent)}>
-            {submission.title}
+        <div className="ml-28 mt-28 font-bold text-3xl" contentEditable={editOn}
+          onBlur={e => handleChange(e, 'title', e.currentTarget.textContent)}>
+          {submission.title}
         </div>
         <div className="relative top-[0] w-[70%] left-[5%]">
           <div className=" h-[50vh] w-[40%] ">
             <img src={submission.mainSubmission.imageUrl}></img>
           </div>
           <div className="absolute w-[400px] h-[50vh] left-[45%] bottom-0">
-            <div className="" contentEditable={editOn} 
-            onBlur={e => handleChange(e, 'type', e.currentTarget.textContent)}>
+            <div className="" contentEditable={editOn}
+              onBlur={e => handleChange(e, 'type', e.currentTarget.textContent)}>
               {submission.mainSubmission.type}
             </div>
             <div className="border-3" contentEditable={editOn}
-            onBlur={e => handleChange(e, 'description', e.currentTarget.textContent)}>
+              onBlur={e => handleChange(e, 'description', e.currentTarget.textContent)}>
               {submission.mainSubmission.description}
             </div>
-            <div className="pt-[100px]" contentEditable={editOn} 
-        onBlur={e => handleChange(e, 'author', e.currentTarget.textContent)} >
+            <div className="pt-[100px]" contentEditable={editOn}
+              onBlur={e => handleChange(e, 'author', e.currentTarget.textContent)} >
               {submission.author}
             </div>
           </div>
