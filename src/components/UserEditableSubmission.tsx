@@ -1,42 +1,78 @@
-import React from "react";
+import React, { useReducer } from 'react';
+
+// Import types
+import Submission from '@/types/Submission';
+import Preview from '@/types/Preview';
 
 
+type Props = {
+  submission: Submission,
+  mainSubmission: Preview,
 
-const UserEditableSubmission = () => {
-  // React component state and logic would go here
+};
 
+const UserEditableSubmission: React.FC<Props> = (props) => {
+  
+
+  const {
+    submission: {
+      id,
+      author,
+      title,
+      date,
+      issue,
+      isApproved,
+    },
+    mainSubmission: {
+      type,
+      title, 
+      description, 
+      imageUrl,
+      contentDriveUrl,
+    }
+  } = props;
+
+
+  
   return (
-    <div className="container ">
-        <div className= "static ">
-            <div className="title ms-40">
-                Title of Piece
+    <div className="relative flex flex-col">
+      <div className="static w-[70%] border-2">
+        <div className= "ml-28 mt-28 font-bold text-3xl">
+          Title of Piece
+        </div>
+        <div className="relative top-[0] w-[70%] left-[5%] border-2">
+          <div className="bg-gray-300 h-[50vh] w-[40%] ">
+            {imageUrl}
+          </div>
+          <div className="absolute w-[200px] h-[50vh] left-[40%] bottom-0 border-2">
+            <div className="">
+              {title}
             </div>
+            <div className="border-3">
+              {description}
+            </div>
+            <div className="pt-[100px]">
+              {author}
+            </div>
+          </div>
+          {/* Additional photo boxes can be added here */}
         </div>
 
-      <div className="medium ms-80">
-        Medium
-      </div>
-      <div className="content ms-80">
-        Lorem ipsum dolor sit amet consectetur. Pulvinar mus lectus congue adipiscing diam. Arcu lectus fringilla amet mauris fermentum tincidunt leo sed. Odio varius iaculis interdum ipsum sagittis enim amet integer. Diam tellus congue fermentum commodo at.
-      </div>
+        <div className="absolute left-0 top-[50%] text-5xl ">
+          <span className="nav-arrow">&#60;</span> {/* Left arrow */}
+        </div>
+        <div className="absolute right-0 top-[50%] text-5xl">
+          <span className="nav-arrow">&#62;</span> {/* Right arrow */}
+        </div>
 
-      <div className="author ms-80">
-        Author
-      </div>
-
-      <div className="photosContainer">
-        <div className="photoBox"></div>
-        <div className="photoBox"></div>
-        {/* Additional photo boxes can be added here */}
-      </div>
-
-      <div className="navigation">
-        <span className="nav-arrow">&#60;</span> {/* Left arrow */}
-        <span className="nav-arrow">&#62;</span> {/* Right arrow */}
-      </div>
-
-      <div className="plus-icon">
-        &#43; {/* Plus sign */}
+        <div className="absolute bottom-[25%] left-[5%]">
+          <div className="text-2xl">
+            Related Photos
+          </div>
+          <div className="relative left-[100%] text-4xl">
+            &#43; {/* Plus sign */}
+          </div>
+        </div>
       </div>
     </div>
   );
