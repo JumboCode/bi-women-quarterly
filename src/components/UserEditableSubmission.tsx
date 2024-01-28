@@ -1,76 +1,77 @@
 import React, { useReducer } from 'react';
+import {useState} from 'react';
 
 // Import types
 import Submission from '@/types/Submission';
-import Preview from '@/types/Preview';
+import e from 'express';
 
 
 type Props = {
-  submission: Submission,
-  mainSubmission: Preview,
-
+    submission: Submission,
 };
 
 const UserEditableSubmission: React.FC<Props> = (props) => {
   
+  //const { preview } = props;
 
-  const {
-    submission: {
-      id,
-      author,
-      title,
-      date,
-      issue,
-      isApproved,
-    },
-    mainSubmission: {
-      type,
-      title, 
-      description, 
-      imageUrl,
-      contentDriveUrl,
-    }
-  } = props;
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log(submission);
+    setEditOn(false);
+  }     
 
+  const handleEdit = () => {
+    setEditOn(true);
+  }
+
+  const handleChange = (e: React.FormEvent, key: string, value: string | null) => {
+    e.preventDefault();
+    console.log('Changing', key, 'to', value);
+    const newSubmission: Submission = {
+      ...submission,
+      [key]: value 
+    };
+    setSubmission(newSubmission);
+  }
+
+  //const [title, setTitle] = useState(props.preview.title);
+  
+  const [submission, setSubmission] = useState(props.submission);
+
+  
+  const [editOn, setEditOn] = useState(false);   
 
   
   return (
+    
     <div className="relative flex flex-col">
-      <div className="static w-[70%] border-2">
-        <div className= "ml-28 mt-28 font-bold text-3xl">
-          Title of Piece
+      <button onClick={handleEdit}>Edit
+      </button>
+      <button onClick={handleSave}>
+        Save
+      </button>
+      <div className="static w-[70%]">
+        <div className= "ml-28 mt-28 font-bold text-3xl" contentEditable={editOn} 
+        onBlur={e => handleChange(e, 'title', e.currentTarget.textContent)}>
+            {submission.title}
         </div>
-        <div className="relative top-[0] w-[70%] left-[5%] border-2">
-          <div className="bg-gray-300 h-[50vh] w-[40%] ">
-            {imageUrl}
+        <div className="relative top-[0] w-[70%] left-[5%]">
+          <div className=" h-[50vh] w-[40%] ">
+            <img src={submission.mainSubmission.imageUrl}></img>
           </div>
-          <div className="absolute w-[200px] h-[50vh] left-[40%] bottom-0 border-2">
-            <div className="">
-              {title}
+          <div className="absolute w-[400px] h-[50vh] left-[45%] bottom-0">
+            <div className="" contentEditable={editOn} 
+            onBlur={e => handleChange(e, 'type', e.currentTarget.textContent)}>
+              {submission.mainSubmission.type}
             </div>
-            <div className="border-3">
-              {description}
+            <div className="border-3" contentEditable={editOn}
+            onBlur={e => handleChange(e, 'description', e.currentTarget.textContent)}>
+              {submission.mainSubmission.description}
             </div>
-            <div className="pt-[100px]">
-              {author}
+            <div className="pt-[100px]" contentEditable={editOn} 
+        onBlur={e => handleChange(e, 'author', e.currentTarget.textContent)} >
+              {submission.author}
             </div>
-          </div>
-          {/* Additional photo boxes can be added here */}
-        </div>
-
-        <div className="absolute left-0 top-[50%] text-5xl ">
-          <span className="nav-arrow">&#60;</span> {/* Left arrow */}
-        </div>
-        <div className="absolute right-0 top-[50%] text-5xl">
-          <span className="nav-arrow">&#62;</span> {/* Right arrow */}
-        </div>
-
-        <div className="absolute bottom-[25%] left-[5%]">
-          <div className="text-2xl">
-            Related Photos
-          </div>
-          <div className="relative left-[100%] text-4xl">
-            &#43; {/* Plus sign */}
           </div>
         </div>
       </div>
@@ -79,110 +80,3 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
 };
 
 export default UserEditableSubmission;
-
-
-// import React from 'react';
-// // import './styles.css'; // Ensure this is uncommented and points to the correct path to include your styles
-
-// const UserEditableSubmission = () => {
-//   // Inline styles
-//   const styles = {
-//     container: {
-//       fontFamily: 'Arial, sans-serif',
-//       maxWidth: '800px', // Adjust as needed
-//       margin: '80px',
-//       padding: '20px'
-//     },
-//     title: {
-//       fontSize: '24px',
-// //       marginTop: '-60px',
-// //       marginBottom: '10px'
-//     },
-//     medium: {
-//       fontSize: '14px',
-//       marginLeft: '500px',
-//       color: '#666',
-//       marginBottom: '5px'
-//     },
-//     content: {
-//       fontSize: '14px',
-//       marginLeft: '500px',
-//       color: '#666',
-//       marginBottom: '20px'
-//     },
-//     author: {
-//       fontSize: '14px',
-//       fontStyle: 'italic',
-//       marginTop: '100px',
-//       marginBottom: '20px',
-//       marginLeft: '500px'
-//     },
-//     relatedPhotos: {
-//       display: 'flex',
-//       marginBottom: '20px'
-//     },
-//     // Container for both photo boxes, using flexbox to align them correctly
-//     photosContainer: {
-//         display: 'flex',
-//         flexDirection: 'row', // Align children in a row
-//         alignItems: 'flex-start', // Align children to the start of the cross axis
-//       },
-//       photoBox: {
-//         width: '300px',
-//         height: '300px',
-//         backgroundColor: '#ccc',
-//         // Removed marginRight and marginBottom, added margin to separate the boxes
-//         margin: '20px', // Adjust as needed to provide space around the box
-//       },
-//       photoBox2: {
-//         width: '100px',
-//         height: '100px',
-//         backgroundColor: '#ccc',
-//         alignSelf: 'flex-end', // Align this item at the end of the cross axis // Position relative to allow moving it up
-//         top: '-120px', // Adjust this value to move the second box up to overlap the first box
-//         right: '250px' // Adjust this value to move the second box to the left
-//       },
-//     navigation: {
-//       fontSize: '24px',
-//       display: 'flex',
-//       justifyContent: 'space-between',
-//       alignItems: 'center'
-//     },
-//     plusIcon: {
-//       fontSize: '24px',
-//       cursor: 'pointer'
-//     }
-//   };
-
-//  // return (
-//     <div style={styles.container}>
-//       <div style={styles.title}>
-//         Title of Piece
-//       </div>
-
-//       <div style={styles.medium}>
-//         Medium
-//       </div>
-//       <div style={styles.content}>
-//         Lorem ipsum dolor sit amet consectetur. Pulvinar mus lectus congue adipiscing diam. Arcu lectus fringilla amet mauris fermentum tincidunt leo sed. Odio varius iaculis interdum ipsum sagittis enim amet integer. Diam tellus congue fermentum commodo at.
-//       </div>
-
-//       <div style={styles.author}>
-//         Author
-//       </div>
-
-//       <div style={styles.relatedPhotos}>
-//         <div style={styles.photoBox}></div>
-//         <div style={styles.photoBox2}></div>
-//       </div>
-
-//       <div style={styles.navigation}>
-//         <span>&#60;</span> {/* Left arrow */}
-//         <span>&#62;</span> {/* Right arrow */}
-//         <span style={styles.plusIcon}>&#43;</span> {/* Plus sign */}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default UserEditableSubmission;
