@@ -6,7 +6,7 @@
  */
 
 // Import React
-import React, { useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 
 // Import Next
 import Link from 'next/link';
@@ -129,6 +129,32 @@ export default function HomePage() {
         submissions = user.unsafeMetadata.submissions as Submission[];
     }
 
+    const getSubmissions = async () => {
+        try {
+            // get submissions from database
+            console.log("here!!!")
+
+            await fetch("../api/submissions/get-by-user", {
+                method: "GET", 
+                body: JSON.stringify({
+                    author: user.username
+                }),
+                //query.author = 
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.success) {
+                    submissions = res.data
+                    console.log("Got submissions from database")
+                } else {
+                    console.log("Failed to connect to databae")
+                }
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     
     /* -------------- State ------------- */
     
@@ -168,6 +194,19 @@ export default function HomePage() {
             console.log(error);
         }
     };
+    
+    /**
+    * Mount
+    * @author Add Your Name
+   */
+    useEffect(
+        () => {
+        (async () => {
+            getSubmissions()
+        })();
+        },
+        [],
+    );
 
     /*------------------------------------------------------------------------*/
     /* ------------------------------- Render ------------------------------- */
