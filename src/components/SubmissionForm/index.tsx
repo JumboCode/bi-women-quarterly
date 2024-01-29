@@ -63,6 +63,8 @@ export default function SubmissionForm() {
                 contentDriveUrl: "",
             },
         })
+    
+    const [files, setFiles] = useState<File[]>([]);
 
     /*------------------------------------------------------------------------*/
     /* ------------------------- Component Functions ------------------------ */
@@ -75,8 +77,46 @@ export default function SubmissionForm() {
      * @param event the event that has been changed
      */
     const handleSubmit = async () => {
+    // async function handleSubmit(event: any) {
         // push new submission to front of array
-        submissions.unshift(submission);
+        // submissions.unshift(submission);
+
+        // START
+        // obtain all files from event (event.target.files)
+
+        let formData = new FormData();
+        let files: any[] = [];
+
+        const data = await fetch("http://localhost:3001/retrieve")
+            .then(res => res.json());
+
+        console.log(data);
+
+        // let files = event.target.files;
+        // console.log(event);
+        // console.log(event.target.files);
+        
+        
+        let fileArray = Array.from(files);
+        let numberOfFiles = fileArray.length;
+
+        for (let i = 0; i < numberOfFiles; i++) {
+            formData.append(files[i].name, files[i]);
+        }
+
+        // api call
+        const response = await fetch("http://localhost:3001/upload", {
+            method: "POST",
+            body: formData
+        })
+            .then(res => res.json())
+            .catch(err => console.error(err));
+            
+        // google drive api call for each file
+
+        // create a submission for each file with gdrive link data
+        // add submission to submissions array
+        // mongodb api call for each submission
 
         try {
             // update user metadata with submission
@@ -86,7 +126,7 @@ export default function SubmissionForm() {
                 }
             });
             // add submission to database
-            await fetch("../api/submissions/add", {
+            await fetch("/api/submissions/add", {
                 method: "POST",
                 body: JSON.stringify({
                     submission
@@ -106,13 +146,13 @@ export default function SubmissionForm() {
     const handleSubmissionChange = (event : any) => {
         setSubmission( prevValues => {
             return { ...prevValues,[event.target.name]: event.target.value}
-         })
+        })
     }
 
     const handleNewPreview = (newPreview: Preview) => {
         setSubmission( prevValues => {
             return { ...prevValues, mainSubmission: newPreview}
-         })
+        })
     }
 
     /*----------------------------------------*/

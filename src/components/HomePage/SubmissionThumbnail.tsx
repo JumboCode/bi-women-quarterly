@@ -23,7 +23,7 @@ const SubmissionThumbnail: React.FC<Props> = props => {
     // Destructure all props
     const { preview } = props;
 
-    const { type, imageUrl, title, description } = preview;
+    const { type, imageUrl, title, contentDriveUrl, description } = preview;
 
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
@@ -34,6 +34,7 @@ const SubmissionThumbnail: React.FC<Props> = props => {
                 <div className="max-w-md min-w-min w-2/4 bg-gray-200"><img src={imageUrl} className="max-w-full"></img></div>
                 <div className="max-w-md min-w-min w-2/4">
                     <div className="font-normal">{title}</div>
+                    <div className="font-normal">{contentDriveUrl}</div>
                 </div>
             </div>
             <br />

@@ -10,7 +10,6 @@ import React, { useState } from "react";
 import Preview from '@/types/Preview';
 import PreviewType from '@/types/PreviewType';
 
-
 /*------------------------------------------------------------------------*/
 /* -------------------------------- Types ------------------------------- */
 /*------------------------------------------------------------------------*/
@@ -40,7 +39,8 @@ function LocalFile(props: Props) {
     const [showFile, setShowFile] = React.useState(false);
 
     // not of type file, just storing string of file name
-    const [fileName, setFileName] = React.useState([""]); 
+    const [fileName, setFileName] = React.useState<any>([]);
+    const [files, setFiles] = useState<File[]>([]);
 
     /*------------------------------------------------------------------------*/
     /* ------------------------- Lifecycle Functions ------------------------ */
@@ -54,6 +54,12 @@ function LocalFile(props: Props) {
     const handleSubmit = (event : any) => {
         event.preventDefault();
         setShowModal(false);
+        
+        const selectedFiles = event.target.files;
+
+        if (selectedFiles) {
+            setFiles(Array.from(selectedFiles));
+        }
     }
 
     /**
@@ -62,20 +68,26 @@ function LocalFile(props: Props) {
      * @author Alana Sendlakowski, Vanessa Rose
      * @param event the event that has been changed
      */
-    const handleSubmissionChange = (event : any) => {
+    const handleSubmissionChange = async (event : any) => {
         event.preventDefault();
         
-        if (fileName[0] == "") {
-            fileName[0] = event.target.files[0].name;
-        } else {
-            fileName.push(event.target.files[0].name);
-        }
+        fileName.push(event.target.files[0].name);
+        console.log("HERE: " + event.target.files[0]);
         
         setShowModal(true);
         setShowFile(true);
         for (let item of fileName) {
             console.log("item: " + item);
         }
+
+        await fetch("http://localhost:3001/update", {
+            method: "POST",
+            body: event.target.files
+        });
+    }
+
+    const handleDriveUrl = (event : any) => {
+        event.preventDefault();
     }
 
     /*------------------------------------------------------------------------*/
@@ -250,7 +262,7 @@ function LocalFile(props: Props) {
                 <div> {showFile ? (
                     <div className="flex flex-col mt-[40px] ml-[0px] mr-[0px] absolute left-[30px] right-[30px]">
                     <div className="overflow-y-auto h-[30vh]">
-                        {fileName.map((file, index) => (
+                        {fileName.map((file: any) => (
                             <div className="flex items-center mt-[10px] h-[40px] my-auto bg-[#c3cee3] rounded-xl shadow-lg">
                                 <div className="pl-[10px] w-screen flex text-black">
                                     {file}

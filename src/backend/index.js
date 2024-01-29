@@ -8,6 +8,8 @@ const fs = require("fs");
 const app = express();
 app.use(cors());
 
+let files = [];
+
 const storage = multer.diskStorage({
     destination: function (req, file, callback) {
         const uploadDir = path.join(path.dirname(__dirname), "..", "uploads");
@@ -80,6 +82,14 @@ app.post("/upload", upload.any("files"), async (req, res) => {
             error: "An error occurred during file upload."
         });
     }
+});
+
+app.post("/update", upload.any("inputFile"), async (req, res) => {
+    files = req.files;
+});
+
+app.post("/retrieve", async (req, res) => {
+    res.json({ body: files });
 });
 
 const port = 3001;
