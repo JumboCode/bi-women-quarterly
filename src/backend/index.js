@@ -10,7 +10,7 @@ app.use(cors());
 
 const storage = multer.diskStorage({
     destination: function (req, file, callback) {
-        const uploadDir = path.dirname(__dirname) + "/uploads";
+        const uploadDir = path.join(path.dirname(__dirname), "..", "uploads");
         callback(null, `${uploadDir}`);
     },
     filename: function (req, file, callback) {
