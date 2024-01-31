@@ -125,20 +125,26 @@ export default function HomePage() {
     const { user } = useUser();
 
     let submissions: Submission[] = [];
-    // if (user && user.unsafeMetadata.submissions) {
-    //     submissions = user.unsafeMetadata.submissions as Submission[];
-    // }
+    if (user && user.unsafeMetadata.submissions) {
+        submissions = user.unsafeMetadata.submissions as Submission[];
+    }
 
     const getSubmissions = async () => {
         try {
             // get submissions from database
-            console.log("here!!!")
+            //console.log("here!!!")
 
-            await fetch("../api/submissions/get-by-user", {
+            const query = new URLSearchParams({ author: user.username });
+            const url = `../api/submissions/get-by-user?${query.toString()}`;
+
+            await fetch(url, {
                 method: "GET", 
-                body: JSON.stringify({
-                    author: user.username
-                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                // body: JSON.stringify({
+                //     author: user.username
+                // }),
                 //query.author = 
             })
             .then(res => res.json())
@@ -154,20 +160,6 @@ export default function HomePage() {
             console.log(error);
         }
     }
-
-    /**
-    * Mount
-    * @author Add Your Name
-   */
-    useEffect( 
-        () => {
-        (async () => {
-            console.log("in useEffect about to call getSubmissions")
-            getSubmissions()
-        })();
-        },
-        [],
-    );
 
     
     /* -------------- State ------------- */
@@ -209,18 +201,18 @@ export default function HomePage() {
         }
     };
     
-//     /**
-//     * Mount
-//     * @author Add Your Name
-//    */
-//     useEffect( 
-//         () => {
-//         (async () => {
-//             getSubmissions()
-//         })();
-//         },
-//         [],
-//     );
+    /**
+    * Mount
+    * @author Add Your Name
+   */
+    useEffect(
+        () => {
+        (async () => {
+            getSubmissions()
+        })();
+        },
+        [],
+    );
 
     /*------------------------------------------------------------------------*/
     /* ------------------------------- Render ------------------------------- */
