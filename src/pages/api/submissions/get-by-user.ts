@@ -16,7 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         const collection = await db
             .collection("Submissions")
-            .find({ author: req.query.author })
+            .find({ author: req.query.username })
             .toArray();
 
         res.status(201).json({ success: true, data: collection });

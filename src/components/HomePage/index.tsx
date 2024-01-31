@@ -125,27 +125,18 @@ export default function HomePage() {
     const { user } = useUser();
 
     let submissions: Submission[] = [];
-    if (user && user.unsafeMetadata.submissions) {
-        submissions = user.unsafeMetadata.submissions as Submission[];
-    }
+    // if (user && user.unsafeMetadata.submissions) {
+    //     submissions = user.unsafeMetadata.submissions as Submission[];
+    // }
 
     const getSubmissions = async () => {
         try {
             // get submissions from database
             //console.log("here!!!")
-
-            const query = new URLSearchParams({ author: user.username });
-            const url = `../api/submissions/get-by-user?${query.toString()}`;
+            const url = "../api/submissions/get-by-user?author=user";
 
             await fetch(url, {
                 method: "GET", 
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                // body: JSON.stringify({
-                //     author: user.username
-                // }),
-                //query.author = 
             })
             .then(res => res.json())
             .then(res => {
