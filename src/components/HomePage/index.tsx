@@ -125,9 +125,9 @@ export default function HomePage() {
     const { user } = useUser();
 
     let submissions: Submission[] = [];
-    if (user && user.unsafeMetadata.submissions) {
-        submissions = user.unsafeMetadata.submissions as Submission[];
-    }
+    // if (user && user.unsafeMetadata.submissions) {
+    //     submissions = user.unsafeMetadata.submissions as Submission[];
+    // }
 
     const getSubmissions = async () => {
         try {
@@ -154,6 +154,20 @@ export default function HomePage() {
             console.log(error);
         }
     }
+
+    /**
+    * Mount
+    * @author Add Your Name
+   */
+    useEffect( 
+        () => {
+        (async () => {
+            console.log("in useEffect about to call getSubmissions")
+            getSubmissions()
+        })();
+        },
+        [],
+    );
 
     
     /* -------------- State ------------- */
@@ -195,18 +209,18 @@ export default function HomePage() {
         }
     };
     
-    /**
-    * Mount
-    * @author Add Your Name
-   */
-    useEffect(
-        () => {
-        (async () => {
-            getSubmissions()
-        })();
-        },
-        [],
-    );
+//     /**
+//     * Mount
+//     * @author Add Your Name
+//    */
+//     useEffect( 
+//         () => {
+//         (async () => {
+//             getSubmissions()
+//         })();
+//         },
+//         [],
+//     );
 
     /*------------------------------------------------------------------------*/
     /* ------------------------------- Render ------------------------------- */
