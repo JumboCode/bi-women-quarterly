@@ -161,6 +161,19 @@ export default function HomePage() {
         }
     }
 
+    /**
+    * Mount
+    * @author Avery Hanna
+   */
+    useEffect(
+        () => {
+        (async () => {
+            getSubmissions()
+        })();
+        },
+        [],
+    );
+
     
     /* -------------- State ------------- */
     
@@ -200,19 +213,7 @@ export default function HomePage() {
             console.log(error);
         }
     };
-    
-    /**
-    * Mount
-    * @author Add Your Name
-   */
-    useEffect(
-        () => {
-        (async () => {
-            getSubmissions()
-        })();
-        },
-        [],
-    );
+
 
     /*------------------------------------------------------------------------*/
     /* ------------------------------- Render ------------------------------- */
