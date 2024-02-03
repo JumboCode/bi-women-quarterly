@@ -133,7 +133,7 @@ export default function HomePage() {
         try {
             // get submissions from database
             //console.log("here!!!")
-            const url = "../api/submissions/get-by-user?author=user";
+            const url = `api/submissions/get-by-user?author=${user}`;
 
             await fetch(url, {
                 method: "GET", 
