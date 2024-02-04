@@ -107,7 +107,7 @@ const filterSubmissions = (
         case FilterType.None: {
             return submissions;
         }
-        default: {
+        default: {``
             return submissions;
         }
     }
@@ -133,7 +133,7 @@ export default function HomePage() {
         try {
             // get submissions from database
             //console.log("here!!!")
-            const url = `api/submissions/get-by-user?author=${user}`;
+            const url = `../api/submissions/get-by-user?author=${user}`;
 
             await fetch(url, {
                 method: "GET", 
@@ -154,7 +154,7 @@ export default function HomePage() {
 
     /**
     * Mount
-    * @author Avery Hanna
+    * @author Avery Hanna, So Hyun Kim 
    */
     useEffect(
         () => {
