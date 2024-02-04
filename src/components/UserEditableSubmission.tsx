@@ -56,18 +56,20 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
         {submission.mainSubmission.imageUrl && (
           <img src={submission.mainSubmission.imageUrl} alt="Submission" />
         )}
+       <div className="absolute left-[45%]  bottom-[60vh]">
         <input
-          value={submission.mainSubmission.type}
-          onChange={(e) => handleChange('type', e.target.value)}
-        />
-        <textarea
-          value={submission.mainSubmission.description}
-          onChange={(e) => handleChange('description', e.target.value)}
-        />
-        <input
-          value={submission.author}
-          onChange={(e) => handleChange('author', e.target.value)}
-        />
+            value={submission.mainSubmission.type}
+            onChange={(e) => handleChange('mainSubmission.type', e.target.value)}
+          />
+          <textarea
+            value={submission.mainSubmission.description}
+            onChange={(e) => handleChange('mainSubmission.description', e.target.value)}
+          />
+          <input
+            value={submission.author}
+            onChange={(e) => handleChange('author', e.target.value)}
+          />
+       </div>
       </div>
     </form>
   ) : (
@@ -82,14 +84,16 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
         {submission.mainSubmission.imageUrl && (
           <img src={submission.mainSubmission.imageUrl} alt="Submission" />
         )}
-        <div>
-          {submission.mainSubmission.type}
-        </div>
-        <div>
-          {submission.mainSubmission.description}
-        </div>
-        <div>
-          {submission.author}
+        <div className='absolute left-[50%] bottom-[60vh]'>
+          <div>
+            {submission.mainSubmission.type}
+          </div>
+          <div>
+            {submission.mainSubmission.description}
+          </div>
+          <div>
+            {submission.author}
+          </div>
         </div>
       </div>
     </div>
