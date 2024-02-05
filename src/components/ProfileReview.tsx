@@ -126,7 +126,7 @@ const ProfileReview: React.FC<{}> = () => {
             email: 'No email given',
             firstName: 'No first name given',
             lastName: 'No last name given',
-            authorName: 'No authorname given',
+            authorName: 'No author name given',
             pronouns: 'No pronouns given',
             bio: 'No bio given',
             birthday: new Date(),
@@ -136,11 +136,11 @@ const ProfileReview: React.FC<{}> = () => {
             stateProvince: 'No state/province given',
             cityTown: 'No city/town given',
             socialMedias: {
-                LinkedIn: 'No LinkedIn given',
-                Facebook: 'No Facebook given',
-                Instagram: 'No Instagram given',
-                X: 'No X/Twitter given',
-                TikTok: 'No TikTok given',
+                LinkedIn: 'N/A',
+                Facebook: 'N/A',
+                Instagram: 'N/A',
+                X: 'N/A',
+                TikTok: 'N/A',
             },
         },
     };
@@ -198,24 +198,24 @@ const ProfileReview: React.FC<{}> = () => {
             type: ActionType.UpdateUserInfo,
             updatedUserInfo: {
                 profilePicture: userProps.profilePicture as string ?? "defaultpfp.png",
-                email: currentUser.primaryEmailAddress!.emailAddress as string ?? 'No email given',
+                email: userProps.primaryEmailAddress as string ?? 'No email given',
                 firstName: userProps.firstName as string ?? 'No first name given',
                 lastName: userProps.lastName as string ?? 'No last name given',
-                authorName: userProps.authorName as string ?? 'No authorname given',
+                authorName: userProps.authorName as string ?? 'No author name given',
                 pronouns: userProps.pronouns as string ?? 'No pronouns given',
                 bio: userProps.bio as string ?? 'No bio given',
                 birthday: userProps.birthday as Date ?? new Date(),
                 raceEthnicity: userProps.raceEthnicity as RaceEthnicity ?? 'No race/ethnicity given',
                 gender: userProps.gender as Gender ?? 'No gender given',
                 country: userProps.country as string ?? 'No country given',
-                stateProvince: userProps.stateProvince as string ?? 'No state/province gien',
+                stateProvince: userProps.stateProvince as string ?? 'No state/province given',
                 cityTown: userProps.cityTown as string ?? 'No city/town given',
                 socialMedias: userProps.socialMedias as SocialMedias ?? {
-                    LinkedIn: 'No LinkedIn given',
-                    Facebook: 'No Facebook given',
-                    Instagram: 'No Instagram given',
-                    X: 'No X/Twitter given',
-                    TikTok: 'No TikTok given',
+                    LinkedIn: 'N/A',
+                    Facebook: 'N/A',
+                    Instagram: 'N/A',
+                    X: 'N/A',
+                    TikTok: 'N/A',
                 },
             }
         });
@@ -223,17 +223,6 @@ const ProfileReview: React.FC<{}> = () => {
     },
         [isLoaded],
     );
-
-
-    // /**
-    //  * Update view on form submit and print some debug information to the console.
-    //  * @author Lucien Bao, Alana Sendlakowski, Vanessa Rose
-    //  * @param data: form data
-    //  */
-    // const handleSubmit = (data: any) => {
-    //     console.log(data)
-    //     // const formInfo = new FormData()
-    // }
 
     /**
      * Change to edit mode.
@@ -245,39 +234,98 @@ const ProfileReview: React.FC<{}> = () => {
     }
 
     /**
+     * Change to view mode.
+     * @author Lucien Bao, Lydia Chen
+     * @param event the event that has been changed
+     */
+    const switchToView = (event: any) => {
+        dispatch({ type: ActionType.ToggleView });
+    }
+
+    /**
+     * Select race/ethnicity
+     * @author Lydia Chen
+     * @param value The new race/ethnicity value.
+     */
+    const selectRaceEthnicity = (value: string) => {
+        const deepCopy = JSON.parse(JSON.stringify(userInfo));
+
+        dispatch({
+            type: ActionType.UpdateUserInfo,
+            updatedUserInfo: {
+                ...deepCopy,
+                raceEthnicity: value
+            },
+        });
+    }
+
+    /**
+     * Select gender preferences.
+     * @author Lydia Chen
+     * @param value the new gender value.
+     */
+    const selectGender = (value: string) => {
+        const deepCopy = JSON.parse(JSON.stringify(userInfo));
+
+        dispatch({
+            type: ActionType.UpdateUserInfo,
+            updatedUserInfo: {
+                ...deepCopy,
+                gender: value
+            }
+        })
+    }
+
+    /**
      * Select a country.
      * @author Lucien Bao, Ben Keen, Lydia Chen
-     * @param value Updated country value.
+     * @param value the new country value.
      */
     const selectCountry = (value: string) => {
         const deepCopy = JSON.parse(JSON.stringify(userInfo));
-        dispatch(
-            {
-                type: ActionType.UpdateUserInfo,
-                updatedUserInfo: {
-                    ...deepCopy,
-                    country: value
-                }
+        dispatch({
+            type: ActionType.UpdateUserInfo,
+            updatedUserInfo: {
+                ...deepCopy,
+                country: value
             }
-        )
+        })
     }
 
     /**
      * Select a state/province.
      * @author Lucien Bao, Ben Keen, Lydia Chen
-     * @param value Updated state/province value.
+     * @param value the new state/province value.
      */
     const selectStateProvince = (value: string) => {
         const deepCopy = JSON.parse(JSON.stringify(userInfo));
-        dispatch(
-            {
-                type: ActionType.UpdateUserInfo,
-                updatedUserInfo: {
-                    ...deepCopy,
-                    stateProvince: value
-                }
+        dispatch({
+            type: ActionType.UpdateUserInfo,
+            updatedUserInfo: {
+                ...deepCopy,
+                stateProvince: value
             }
-        )
+        })
+    }
+
+    /**
+     * Update social media
+     * @author Lydia Chen
+     * @param value the updated social media handle
+     */
+    const updateSocialMedia = (key: string, value: string) => {
+        const deepCopy = JSON.parse(JSON.stringify(userInfo));
+
+        dispatch({
+            type: ActionType.UpdateUserInfo,
+            updatedUserInfo: {
+                ...deepCopy,
+                socialMedias: {
+                    ...deepCopy.socialMedias,
+                    [key]: value
+                }
+            },
+        });
     }
 
     /**
@@ -297,7 +345,7 @@ const ProfileReview: React.FC<{}> = () => {
                     type: ActionType.UpdateUserInfo,
                     updatedUserInfo: {
                         ...deepCopy,
-                        profilePicture: newProfilePicture,
+                        profilePicture: newProfilePicture
                     },
                 });
             }
@@ -318,7 +366,7 @@ const ProfileReview: React.FC<{}> = () => {
             type: ActionType.UpdateUserInfo,
             updatedUserInfo: {
                 ...deepCopy,
-                profilePicture: "defaultpfp.png",
+                profilePicture: "defaultpfp.png"
             },
         });
     }
@@ -329,35 +377,27 @@ const ProfileReview: React.FC<{}> = () => {
      * @param field the field to be updated in the user data
      * @param value - The new value for the specified field
      */
-    const handleSubmit = (data: any) => {
-        console.log(data);
-        // { profilePicture, email, firstName} = data;
+    const handleChange = (field: string, value: any) => {
+        const deepCopy = JSON.parse(JSON.stringify(userInfo));
 
-        dispatch({
-            type: ActionType.UpdateUserInfo,
-            updatedUserInfo: {
-                //         profilePicture: userProps.profilePicture
-                //         email: currentUser.primaryEmailAddress!.emailAddress,
-                //         firstName: userProps.firstName as string ?? 'No first name given',
-                //         lastName: userProps.lastName as string ?? 'No last name given',
-                //         authorName: userProps.authorName as string ?? 'No authorname given',
-                //         pronouns: userProps.pronouns as string ?? 'No pronouns given',
-                //         bio: userProps.bio as string ?? 'No bio given',
-                //         birthday: userProps.birthday as Date ?? new Date(),
-                //         raceEthnicity: userProps.raceEthnicity as RaceEthnicity ?? 'No race/ethnicity given',
-                //         gender: userProps.gender as Gender ?? 'No gender given',
-                //         country: userProps.country as string ?? 'No country given',
-                //         stateProvince: userProps.stateProvince as string ?? 'No state/province given',
-                //         cityTown: userProps.cityTown as string ?? 'No city/town given',
-                //         socialMedias: userProps.socialMedias as SocialMedias ?? {
-                //             LinkedIn: 'No LinkedIn given',
-                //             Facebook: 'No Facebook given',
-                //             Instagram: 'No Instagram given',
-                //             X: 'No X/Twitter given',
-                //             TikTok: 'No TikTok given',
-                // },
-            },
-        });
+        if (value instanceof Date) {
+            dispatch({
+                type: ActionType.UpdateUserInfo,
+                updatedUserInfo: {
+                    ...deepCopy,
+                    [field]: value
+                },
+            });
+        } else {
+            // For other types, proceed as usual
+            dispatch({
+                type: ActionType.UpdateUserInfo,
+                updatedUserInfo: {
+                    ...deepCopy,
+                    [field]: value
+                },
+            });
+        }
     };
 
     // Initializes a null reference
@@ -378,17 +418,12 @@ const ProfileReview: React.FC<{}> = () => {
     const stateProvince = userInfo!.stateProvince;
 
     // Helper function for Preview mode display of user birthday
-    const extractDateString = (date: Date) => {
-        if (date === undefined) {
+    const extractDateString = (date: Date | undefined): string => {
+        if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
             return "No date given";
         }
-        return (date.getUTCMonth() + 1) + '/' + date.getUTCDate() + '/' + date.getUTCFullYear();
-    };
 
-    // Helper function for Preview mode display of user birthday
-    const extractDateValue = (date: Date) => {
-        // substr() is deprecated but it works
-        return new Date(date).toISOString().substr(0, 10)
+        return (date.getUTCMonth() + 1) + '/' + date.getUTCDate() + '/' + date.getUTCFullYear();
     };
 
     // No current user
@@ -401,8 +436,8 @@ const ProfileReview: React.FC<{}> = () => {
                 color="#800080"
                 ariaLabel="tail-spin-loading"
                 radius="1"
-                wrapperStyle={{}}
-                wrapperClass=""
+                // wrapperStyle={{}}
+                wrapperClass="flex items-center justify-center h-screen"
             />
         )
     }
@@ -415,7 +450,7 @@ const ProfileReview: React.FC<{}> = () => {
                 <div className="grid grid-cols-2 pb-8">
                     <img className="rounded-full bg-gray-500 w-24 h-24" src={userInfo!.profilePicture as string} alt="Your profile picture" onError={(e) => {
                         (e.target as HTMLImageElement).onerror = null;
-                        (e.target as HTMLImageElement).src = "defaultpfp.png";       // Add src link to default img
+                        (e.target as HTMLImageElement).src = "defaultpfp.png";
                     }} />
                     <button className="text-right pr-4" type="button" onClick={switchToEdit}>🖉 Edit</button>
                 </div>
@@ -524,7 +559,7 @@ const ProfileReview: React.FC<{}> = () => {
     // Edit mode //
     else {
         body = (
-            <form onSubmit={handleSubmit} id="profileEdit" className="p-10 px-20 bg-#F4F0FF">
+            <form id="profileEdit" className="p-10 px-20 bg-#F4F0FF">
                 {/* Header portion */}
                 <div className="flex flex-col-4 items-center gap-5 pb-8 gap-x-5">
                     <img className="rounded-full bg-gray-500 w-24 h-24" src={userInfo!.profilePicture as string} alt="Your profile picture" onError={(e) => {
@@ -535,71 +570,89 @@ const ProfileReview: React.FC<{}> = () => {
                     <input type="file" accept="image/*" ref={fileInputRef} onChange={uploadPicture} />
                     {/* <button type="button" onClick={() => fileInputRef.current?.click()} className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded h-10">Upload Photo</button> */}
                     <button type="button" onClick={deletePicture} className="bg-transparent hover:bg-gray-400 text-gray-500 font-bold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded h-10">Delete Photo</button>
-                    <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-10">✓ Done</button>
+                    <button type="submit" onClick={switchToView} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-10">✓ Done</button>
                 </div>
 
                 {/* Biographical info */}
                 <div className="bg-white border border-solid border-slate-400 rounded-xl mb-5 p-5">
                     <label className="font-bold" htmlFor="email">Email*</label><br />
-                    <input className="border-b-2 my-4 w-80" type="text" id="email" defaultValue={currentUser.primaryEmailAddress?.emailAddress} onChange={(e) => handleChange('email', e.target.value)} required /><br />
+                    <input className="border-b-2 my-4 w-80" type="text" id="email" defaultValue={userInfo!.email} onChange={(e) => handleChange('email', e.target.value)} required /><br />
 
                     <div className="grid xl:grid-cols-2 lg:pr-96 grid-cols-1">
                         <div>
                             <label className="font-bold" htmlFor="fname">First Name</label><br />
-                            <input className="border-b-2 my-4 w-80" type="text" id="fname" defaultValue={userInfo.firstName} />
+                            <input className="border-b-2 my-4 w-80" type="text" id="fname" defaultValue={userInfo.firstName} onChange={(e) => handleChange('firstName', e.target.value)} />
                         </div>
 
                         <div>
                             <label className="font-bold" htmlFor="lname">Last Name</label><br />
-                            <input className="border-b-2 my-4 w-80" type="text" id="lname" defaultValue={userInfo.lastName} />
+                            <input className="border-b-2 my-4 w-80" type="text" id="lname" defaultValue={userInfo.lastName} onChange={(e) => handleChange('lastName', e.target.value)} />
                         </div>
                     </div>
 
                     <div className="grid xl:grid-cols-2 lg:pr-96 grid-cols-1">
                         <div>
                             <label className="font-bold" htmlFor="aname">Author Name*</label><br />
-                            <input className="border-b-2 my-4 w-80" type="text" id="aname" defaultValue={userInfo.authorName} required />
+                            <input className="border-b-2 my-4 w-80" type="text" id="aname" defaultValue={userInfo.authorName} onChange={(e) => handleChange('authorName', e.target.value)} required />
                         </div>
 
                         <div>
                             <label className="font-bold" htmlFor="pronouns">Pronouns</label><br />
-                            <input className="border-b-2 my-4 w-80" type="text" id="pronouns" defaultValue={userInfo.pronouns} />
+                            <input className="border-b-2 my-4 w-80" type="text" id="pronouns" defaultValue={userInfo.pronouns} onChange={(e) => handleChange('pronouns', e.target.value)} />
                         </div>
                     </div>
 
                     <div className="lg:pr-96">
                         <label className="font-bold" htmlFor="bio">Bio*</label><br />
                         <textarea className="my-4 pl-2 border border-gray-400 rounded" id="bio" name="profileEdit" rows={4} cols={50}
-                            placeholder="Tell us about yourself!" defaultValue={userInfo.bio} required />
+                            placeholder="Tell us about yourself!" defaultValue={userInfo.bio} onChange={(e) => handleChange('bio', e.target.value)} required />
                     </div>
 
                     <div className="grid md:grid-cols-3 grid-cols-2 xl:pr-96">
                         <div>
                             <label className="font-bold" htmlFor="birthday">Birthday</label><br />
-                            <input className="border-b-2 my-4 w-48" type="date" id="birthday" defaultValue={extractDateValue(userInfo.birthday!)} />
+                            <input
+                                className="border-b-2 my-4 w-48"
+                                type="date"
+                                id="birthday"
+                                defaultValue={extractDateString(userInfo.birthday!)}
+                                onChange={(e) => handleChange('birthday', e.target.value)}
+                            />
                         </div>
 
                         <div>
                             <label className="font-bold" htmlFor="raceEthnicity">Race/Ethnicity</label><br />
-                            <select className="my-4 bg-gray-300 rounded w-48" form="profileEdit" name="profileEdit" id="raceEthnicity" defaultValue={userInfo?.raceEthnicity?.toLowerCase()}>
+                            <select className="my-4 bg-gray-300 rounded w-48"
+                                form="profileEdit"
+                                name="profileEdit"
+                                id="raceEthnicity"
+                                defaultValue={userInfo?.raceEthnicity?.toLowerCase()}
+                                onChange={(e) => selectRaceEthnicity(e.target.value)}>
+
                                 <option value="default">Select</option>
-                                <option value="american indian or alaskan native">{RaceEthnicity.AmericanIndian}</option>
-                                <option value="asian">{RaceEthnicity.Asian}</option>
-                                <option value="black or african american">{RaceEthnicity.Black}</option>
-                                <option value="native hawaiian or pacific islander">{RaceEthnicity.NativeHawaiian}</option>
-                                <option value="white or caucasian">{RaceEthnicity.White}</option>
-                                <option value="other or prefer not to say">{RaceEthnicity.Other}</option>
+                                <option value="American Indian or Alaskan Native">{RaceEthnicity.AmericanIndian}</option>
+                                <option value="Asian">{RaceEthnicity.Asian}</option>
+                                <option value="Black or African American">{RaceEthnicity.Black}</option>
+                                <option value="Native Hawaiian or Pacific Islander">{RaceEthnicity.NativeHawaiian}</option>
+                                <option value="White or Caucasian">{RaceEthnicity.White}</option>
+                                <option value="Other or prefer not to say">{RaceEthnicity.Other}</option>
                             </select>
                         </div>
 
                         <div>
                             <label className="font-bold" htmlFor="gender">Gender</label><br />
-                            <select className="my-4 bg-gray-300 rounded w-48" form="profileEdit" name="profileEdit" id="gender" defaultValue={userInfo?.raceEthnicity?.toLowerCase()}>
+                            <select className="my-4 bg-gray-300 rounded w-48"
+                                form="profileEdit"
+                                name="profileEdit"
+                                id="gender"
+                                defaultValue={userInfo?.raceEthnicity?.toLowerCase()}
+                                onChange={(e) => selectGender(e.target.value)}>
+
                                 <option value="default">Select</option>
-                                <option value="female">{Gender.Female}</option>
-                                <option value="male">{Gender.Male}</option>
-                                <option value="non-binary">{Gender.Nonbinary}</option>
-                                <option value="other or prefer not to say">{Gender.Other}</option>
+                                <option value="Female">{Gender.Female}</option>
+                                <option value="Male">{Gender.Male}</option>
+                                <option value="Non-binary">{Gender.Nonbinary}</option>
+                                <option value="Other or prefer not to say">{Gender.Other}</option>
                             </select>
                         </div>
 
@@ -631,7 +684,7 @@ const ProfileReview: React.FC<{}> = () => {
 
                         <div>
                             <div className="font-bold" >City</div>
-                            <input className="border-b-2 border-gray-500 my-4" type="text" id="cityTown" value={userInfo?.cityTown} />
+                            <input className="border-b-2 border-gray-500 my-4" type="text" id="cityTown" value={userInfo?.cityTown} onChange={(e) => handleChange('cityTown', e.target.value)} />
                         </div>
 
                     </div>
@@ -645,22 +698,22 @@ const ProfileReview: React.FC<{}> = () => {
                     <div className="grid lg:grid-cols-2 grid-cols-1">
                         <div>
                             <label className="font-bold pr-4" htmlFor="linkedin">LinkedIn</label>
-                            <input className="border-b-2 my-4 w-80" type="text" id="linkedin" defaultValue={userInfo?.socialMedias.LinkedIn} />
+                            <input className="border-b-2 my-4 w-80" type="text" id="linkedin" defaultValue={userInfo?.socialMedias.LinkedIn} onChange={(e) => updateSocialMedia('LinkedIn', e.target.value)} />
                         </div>
 
                         <div>
                             <label className="font-bold pr-4" htmlFor="instagram">Instagram</label>
-                            <input className="border-b-2 my-4 w-80" type="text" id="instagram" defaultValue={userInfo?.socialMedias.Instagram} />
+                            <input className="border-b-2 my-4 w-80" type="text" id="instagram" defaultValue={userInfo?.socialMedias.Instagram} onChange={(e) => updateSocialMedia('Instagram', e.target.value)} />
                         </div>
 
                         <div>
                             <label className="font-bold pr-4" htmlFor="xTwitter">X/Twitter</label>
-                            <input className="border-b-2 my-4 w-80" type="text" id="xTwitter" defaultValue={userInfo?.socialMedias.X} />
+                            <input className="border-b-2 my-4 w-80" type="text" id="xTwitter" defaultValue={userInfo?.socialMedias.X} onChange={(e) => updateSocialMedia('X', e.target.value)} />
                         </div>
 
                         <div>
                             <label className="font-bold pr-4" htmlFor="facebook">Facebook</label>
-                            <input className="border-b-2 my-4 w-80" type="text" id="facebook" defaultValue={userInfo?.socialMedias.Facebook} />
+                            <input className="border-b-2 my-4 w-80" type="text" id="facebook" defaultValue={userInfo?.socialMedias.Facebook} onChange={(e) => updateSocialMedia('Facebook', e.target.value)} />
                         </div>
                     </div>
 
