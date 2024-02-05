@@ -22,6 +22,7 @@
         "react": "^18",
         "react-country-region-selector": "^3.6.1",
         "react-dom": "^18",
+        "react-loader-spinner": "^6.1.6",
         "svix": "^1.14.0",
         "tsx": "^3.14.0"
     },

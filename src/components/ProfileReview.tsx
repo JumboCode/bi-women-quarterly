@@ -4,13 +4,14 @@
  */
 
 // Clerk imports
-import { useUser } from "@clerk/nextjs";
+import { clerkClient, useUser } from "@clerk/nextjs";
 
 // React imports
 import React, { useReducer, useEffect, useRef } from 'react';
 
 // Custom types, etc.
 import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
+import { TailSpin } from 'react-loader-spinner';
 
 import RaceEthnicity from "@/types/RaceEthnicity";
 import Gender from "@/types/Gender";
@@ -116,41 +117,25 @@ const ProfileReview: React.FC<{}> = () => {
     /*------------------------------------------------------------------------*/
 
     /* -------------- State ------------- */
-
-    // Get current user; requires a user so if there isn't one then stop
-    const { user } = useUser();
-
-    // TODO: in this case set a flag so that there's no early return
-    // Instead, when we return the HTML, just return a loading screen/component
-    if (user === undefined || user === null) {
-        return <p>No user :(</p>
-    }
-
-    const currentUser = user;
-
-    if (currentUser.unsafeMetadata === undefined) {
-        currentUser.unsafeMetadata = {};
-    }
-
-    const userProps = currentUser.unsafeMetadata;
+    const { isSignedIn, user, isLoaded } = useUser();
 
     const initialState: State = {
         view: View.Preview,
         userInfo: {
-            profilePicture: userProps.profilePicture as string ?? "defaultpfp.png",
-            email: currentUser.primaryEmailAddress!.emailAddress ?? 'No email given',
-            firstName: userProps.firstName as string ?? 'No first name given',
-            lastName: userProps.lastName as string ?? 'No last name given',
-            authorName: userProps.authorName as string ?? 'No authorname given',
-            pronouns: userProps.pronouns as string ?? 'No pronouns given',
-            bio: userProps.bio as string ?? 'No bio given',
-            birthday: userProps.birthday as Date ?? new Date(),
-            raceEthnicity: userProps.raceEthnicity as RaceEthnicity ?? 'No race/ethnicity given',
-            gender: userProps.gender as Gender ?? 'No gender given',
-            country: userProps.country as string ?? 'No country given',
-            stateProvince: userProps.stateProvince as string ?? 'No state/province given',
-            cityTown: userProps.cityTown as string ?? 'No city/town given',
-            socialMedias: userProps.socialMedias as SocialMedias ?? {
+            profilePicture: "defaultpfp.png",
+            email: 'No email given',
+            firstName: 'No first name given',
+            lastName: 'No last name given',
+            authorName: 'No authorname given',
+            pronouns: 'No pronouns given',
+            bio: 'No bio given',
+            birthday: new Date(),
+            raceEthnicity: RaceEthnicity.Other,
+            gender: Gender.Other,
+            country: 'No country given',
+            stateProvince: 'No state/province given',
+            cityTown: 'No city/town given',
+            socialMedias: {
                 LinkedIn: 'No LinkedIn given',
                 Facebook: 'No Facebook given',
                 Instagram: 'No Instagram given',
@@ -161,6 +146,10 @@ const ProfileReview: React.FC<{}> = () => {
     };
 
     const [state, dispatch] = useReducer(reducer, initialState);
+
+    if (isLoaded) {
+        // load stuff
+    }
 
     const {
         view,
@@ -192,6 +181,19 @@ const ProfileReview: React.FC<{}> = () => {
             // the state looks like at the beginning of the component's lifecycle,
             // and we control anything that might change.)      
         })();
+
+        if (!isLoaded || !user) {
+            return;
+        }
+
+        const currentUser = user;
+
+        if (currentUser.unsafeMetadata === undefined) {
+            currentUser.unsafeMetadata = {};
+        }
+
+        const userProps = currentUser.unsafeMetadata;
+
         dispatch({
             type: ActionType.UpdateUserInfo,
             updatedUserInfo: {
@@ -219,19 +221,19 @@ const ProfileReview: React.FC<{}> = () => {
         });
 
     },
-        [],
+        [isLoaded],
     );
 
 
-    /**
-     * Update view on form submit and print some debug information to the console.
-     * @author Lucien Bao, Alana Sendlakowski, Vanessa Rose
-     * @param data: form data
-     */
-    const handleSubmit = (data: any) => {
-        console.log(data)
-        // const formInfo = new FormData()
-    }
+    // /**
+    //  * Update view on form submit and print some debug information to the console.
+    //  * @author Lucien Bao, Alana Sendlakowski, Vanessa Rose
+    //  * @param data: form data
+    //  */
+    // const handleSubmit = (data: any) => {
+    //     console.log(data)
+    //     // const formInfo = new FormData()
+    // }
 
     /**
      * Change to edit mode.
@@ -316,22 +318,45 @@ const ProfileReview: React.FC<{}> = () => {
             type: ActionType.UpdateUserInfo,
             updatedUserInfo: {
                 ...deepCopy,
-                profilePicture: null,
+                profilePicture: "defaultpfp.png",
             },
         });
     }
 
     /**
      * Handle any new changes to existing user data
-     * @author Lydia Chen
+     * @author Lucien Bao, Lydia Chen
      * @param field the field to be updated in the user data
      * @param value - The new value for the specified field
      */
-    const handleChange = (field: string, value: any) => {
-        const deepCopy = JSON.parse(JSON.stringify(userInfo));
+    const handleSubmit = (data: any) => {
+        console.log(data);
+        // { profilePicture, email, firstName} = data;
+
         dispatch({
-            ...deepCopy,
-            [field]: value,
+            type: ActionType.UpdateUserInfo,
+            updatedUserInfo: {
+                //         profilePicture: userProps.profilePicture
+                //         email: currentUser.primaryEmailAddress!.emailAddress,
+                //         firstName: userProps.firstName as string ?? 'No first name given',
+                //         lastName: userProps.lastName as string ?? 'No last name given',
+                //         authorName: userProps.authorName as string ?? 'No authorname given',
+                //         pronouns: userProps.pronouns as string ?? 'No pronouns given',
+                //         bio: userProps.bio as string ?? 'No bio given',
+                //         birthday: userProps.birthday as Date ?? new Date(),
+                //         raceEthnicity: userProps.raceEthnicity as RaceEthnicity ?? 'No race/ethnicity given',
+                //         gender: userProps.gender as Gender ?? 'No gender given',
+                //         country: userProps.country as string ?? 'No country given',
+                //         stateProvince: userProps.stateProvince as string ?? 'No state/province given',
+                //         cityTown: userProps.cityTown as string ?? 'No city/town given',
+                //         socialMedias: userProps.socialMedias as SocialMedias ?? {
+                //             LinkedIn: 'No LinkedIn given',
+                //             Facebook: 'No Facebook given',
+                //             Instagram: 'No Instagram given',
+                //             X: 'No X/Twitter given',
+                //             TikTok: 'No TikTok given',
+                // },
+            },
         });
     };
 
@@ -366,17 +391,24 @@ const ProfileReview: React.FC<{}> = () => {
         return new Date(date).toISOString().substr(0, 10)
     };
 
-    // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     // Handle file selection here
-    //     const selectedFile = event.target.files?.[0];
-    //     if (selectedFile) {
-    //         uploadPicture(selectedFile)
-    //         console.log('Selected file:', selectedFile);
-    //     }
-    // };
+    // No current user
+    if (!isLoaded) {
+        body = (
+            <TailSpin
+                visible={true}
+                height="80"
+                width="80"
+                color="#800080"
+                ariaLabel="tail-spin-loading"
+                radius="1"
+                wrapperStyle={{}}
+                wrapperClass=""
+            />
+        )
+    }
 
     // Preview mode //
-    if (view == View.Preview) {
+    else if (view == View.Preview) {
         body = (
             <div className="p-10 px-20 bg-[#F4F0FF]">
                 {/* Header portion */}
