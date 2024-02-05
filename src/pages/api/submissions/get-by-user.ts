@@ -13,11 +13,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const client = await clientPromise;
         const db = client.db("BiWomenQuarterly");
+        
+        console.log(req.query.id); 
         const collection = await db
             .collection("Submissions")
-            .find({ author: req.query.user })
+            // user_2Yzgb6Qxd613awheo6fCHRb8g1n
+            .find({ 'submission.id' : req.query.id }) // when I put req.query.id, returns the whole submission DB and not the individual user
+                                        // When we put req.query, does not return anything  
             .toArray();
-
+        
         res.status(201).json({ success: true, data: collection });
     } catch (e) {
         res.status(400).json({ success: false });

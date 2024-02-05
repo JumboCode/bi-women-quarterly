@@ -40,22 +40,27 @@ enum FilterType {
 type State = {
     // How the submissions should be filtered
     filter: FilterType;
+    submissions: Submission[];
 };
 
 /* ------------- Actions ------------ */
 
 // Types of actions
 enum ActionType {
-    ChangeFilter = "ChangeFilter"
+    ChangeFilter = "ChangeFilter",
+    UpdateSubmissions = "UpdateSubmissions"
 }
 
 // Action definitions
-type Action = {
+type Action =({
     // Action type
     type: ActionType.ChangeFilter;
     // Add description of required payload property
     newFilter: FilterType;
-};
+    } | {
+    type: ActionType.UpdateSubmissions; 
+    newSubmissions: Submission[];
+});
 
 /**
  * Reducer that executes actions
@@ -70,6 +75,12 @@ const reducer = (state: State, action: Action): State => {
             return {
                 ...state,
                 filter: action.newFilter
+            };
+        }
+        case ActionType.UpdateSubmissions: {
+            return {
+                ...state, 
+                submissions: action.newSubmissions
             };
         }
         default: {
@@ -121,19 +132,41 @@ export default function HomePage() {
     /*------------------------------------------------------------------------*/
     /* -------------------------------- Setup ------------------------------- */
     /*------------------------------------------------------------------------*/
+        
+    /* -------------- State ------------- */
+    
+    // Initial state
+    const initialState: State = {
+        filter: FilterType.None,
+        submissions: []
+    };
+    
+    // Initialize state
+    const [state, dispatch] = useReducer(reducer, initialState);
+    
+    // Destructure common state
+    const { filter, submissions } = state;
+
+    //dispatch({type: ActionType.UpdateSubmissions, newSubmissions:filterSubmissions(submissions, filter)})
 
     const { user } = useUser();
 
-    let submissions: Submission[] = [];
+    //let submissions: Submission[] = [];
     // if (user && user.unsafeMetadata.submissions) {
     //     submissions = user.unsafeMetadata.submissions as Submission[];
     // }
-
     const getSubmissions = async () => {
+        if (!user) {
+            console.log("NO USER!"); 
+            return; 
+        }
         try {
             // get submissions from database
-            //console.log("here!!!")
-            const url = `../api/submissions/get-by-user?author=${user}`;
+            console.log("Got the user!!!");
+            const authorId = user?.id; 
+            console.log("printing out author id");
+            console.log(authorId); 
+            const url = `/api/submissions/get-by-user?id=${authorId}`;
 
             await fetch(url, {
                 method: "GET", 
@@ -141,16 +174,21 @@ export default function HomePage() {
             .then(res => res.json())
             .then(res => {
                 if (res.success) {
-                    submissions = res.data
-                    console.log("Got submissions from database")
+                    console.log(res.data); 
+                    dispatch({type: ActionType.UpdateSubmissions, newSubmissions:res.data})
+                    console.log("Got submissions from database");
+                    //console.log(submissions); 
                 } else {
-                    console.log("Failed to connect to databae")
+                    console.log("Failed to connect to database");
                 }
             });
         } catch (error) {
             console.log(error);
         }
+        
     }
+    console.log("Right after getSubmissions()"); // dead 
+    console.log(submissions); 
 
     /**
     * Mount
@@ -160,26 +198,13 @@ export default function HomePage() {
         () => {
         (async () => {
             getSubmissions()
+            console.log("Printing submission part 2C"); 
+            console.log(submissions); 
         })();
         },
         [],
     );
 
-    
-    /* -------------- State ------------- */
-    
-    // Initial state
-    const initialState: State = {
-        filter: FilterType.None
-    };
-    
-    // Initialize state
-    const [state, dispatch] = useReducer(reducer, initialState);
-    
-    // Destructure common state
-    const { filter } = state;
-    
-    submissions = filterSubmissions(submissions, filter);
     
     /*------------------------------------------------------------------------*/
     /* ------------------------- Component Functions ------------------------ */
