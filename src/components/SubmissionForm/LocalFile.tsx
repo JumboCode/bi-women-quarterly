@@ -40,27 +40,27 @@ function LocalFile(props: Props) {
 
     // not of type file, just storing string of file name
     const [fileName, setFileName] = React.useState<any>([]);
-    const [files, setFiles] = useState<File[]>([]);
+    // const [files, setFiles] = useState<File[]>([]);
 
     /*------------------------------------------------------------------------*/
     /* ------------------------- Lifecycle Functions ------------------------ */
     /*------------------------------------------------------------------------*/
 
-    /**
-     * Handles submit of the form, sets showModal to false
-     * @author Alana Sendlakowski, Vanessa Rose
-     * @param event the event that has been changed
-     */
-    const handleSubmit = (event : any) => {
-        event.preventDefault();
-        setShowModal(false);
+    // /**
+    //  * Handles submit of the form, sets showModal to false
+    //  * @author Alana Sendlakowski, Vanessa Rose
+    //  * @param event the event that has been changed
+    //  */
+    // const handleSubmit = (event : any) => {
+    //     event.preventDefault();
+    //     setShowModal(false);
         
-        const selectedFiles = event.target.files;
+    //     const selectedFiles = event.target.files;
 
-        if (selectedFiles) {
-            setFiles(Array.from(selectedFiles));
-        }
-    }
+    //     if (selectedFiles) {
+    //         setFiles(Array.from(selectedFiles));
+    //     }
+    // }
 
     /**
      * Adds the file name to the array of file names and changes the booleans
@@ -70,7 +70,12 @@ function LocalFile(props: Props) {
      */
     const handleSubmissionChange = async (event : any) => {
         event.preventDefault();
+
+        // setFiles(Array.from(event.target.files));
+        // console.log("FILES: " + files);
         
+
+
         fileName.push(event.target.files[0].name);
         console.log("HERE: " + event.target.files[0]);
         
@@ -80,10 +85,19 @@ function LocalFile(props: Props) {
             console.log("item: " + item);
         }
 
-        await fetch("http://localhost:3001/update", {
+    //     await fetch("http://localhost:3001/update", {
+    //         method: "POST",
+    //         body: event.target.files
+    //     });
+
+        let formData = new FormData();
+        formData.append(event.target.files[0].name, event.target.files[0]);
+        const response = await fetch("http://localhost:3001/update", {
             method: "POST",
-            body: event.target.files
-        });
+            body: formData
+        })
+            .then(res => res.json())
+            .catch(err => console.error(err));
     }
 
     const handleDriveUrl = (event : any) => {
@@ -247,10 +261,10 @@ function LocalFile(props: Props) {
 
     return (
         <div> 
-            <form onSubmit={handleSubmit}>
+            <form>
                 <div>
                     <label className="inline-block h-[30px] w-[115px] absolute left-[200px] pt-[3px] rounded-sm content-center align-middle text-center  outline outline-[#5072c0] outline-offset-[3px]">
-                        <input type="file" id="inputFile" className="hidden" onChange={handleSubmissionChange}/> Local File
+                        <input type="file" name="files" id="inputFile" className="hidden" onChange={handleSubmissionChange}/> Local File
                     </label>
                 </div>
                 

@@ -78,45 +78,69 @@ export default function SubmissionForm() {
      */
     const handleSubmit = async () => {
     // async function handleSubmit(event: any) {
-        // push new submission to front of array
-        // submissions.unshift(submission);
 
         // START
         // obtain all files from event (event.target.files)
 
-        let formData = new FormData();
-        let files: any[] = [];
+        // let formData = new FormData();
+        // let files: any[] = [];
 
-        const data = await fetch("http://localhost:3001/retrieve")
-            .then(res => res.json());
+        // const data = await fetch("http://localhost:3001/retrieve")
+        //     .then(res => res.json());
 
-        console.log(data);
+        // console.log(data);
 
         // let files = event.target.files;
         // console.log(event);
         // console.log(event.target.files);
         
         
-        let fileArray = Array.from(files);
-        let numberOfFiles = fileArray.length;
+        // let fileArray = Array.from(files);
+        // let numberOfFiles = fileArray.length;
 
-        for (let i = 0; i < numberOfFiles; i++) {
-            formData.append(files[i].name, files[i]);
-        }
+        // for (let i = 0; i < numberOfFiles; i++) {
+        //     formData.append(files[i].name, files[i]);
+        // }
 
-        // api call
-        const response = await fetch("http://localhost:3001/upload", {
-            method: "POST",
-            body: formData
-        })
-            .then(res => res.json())
-            .catch(err => console.error(err));
+        // // api call
+        // const response = await fetch("http://localhost:3001/upload", {
+        //     method: "POST",
+        //     body: formData
+        // })
+        //     .then(res => res.json())
+        //     .catch(err => console.error(err));
             
         // google drive api call for each file
 
         // create a submission for each file with gdrive link data
         // add submission to submissions array
         // mongodb api call for each submission
+
+        // const data = await fetch("http://localhost:3001/retrieve")
+        //     .then(res => res.json())
+        //     .then(res => res.body);
+
+        // console.log(data);
+
+        // await fetch("http://localhost:3001/retrieve")
+        //     .then(res => res.json())
+        //     .then(data => {
+        //         console.log(data.body);
+        //     })
+
+
+
+        const responses = await fetch("http://localhost:3001/upload")
+            .then(res => res.json());
+        console.log(responses);
+
+        for (let i = 0; i < responses.length; i++) {
+            // TODO: Make unique submissions
+            submission.mainSubmission.contentDriveUrl = "https://drive.google.com/file/d/" + responses[i].id;
+
+            // push new submission to front of array
+            submissions.unshift(submission);
+        }
 
         try {
             // update user metadata with submission
@@ -125,16 +149,32 @@ export default function SubmissionForm() {
                     submissions
                 }
             });
-            // add submission to database
-            await fetch("/api/submissions/add", {
-                method: "POST",
-                body: JSON.stringify({
-                    submission
-                }),
-            });
         } catch (error) {
             console.log(error);
         }
+
+        for (let i = 0; i < submissions.length; i++) {
+            try {
+                // add submission to database
+                await fetch("/api/submissions/add", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        submission
+                    }),
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        // await fetch("/api/submissions/get")
+        //     .then(res => console.log(res.json()));
+        //     .then(res => res.json());
+
+        // console.log(files[0]);
+            // .then(data => {
+            //     console.log(data);
+            // });
     };
     
     /**
@@ -208,7 +248,7 @@ export default function SubmissionForm() {
                     Cancel
                 </Link>
             </button>
-            <button type="submit" onClick={handleSubmit} className="absolute bottom-[10px] right-[10px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg">
+            <button type="submit" name="submit" onClick={handleSubmit} className="absolute bottom-[10px] right-[10px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg">
                 <Link href="/">
                     Submit
                 </Link>

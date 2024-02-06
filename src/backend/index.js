@@ -8,7 +8,7 @@ const fs = require("fs");
 const app = express();
 app.use(cors());
 
-let files = [];
+let uploads = [];
 
 const storage = multer.diskStorage({
     destination: function (req, file, callback) {
@@ -31,7 +31,7 @@ const upload = multer({ storage: storage });
 
 app.use(express.static("public"));
 
-app.post("/upload", upload.any("files"), async (req, res) => {
+app.get("/upload", async (req, res) => {
     try {
         const auth = new google.auth.GoogleAuth({
             keyFile: "backend/key.json",
@@ -43,11 +43,10 @@ app.post("/upload", upload.any("files"), async (req, res) => {
             auth
         });
 
-        const files = req.files;
         const responses = [];
 
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
+        for (let i = 0; i < uploads.length; i++) {
+            const file = uploads[i];
             const response = await drive.files
                 .create({
                     requestBody: {
@@ -70,12 +69,17 @@ app.post("/upload", upload.any("files"), async (req, res) => {
                                 .send("Error deleting local file.");
                         }
                     });
-                    return response;
+                    return {
+                        name: response.data.name, 
+                        id: response.data.id
+                    };
                 });
 
             responses.push(response);
         }
         res.json({ body: responses });
+        // console.log(responses);
+
     } catch (error) {
         console.error("Error uploading files:", error);
         res.status(500).json({
@@ -85,12 +89,25 @@ app.post("/upload", upload.any("files"), async (req, res) => {
 });
 
 app.post("/update", upload.any("inputFile"), async (req, res) => {
-    files = req.files;
+    uploads.push(req.files[0]);
+    // console.log(uploads);
 });
 
-app.post("/retrieve", async (req, res) => {
-    res.json({ body: files });
-});
+// app.get("/retrieve", async (req, res) => {
+//     // let file = uploads.shift();
+//     console.log(uploads);
+//     // console.log(file);
+//     res.json({body: uploads});
+//     // const idx = parseInt(req.body, 10);
+//     // console.log(idx);
+//     // console.log(uploads[idx]);
+//     // res.json({ body: uploads[idx] });
+// });
+
+// app.get("/retrieve", async (req, res) => {
+//     console.log(uploads);
+//     res.json({ body: uploads });
+// });
 
 const port = 3001;
 app.listen(port, () => {
