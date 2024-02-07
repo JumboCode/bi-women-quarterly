@@ -155,6 +155,11 @@ export default function HomePage() {
     // if (user && user.unsafeMetadata.submissions) {
     //     submissions = user.unsafeMetadata.submissions as Submission[];
     // }
+    /**
+     * Getting submission for user getting onto the webpage 
+     * @author So Hyun Kim, Avery Hanna
+     * @returns submissions of all users 
+     */
     const getSubmissions = async () => {
         if (!user) {
             console.log("NO USER!"); 
