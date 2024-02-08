@@ -24,65 +24,18 @@ import { useUser } from "@clerk/nextjs";
 import LocalFile from '@/components/SubmissionForm/LocalFile';
 import Preview from '@/types/Preview';
 
-// Import API 
-import type { NextApiRequest, NextApiResponse } from 'next';
-import clientPromise from "@/lib/mongodb";
-
 
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
-// export default async (req: NextApiRequest, res: NextApiResponse) => {
-//     // Takes in incoming response and save to database
-//     const { user } = useUser();
-
-//     if (!user) {
-//         return null;
-//     }
-    
-//     try {
-//         // Connect to the databse 
-//         const client = await clientPromise;
-//         const db = client.db("BiWomenQuarterly");
-//         const submission_database = db.collection("Submissions");
-//         //const submissions = await submission_database.find({"id": user.id}); 
-//         const submissions = await submission_database.find({ author: req.query.user.name }).toArray(); 
-
-//         console.log("Printing collection:");
-//         console.log(submissions);
-//     } catch (e) {
-//         console.log(e);
-//     };
 
 export default function SubmissionForm() { 
     const { user } = useUser();
-    console.log("HELLOHELLOPLEASE1"); 
 
     if (!user) {
          console.log("No user found"); 
          return null;
     }
-    console.log("HELLOHELLOPLEASE2"); 
-
-//     // TO DO: 
-//     // 1. API Call to the database 
-//     // 2. For loop ?? Use the user information to get the submission information 
-
-//     // Get user id 
-//     // let user_id = user.id; 
-
-    // TODO: get rid of these. Only needed for updating metadata
-    // let submissions: Submission[] = [];
-    // if (user && user.unsafeMetadata.submissions) {
-    //     submissions = user.unsafeMetadata.submissions as Submission[];
-    // }
-
-    // Make API call to database 
-    console.log("HELLOHELLOPLEASE3"); 
-
-
-
-
 
     /*------------------------------------------------------------------------*/
     /* -------------------------------- Setup ------------------------------- */
@@ -125,13 +78,6 @@ export default function SubmissionForm() {
         submission.title = submission.mainSubmission.title;
 
         try {
-            // // update user metadata with submission
-            // console.log(submissions); 
-            // user.update({
-            //     unsafeMetadata: {
-            //         submissions
-            //     }
-            // });
             // add submission to database
             console.log("here!!!")
             await fetch("../api/submissions/add", {

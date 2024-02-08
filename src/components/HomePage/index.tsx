@@ -183,10 +183,7 @@ export default function HomePage() {
 
     const { user } = useUser();
 
-    //let submissions: Submission[] = [];
-    // if (user && user.unsafeMetadata.submissions) {
-    //     submissions = user.unsafeMetadata.submissions as Submission[];
-    // }
+
     /**
      * Getting submission for user getting onto the webpage 
      * @author So Hyun Kim, Avery Hanna
@@ -238,8 +235,6 @@ export default function HomePage() {
         }
         
     }
-    console.log("Right after getSubmissions()"); // dead 
-    console.log(allSubmissions); 
 
     /**
     * Get submissions when user is loaded or updated

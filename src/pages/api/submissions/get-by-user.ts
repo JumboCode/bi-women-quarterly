@@ -17,9 +17,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         console.log(req.query.id); 
         const collection = await db
             .collection("Submissions")
-            // user_2Yzgb6Qxd613awheo6fCHRb8g1n
-            .find({ 'submission.id' : req.query.id }) // when I put req.query.id, returns the whole submission DB and not the individual user
-                                        // When we put req.query, does not return anything  
+            .find({ 'submission.id' : req.query.id }) 
             .toArray();
         
         res.status(201).json({ success: true, data: collection });
