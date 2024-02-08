@@ -72,10 +72,10 @@ export default function SubmissionForm() {
 //     // let user_id = user.id; 
 
     // TODO: get rid of these. Only needed for updating metadata
-    let submissions: Submission[] = [];
-    if (user && user.unsafeMetadata.submissions) {
-        submissions = user.unsafeMetadata.submissions as Submission[];
-    }
+    // let submissions: Submission[] = [];
+    // if (user && user.unsafeMetadata.submissions) {
+    //     submissions = user.unsafeMetadata.submissions as Submission[];
+    // }
 
     // Make API call to database 
     console.log("HELLOHELLOPLEASE3"); 
@@ -121,17 +121,17 @@ export default function SubmissionForm() {
      */
     const handleSubmit = async () => {
         // push new submission to front of array
-        submissions.unshift(submission);
+        // submissions.unshift(submission);
         submission.title = submission.mainSubmission.title;
 
         try {
-            // update user metadata with submission
-            console.log(submissions); 
-            user.update({
-                unsafeMetadata: {
-                    submissions
-                }
-            });
+            // // update user metadata with submission
+            // console.log(submissions); 
+            // user.update({
+            //     unsafeMetadata: {
+            //         submissions
+            //     }
+            // });
             // add submission to database
             console.log("here!!!")
             await fetch("../api/submissions/add", {
