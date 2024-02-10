@@ -25,7 +25,7 @@ type  Submission = {
     author: string;
     title: string;
     date: string;
-    issue: Issues;
+    issue: string;
     medium: Mediums;
     isApproved: boolean;
     mainSubmission: Preview;

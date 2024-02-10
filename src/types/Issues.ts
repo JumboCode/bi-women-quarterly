@@ -7,6 +7,7 @@
 enum Issues {
     Current = "Current",
     Next = "Next",
+    Previous = "Previous",
     None = "None",
 }
 
