@@ -11,7 +11,6 @@ import { useEffect, useState } from 'react';
 import Submission from "@/types/Submission"
 import PreviewType from "@/types/PreviewType"
 import Mediums from '@/types/Mediums';
-import Issues from '@/types/Issues';
 
 // Import Next
 import Link from 'next/link'
@@ -22,11 +21,6 @@ import { useUser } from "@clerk/nextjs";
 // Import components
 import LocalFile from '@/components/SubmissionForm/LocalFile';
 import Preview from '@/types/Preview';
-import { log } from 'console';
-
-
-// need to map these below without using the issues type, issue is string
-
 
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
@@ -36,9 +30,6 @@ export default function SubmissionForm() {
     /*------------------------------------------------------------------------*/
     const { user } = useUser();
 
-    // if (!user) {
-    //     return null;
-    // }
 
     let submissions: Submission[] = [];
     if (user && user.unsafeMetadata.submissions) {
@@ -79,7 +70,7 @@ export default function SubmissionForm() {
     /**
      * Fetches the issue themes from the database and sets the issues state
      * @author Austen Money
-     * @author Walid Nejimi
+     * @author Walid Nejmi
      * @param event the event that has been changed
      */
     const fetchIssueThemes = async () => {
