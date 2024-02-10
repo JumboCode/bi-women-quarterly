@@ -257,6 +257,19 @@ export default function HomePage() {
                         />
                     )}
             </div>
-        </div>
+
+
+            <div className="bg-gray-300 p-3 flex justify-between items-center fixed bottom-0 w-full">
+                <div>© 2024 BiWomenQuarterly</div>
+                <div className="flex items-center">
+                    <div className="mr-8">
+                        <a href="https://www.biwomenquarterly.com/about/" target="_blank" rel="noopener noreferrer" className="text-base">About Us</a>
+                    </div>
+                    <div>
+                        <a href="https://www.biwomenquarterly.com/contact/" target="_blank" rel="noopener noreferrer" className="text-base">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+            </div>
     );
 }
