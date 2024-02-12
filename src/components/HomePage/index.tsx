@@ -339,13 +339,15 @@ export default function HomePage() {
                     </li>
                 </div>
             </div>
-                {isLoading
-                ? <div className="flex h-screen">
+                {isLoading ? 
+                <div className="flex h-screen">
                     <div className="m-auto">
-                        <TailSpin ></TailSpin></div></div>
+                        <TailSpin></TailSpin>
+                    </div>
+                </div>
                 : (
                     <div className="flex item-center justify-center">
-                        {filteredSubmissions.length < 1 ? (
+                        {filteredSubmissions.length == 0 ? (
                             <div className="relative pt-20">
                                 <div className="box-content bg-gray-300 relative w-full md:w-96 h-56 item-center left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"></div> 
                                 <br></br>
