@@ -340,7 +340,9 @@ export default function HomePage() {
                 </div>
             </div>
                 {isLoading
-                ? <TailSpin></TailSpin>
+                ? <div className="flex h-screen">
+                    <div className="m-auto">
+                        <TailSpin ></TailSpin></div></div>
                 : (
                     <div className="flex item-center justify-center">
                         {filteredSubmissions.length < 1 ? (
