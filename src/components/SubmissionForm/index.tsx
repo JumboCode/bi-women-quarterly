@@ -47,10 +47,10 @@ export default function SubmissionForm() {
     const [submission, setSubmission] = useState<Submission>(
         {
             id : user.id,
-            author : user.fullName, 
+            author : user.fullName ?? "", 
             title : "",
             date: Date().toString(),
-            issue: Issues.None,
+            issue: "",
             medium: Mediums.None,
             isApproved : false,
             mainSubmission: {
