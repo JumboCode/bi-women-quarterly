@@ -2,6 +2,7 @@
  * Submission form components that takes in title, issue and type of
  * publication
  * @author Alana Sendlakowski, Vanessa Rose
+ * @author So Hyun Kim, Avery Hanna
  */
 
 // Import React
@@ -22,6 +23,7 @@ import { useUser } from "@clerk/nextjs";
 import LocalFile from '@/components/SubmissionForm/LocalFile';
 import Preview from '@/types/Preview';
 
+
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
@@ -30,10 +32,8 @@ export default function SubmissionForm() {
     /*------------------------------------------------------------------------*/
     const { user } = useUser();
 
-
-    let submissions: Submission[] = [];
-    if (user && user.unsafeMetadata.submissions) {
-        submissions = user.unsafeMetadata.submissions as Submission[];
+    if (!user) {
+         return null;
     }
 
     /*------------------------------------------------------------------------*/
@@ -45,10 +45,10 @@ export default function SubmissionForm() {
     // Initialize state
     const [submission, setSubmission] = useState<Submission>(
         {
-            id : "",
-            author : "",
+            id : user.id,
+            author : user.fullName ?? "", 
             title : "",
-            date: "",
+            date: Date().toString(),
             issue: "",
             medium: Mediums.None,
             isApproved : false,
@@ -95,7 +95,8 @@ export default function SubmissionForm() {
      */
     const handleSubmit = async () => {
         // push new submission to front of array
-        submissions.unshift(submission);
+        // submissions.unshift(submission);
+        submission.title = submission.mainSubmission.title;
 
         try {
             // add submission to database
