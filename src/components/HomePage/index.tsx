@@ -196,15 +196,11 @@ export default function HomePage() {
         });
 
         if (!user) {
-            console.log("NO USER!"); 
             return; 
         }
         try {
             // get submissions from database
-            console.log("Got the user!!!"); 
             const authorId = user?.id; 
-            console.log("printing out author id");
-            console.log(authorId); 
             const url = `/api/submissions/get-by-user?id=${authorId}`;
 
             await fetch(url, {
@@ -213,13 +209,10 @@ export default function HomePage() {
             .then(res => res.json())
             .then(res => {
                 if (res.success) {
-                    console.log(res.data); 
                     dispatch({
                         type: ActionType.UpdateAllSubmissions,
                         newSubmissions: res.data.reverse().map((data: any) => data.submission)
                     });
-                    console.log("Got submissions from database");
-                    //console.log(submissions); 
                 } else {
                     console.log("Failed to connect to database");
                 }

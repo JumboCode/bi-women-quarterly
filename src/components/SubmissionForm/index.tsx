@@ -33,7 +33,6 @@ export default function SubmissionForm() {
     const { user } = useUser();
 
     if (!user) {
-         console.log("No user found"); 
          return null;
     }
 
@@ -101,7 +100,6 @@ export default function SubmissionForm() {
 
         try {
             // add submission to database
-            console.log("here!!!")
             await fetch("../api/submissions/add", {
                 method: "POST",
                 body: JSON.stringify({
