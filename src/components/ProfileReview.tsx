@@ -41,7 +41,7 @@ enum View {
 
 type UserInfo = {
     profilePicture?: string;
-    email: string, // required
+    primaryEmailAddress: string, // required
     firstName?: string,
     lastName?: string,
     authorName: string, // required
@@ -123,9 +123,9 @@ const ProfileReview: React.FC<{}> = () => {
         view: View.Preview,
         userInfo: {
             profilePicture: "defaultpfp.png",
-            email: 'No email given',
-            firstName: 'No first name given',
-            lastName: 'No last name given',
+            primaryEmailAddress: 'No email given' || user?.primaryEmailAddress,
+            firstName: 'No first name given' || user?.firstName,
+            lastName: 'No last name given' || user?.lastName,
             authorName: 'No author name given',
             pronouns: 'No pronouns given',
             bio: 'No bio given',
@@ -198,7 +198,7 @@ const ProfileReview: React.FC<{}> = () => {
             type: ActionType.UpdateUserInfo,
             updatedUserInfo: {
                 profilePicture: userProps.profilePicture as string ?? "defaultpfp.png",
-                email: userProps.primaryEmailAddress as string ?? 'No email given',
+                primaryEmailAddress: userProps.primaryEmailAddress as string ?? 'No email given',
                 firstName: userProps.firstName as string ?? 'No first name given',
                 lastName: userProps.lastName as string ?? 'No last name given',
                 authorName: userProps.authorName as string ?? 'No author name given',
@@ -233,14 +233,6 @@ const ProfileReview: React.FC<{}> = () => {
         dispatch({ type: ActionType.ToggleView });
     }
 
-    /**
-     * Change to view mode.
-     * @author Lucien Bao, Lydia Chen
-     * @param event the event that has been changed
-     */
-    const switchToView = (event: any) => {
-        dispatch({ type: ActionType.ToggleView });
-    }
 
     /**
      * Select race/ethnicity
@@ -400,6 +392,28 @@ const ProfileReview: React.FC<{}> = () => {
         }
     };
 
+    /**
+     * Change to view mode and update user info in Clerk.
+     * @author Lucien Bao, Lydia Chen
+     * @param event the event that has been changed
+     */
+    const updateClerk = async (event: any) => {
+        event.preventDefault();
+        const deepCopy = JSON.parse(JSON.stringify(userInfo));
+
+        try {
+            await user?.update({
+                unsafeMetadata: {
+                    ...deepCopy,
+                },
+            });
+            console.log("User updated successfully");
+            dispatch({ type: ActionType.ToggleView });
+        } catch (error) {
+            console.log("Error updating user", error);
+        }
+    }
+
     // Initializes a null reference
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -459,7 +473,7 @@ const ProfileReview: React.FC<{}> = () => {
                 <div className="border border-solid border-slate-400 rounded-xl mb-5 p-5">
                     <div>
                         <label className="font-bold">Email</label>
-                        <div className="py-4">{userInfo!.email}</div>
+                        <div className="py-4">{userInfo!.primaryEmailAddress}</div>
                     </div>
 
                     <div className="grid grid-cols-2 lg:pr-96">
@@ -570,13 +584,13 @@ const ProfileReview: React.FC<{}> = () => {
                     <input type="file" accept="image/*" ref={fileInputRef} onChange={uploadPicture} />
                     {/* <button type="button" onClick={() => fileInputRef.current?.click()} className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded h-10">Upload Photo</button> */}
                     <button type="button" onClick={deletePicture} className="bg-transparent hover:bg-gray-400 text-gray-500 font-bold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded h-10">Delete Photo</button>
-                    <button type="submit" onClick={switchToView} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-10">✓ Done</button>
+                    <button type="submit" onClick={updateClerk} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-10">✓ Done</button>
                 </div>
 
                 {/* Biographical info */}
                 <div className="bg-white border border-solid border-slate-400 rounded-xl mb-5 p-5">
                     <label className="font-bold" htmlFor="email">Email*</label><br />
-                    <input className="border-b-2 my-4 w-80" type="text" id="email" defaultValue={userInfo!.email} onChange={(e) => handleChange('email', e.target.value)} required /><br />
+                    <input className="border-b-2 my-4 w-80" type="text" id="email" defaultValue={userInfo!.primaryEmailAddress} onChange={(e) => handleChange('email', e.target.value)} required /><br />
 
                     <div className="grid xl:grid-cols-2 lg:pr-96 grid-cols-1">
                         <div>
@@ -663,7 +677,7 @@ const ProfileReview: React.FC<{}> = () => {
                                     value={country!}
                                     onChange={selectCountry}
                                     priorityOptions={["US"]}
-                                    style={{ width: '192px' }}
+                                // style={{ width: '192px' }}
                                 />
                                 <div className="border-b-2 border-gray-500 w-48"></div>
                             </div>
@@ -676,7 +690,7 @@ const ProfileReview: React.FC<{}> = () => {
                                     country={country!}
                                     value={stateProvince!}
                                     onChange={selectStateProvince}
-                                    style={{ width: '192px' }}
+                                // style={{ width: '192px' }}
                                 />
                                 <div className="border-b-2 border-gray-500 w-48"></div>
                             </div>
