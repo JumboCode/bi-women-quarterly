@@ -93,22 +93,6 @@ app.post("/update", upload.any("inputFile"), async (req, res) => {
     // console.log(uploads);
 });
 
-// app.get("/retrieve", async (req, res) => {
-//     // let file = uploads.shift();
-//     console.log(uploads);
-//     // console.log(file);
-//     res.json({body: uploads});
-//     // const idx = parseInt(req.body, 10);
-//     // console.log(idx);
-//     // console.log(uploads[idx]);
-//     // res.json({ body: uploads[idx] });
-// });
-
-// app.get("/retrieve", async (req, res) => {
-//     console.log(uploads);
-//     res.json({ body: uploads });
-// });
-
 const port = 3001;
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

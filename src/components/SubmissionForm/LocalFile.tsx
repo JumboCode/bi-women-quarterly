@@ -1,6 +1,6 @@
 /**
   * Local File Page, accessed when clicking the "Local File" button
-  * @author Alana Sendlakowski, Vanessa Rose
+  * @author Alana Sendlakowski, Vanessa Rose, Shreyas Ravi
  */
 
 // Import React
@@ -38,43 +38,21 @@ function LocalFile(props: Props) {
     const [showModal, setShowModal] = React.useState(false);
     const [showFile, setShowFile] = React.useState(false);
 
-    // not of type file, just storing string of file name
+    // storing string of file name
     const [fileName, setFileName] = React.useState<any>([]);
-    // const [files, setFiles] = useState<File[]>([]);
 
     /*------------------------------------------------------------------------*/
     /* ------------------------- Lifecycle Functions ------------------------ */
     /*------------------------------------------------------------------------*/
 
-    // /**
-    //  * Handles submit of the form, sets showModal to false
-    //  * @author Alana Sendlakowski, Vanessa Rose
-    //  * @param event the event that has been changed
-    //  */
-    // const handleSubmit = (event : any) => {
-    //     event.preventDefault();
-    //     setShowModal(false);
-        
-    //     const selectedFiles = event.target.files;
-
-    //     if (selectedFiles) {
-    //         setFiles(Array.from(selectedFiles));
-    //     }
-    // }
-
     /**
      * Adds the file name to the array of file names and changes the booleans
      * to display the modal and files
-     * @author Alana Sendlakowski, Vanessa Rose
+     * @author Alana Sendlakowski, Vanessa Rose, Shreyas Ravi
      * @param event the event that has been changed
      */
     const handleSubmissionChange = async (event : any) => {
         event.preventDefault();
-
-        // setFiles(Array.from(event.target.files));
-        // console.log("FILES: " + files);
-        
-
 
         fileName.push(event.target.files[0].name);
         console.log("HERE: " + event.target.files[0]);
@@ -85,23 +63,16 @@ function LocalFile(props: Props) {
             console.log("item: " + item);
         }
 
-    //     await fetch("http://localhost:3001/update", {
-    //         method: "POST",
-    //         body: event.target.files
-    //     });
-
         let formData = new FormData();
         formData.append(event.target.files[0].name, event.target.files[0]);
+
+        // posts user response to server to be fetched in index.tsx
         const response = await fetch("http://localhost:3001/update", {
             method: "POST",
             body: formData
         })
             .then(res => res.json())
             .catch(err => console.error(err));
-    }
-
-    const handleDriveUrl = (event : any) => {
-        event.preventDefault();
     }
 
     /*------------------------------------------------------------------------*/

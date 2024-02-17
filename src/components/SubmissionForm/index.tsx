@@ -1,7 +1,7 @@
 /**
  * Submission form components that takes in title, issue and type of
  * publication
- * @author Alana Sendlakowski, Vanessa Rose
+ * @author Alana Sendlakowski, Vanessa Rose, Shreyas Ravi, Austen Money
  */
 
 // Import React
@@ -73,62 +73,10 @@ export default function SubmissionForm() {
     /**
      * Prints the title, issue, and type of the publication to the console
      * when the form is submitted
-     * @author Alana Sendlakowski, Vanessa Rose
+     * @author Alana Sendlakowski, Vanessa Rose, Shreyas Ravi
      * @param event the event that has been changed
      */
     const handleSubmit = async () => {
-    // async function handleSubmit(event: any) {
-
-        // START
-        // obtain all files from event (event.target.files)
-
-        // let formData = new FormData();
-        // let files: any[] = [];
-
-        // const data = await fetch("http://localhost:3001/retrieve")
-        //     .then(res => res.json());
-
-        // console.log(data);
-
-        // let files = event.target.files;
-        // console.log(event);
-        // console.log(event.target.files);
-        
-        
-        // let fileArray = Array.from(files);
-        // let numberOfFiles = fileArray.length;
-
-        // for (let i = 0; i < numberOfFiles; i++) {
-        //     formData.append(files[i].name, files[i]);
-        // }
-
-        // // api call
-        // const response = await fetch("http://localhost:3001/upload", {
-        //     method: "POST",
-        //     body: formData
-        // })
-        //     .then(res => res.json())
-        //     .catch(err => console.error(err));
-            
-        // google drive api call for each file
-
-        // create a submission for each file with gdrive link data
-        // add submission to submissions array
-        // mongodb api call for each submission
-
-        // const data = await fetch("http://localhost:3001/retrieve")
-        //     .then(res => res.json())
-        //     .then(res => res.body);
-
-        // console.log(data);
-
-        // await fetch("http://localhost:3001/retrieve")
-        //     .then(res => res.json())
-        //     .then(data => {
-        //         console.log(data.body);
-        //     })
-
-
 
         const responses = await fetch("http://localhost:3001/upload")
             .then(res => res.json());
@@ -166,21 +114,13 @@ export default function SubmissionForm() {
                 console.log(error);
             }
         }
-
-        // await fetch("/api/submissions/get")
-        //     .then(res => console.log(res.json()));
-        //     .then(res => res.json());
-
-        // console.log(files[0]);
-            // .then(data => {
-            //     console.log(data);
-            // });
     };
     
     /**
      * Handles the change of elements in the form by updating useState variable
-     * @author Alana Sendlakowski, Vanessa Rose
-     * @param event the event that has been changed
+     * @author Austen Money
+     * @param event the event that has been changed (when a new file is ubloaded
+     *              within the modal)
      * @returns new states of all the elements in the form
      */
     const handleSubmissionChange = (event : any) => {
@@ -189,6 +129,12 @@ export default function SubmissionForm() {
         })
     }
 
+    /**
+     * Handles the change of file submissions 
+     * @author Austen Money
+     * @param event the event that has been changed
+     * @returns new states of all the elements in the form
+     */   
     const handleNewPreview = (newPreview: Preview) => {
         setSubmission( prevValues => {
             return { ...prevValues, mainSubmission: newPreview}
