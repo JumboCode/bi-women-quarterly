@@ -34,7 +34,7 @@ app.use(express.static("public"));
 app.get("/upload", async (req, res) => {
     try {
         const auth = new google.auth.GoogleAuth({
-            keyFile: "backend/key.json",
+            keyFile: "src/backend/key.json",
             scopes: ["https://www.googleapis.com/auth/drive"]
         });
 
