@@ -123,7 +123,8 @@ const ProfileReview: React.FC<{}> = () => {
         view: View.Preview,
         userInfo: {
             profilePicture: "defaultpfp.png",
-            primaryEmailAddress: 'No email given' || user?.primaryEmailAddress,
+            primaryEmailAddress: 'No email given'
+                || user?.primaryEmailAddress?.emailAddress,
             firstName: 'No first name given' || user?.firstName,
             lastName: 'No last name given' || user?.lastName,
             authorName: 'No author name given',
@@ -401,12 +402,18 @@ const ProfileReview: React.FC<{}> = () => {
         event.preventDefault();
         const deepCopy = JSON.parse(JSON.stringify(userInfo));
 
+        // console.log(userInfo.primaryEmailAddress);
+
         try {
             await user?.update({
+                // primaryEmailAddressId: userInfo.primaryEmailAddress,
                 unsafeMetadata: {
                     ...deepCopy,
                 },
             });
+            // user?.update()
+            // user?.createEmailAddress({ email: "thing@example.com" });
+            // console.log(user?.emailAddresses)
             console.log("User updated successfully");
             dispatch({ type: ActionType.ToggleView });
         } catch (error) {
@@ -590,7 +597,7 @@ const ProfileReview: React.FC<{}> = () => {
                 {/* Biographical info */}
                 <div className="bg-white border border-solid border-slate-400 rounded-xl mb-5 p-5">
                     <label className="font-bold" htmlFor="email">Email*</label><br />
-                    <input className="border-b-2 my-4 w-80" type="text" id="email" defaultValue={userInfo!.primaryEmailAddress} onChange={(e) => handleChange('email', e.target.value)} required /><br />
+                    <input className="border-b-2 my-4 w-80" type="text" id="email" defaultValue={userInfo!.primaryEmailAddress} onChange={(e) => handleChange('primaryEmailAddress', e.target.value)} required /><br />
 
                     <div className="grid xl:grid-cols-2 lg:pr-96 grid-cols-1">
                         <div>
