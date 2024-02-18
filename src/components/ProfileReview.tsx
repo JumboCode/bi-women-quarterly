@@ -161,6 +161,11 @@ const ProfileReview: React.FC<{}> = () => {
     /* ------------------------- Lifecycle Functions ------------------------ */
     /*------------------------------------------------------------------------*/
 
+    const getDateFromString = (date: string) => {
+        // Subtract 1 from month because months use indexing for some reason
+        return new Date(+date.substring(0, 4), +date.substring(5, 7) - 1, +date.substring(8, 10));
+    }
+
     /**
      * Mount
      * @author Lucien Bao, Austen Money
@@ -205,7 +210,7 @@ const ProfileReview: React.FC<{}> = () => {
                 authorName: userProps.authorName as string ?? 'No author name given',
                 pronouns: userProps.pronouns as string ?? 'No pronouns given',
                 bio: userProps.bio as string ?? 'No bio given',
-                birthday: userProps.birthday as Date ?? new Date(),
+                birthday: getDateFromString(userProps.birthday as string) ?? new Date(),
                 raceEthnicity: userProps.raceEthnicity as RaceEthnicity ?? 'No race/ethnicity given',
                 gender: userProps.gender as Gender ?? 'No gender given',
                 country: userProps.country as string ?? 'No country given',
@@ -373,24 +378,13 @@ const ProfileReview: React.FC<{}> = () => {
     const handleChange = (field: string, value: any) => {
         const deepCopy = JSON.parse(JSON.stringify(userInfo));
 
-        if (value instanceof Date) {
-            dispatch({
-                type: ActionType.UpdateUserInfo,
-                updatedUserInfo: {
-                    ...deepCopy,
-                    [field]: value
-                },
-            });
-        } else {
-            // For other types, proceed as usual
-            dispatch({
-                type: ActionType.UpdateUserInfo,
-                updatedUserInfo: {
-                    ...deepCopy,
-                    [field]: value
-                },
-            });
-        }
+        dispatch({
+            type: ActionType.UpdateUserInfo,
+            updatedUserInfo: {
+                ...deepCopy,
+                [field]: value
+            },
+        });
     };
 
     /**
@@ -401,8 +395,6 @@ const ProfileReview: React.FC<{}> = () => {
     const updateClerk = async (event: any) => {
         event.preventDefault();
         const deepCopy = JSON.parse(JSON.stringify(userInfo));
-
-        // console.log(userInfo.primaryEmailAddress);
 
         try {
             await user?.update({
@@ -439,7 +431,7 @@ const ProfileReview: React.FC<{}> = () => {
     const stateProvince = userInfo!.stateProvince;
 
     // Helper function for Preview mode display of user birthday
-    const extractDateString = (date: Date | undefined): string => {
+    const extractDateString = (date: Date): string => {
         if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
             return "No date given";
         }
