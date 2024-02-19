@@ -13,12 +13,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const client = await clientPromise;
         const db = client.db("BiWomenQuarterly");
-        const {user_id} = req.query;
         
-        console.log(user_id); 
         const collection = await db
             .collection("Submissions")
-            .find({ 'submission.id' : user_id }) 
+            .find({ 'submission.id' : req.query.id }) 
             .toArray();
         
         res.status(201).json({ success: true, data: collection });

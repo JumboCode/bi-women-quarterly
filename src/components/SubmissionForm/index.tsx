@@ -154,7 +154,7 @@ export default function SubmissionForm() {
         // fetch on get by user api and pass in user id as part of request, user instead of submission in body, query is user instead of 
         try {
             // fetch user submission
-            await fetch("/api/submissions/get-by-user?user=" + user.id, {
+            await fetch(`/api/submissions/get-by-user?user=${user.id}`, {
                 method: "GET",
             })
             .then(res => console.log(res.json()));
