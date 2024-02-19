@@ -6,7 +6,8 @@
  */
 
 // Import React
-import React, { useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
+import { TailSpin } from 'react-loader-spinner';
 
 // Import Next
 import Link from 'next/link';
@@ -40,22 +41,42 @@ enum FilterType {
 type State = {
     // How the submissions should be filtered
     filter: FilterType;
+    // All user submissions
+    allSubmissions: Submission[];
+    // Submissions to show on the page
+    filteredSubmissions: Submission[];
+    // Whether to show loading spinner
+    isLoading: boolean;
 };
 
 /* ------------- Actions ------------ */
 
 // Types of actions
 enum ActionType {
-    ChangeFilter = "ChangeFilter"
+    ChangeFilter = "ChangeFilter",
+    UpdateAllSubmissions = "UpdateAllSubmissions",
+    ToggleLoading = "ToggleLoading"
 }
 
 // Action definitions
-type Action = {
-    // Action type
-    type: ActionType.ChangeFilter;
-    // Add description of required payload property
-    newFilter: FilterType;
-};
+type Action = (
+    {
+        // Action type
+        type: ActionType.ChangeFilter;
+        // Filter to change to
+        newFilter: FilterType;
+    }
+    | {
+        // Action type
+        type: ActionType.UpdateAllSubmissions; 
+        // Submissions to update to
+        newSubmissions: Submission[];
+    }
+    | {
+        // Action type
+        type: ActionType.ToggleLoading;
+    }
+);
 
 /**
  * Reducer that executes actions
@@ -67,9 +88,26 @@ type Action = {
 const reducer = (state: State, action: Action): State => {
     switch (action.type) {
         case ActionType.ChangeFilter: {
+            const filteredSubmissions = filterSubmissions(
+                state.allSubmissions,
+                action.newFilter
+            );
             return {
                 ...state,
-                filter: action.newFilter
+                filter: action.newFilter,
+                filteredSubmissions,
+            };
+        }
+        case ActionType.UpdateAllSubmissions: {
+            return {
+                ...state, 
+                allSubmissions: action.newSubmissions,
+            };
+        }
+        case ActionType.ToggleLoading: {
+            return {
+                ...state,
+                isLoading: !state.isLoading,
             };
         }
         default: {
@@ -121,29 +159,105 @@ export default function HomePage() {
     /*------------------------------------------------------------------------*/
     /* -------------------------------- Setup ------------------------------- */
     /*------------------------------------------------------------------------*/
-
-    const { user } = useUser();
-
-    let submissions: Submission[] = [];
-    if (user && user.unsafeMetadata.submissions) {
-        submissions = user.unsafeMetadata.submissions as Submission[];
-    }
-
-    
+        
     /* -------------- State ------------- */
     
     // Initial state
     const initialState: State = {
-        filter: FilterType.None
+        filter: FilterType.None,
+        allSubmissions: [],
+        filteredSubmissions: [],
+        isLoading: false,
     };
     
     // Initialize state
     const [state, dispatch] = useReducer(reducer, initialState);
     
     // Destructure common state
-    const { filter } = state;
-    
-    submissions = filterSubmissions(submissions, filter);
+    const {
+        filter,
+        allSubmissions,
+        filteredSubmissions,
+        isLoading
+    } = state;
+
+    const { user } = useUser();
+
+
+    /**
+     * Getting submission for user getting onto the webpage 
+     * @author So Hyun Kim, Avery Hanna
+     * @returns submissions of all users 
+     */
+    const getSubmissions = async () => {
+        // Show loading spinner
+        dispatch({
+            type: ActionType.ToggleLoading,
+        });
+
+        if (!user) {
+            return; 
+        }
+        try {
+            // get submissions from database
+            const authorId = user?.id; 
+            const url = `/api/submissions/get-by-user?id=${authorId}`;
+
+            await fetch(url, {
+                method: "GET", 
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.success) {
+                    dispatch({
+                        type: ActionType.UpdateAllSubmissions,
+                        newSubmissions: res.data.reverse().map((data: any) => data.submission)
+                    });
+                } else {
+                    console.log("Failed to connect to database");
+                }
+            })
+            .then(() => {
+                // Hide loading spinner
+                dispatch({
+                    type: ActionType.ToggleLoading,
+                });
+            });
+        } catch (error) {
+            console.log(error);
+        }
+        
+    }
+
+    /**
+    * Get submissions when user is loaded or updated
+    * @author Avery Hanna, So Hyun Kim 
+    */
+    useEffect(
+        () => {
+        (async () => {
+            await getSubmissions();
+        })();
+        },
+        [ user ],
+    );
+
+    /**
+    * Filter submissions by current filter whenever all submissions are updated
+    * @author Austen Money
+    */
+    useEffect(
+        () => {
+        (() => {
+            dispatch({
+                type: ActionType.ChangeFilter,
+                newFilter: filter,
+            });
+        })();
+        },
+        [ allSubmissions ],
+    );
+
     
     /*------------------------------------------------------------------------*/
     /* ------------------------- Component Functions ------------------------ */
@@ -152,22 +266,6 @@ export default function HomePage() {
     if (!user) {
         return null;
     }
-
-    /**
-     * Clear all submissions.
-     * @author Austen Money
-     */
-    const onClearWork = () => {
-        try {
-            user.update({
-                unsafeMetadata: {
-                    submissions: []
-                }
-            });
-        } catch (error) {
-            console.log(error);
-        }
-    };
 
     /*------------------------------------------------------------------------*/
     /* ------------------------------- Render ------------------------------- */
@@ -185,12 +283,6 @@ export default function HomePage() {
                             className="HomePage-submit-button shadow-md"
                         >
                             <Link href="/previews">Review Work</Link>
-                        </button>
-                        <button
-                            onClick={onClearWork}
-                            className="HomePage-submit-button shadow-md"
-                        >
-                            Clear Work
                         </button>
                         <button
                             className="HomePage-submit-button shadow-md"
@@ -240,23 +332,31 @@ export default function HomePage() {
                     </li>
                 </div>
             </div>
-                <div className="flex item-center justify-center">
-                    {submissions.length < 1 ? (
-                        <div className="relative pt-20">
-                            <div className="box-content bg-gray-300 relative w-full md:w-96 h-56 item-center left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"></div> 
-                            <br></br>
-                            <div className="text-gray-400 text-center relative left-1/2 bottom-1/12 transform -translate-x-1/2 -translate-y-1/8">
-                                You have no submissions
+                {isLoading ? 
+                <div className="flex h-screen">
+                    <div className="m-auto">
+                        <TailSpin></TailSpin>
+                    </div>
+                </div>
+                : (
+                    <div className="flex item-center justify-center">
+                        {filteredSubmissions.length == 0 ? (
+                            <div className="relative pt-20">
+                                <div className="box-content bg-gray-300 relative w-full md:w-96 h-56 item-center left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"></div> 
+                                <br></br>
+                                <div className="text-gray-400 text-center relative left-1/2 bottom-1/12 transform -translate-x-1/2 -translate-y-1/8">
+                                    You have no submissions
+                                </div>
                             </div>
-                        </div>
-                    ) : (
-                        <ShowSubmissionThumbnails
-                            previews={submissions.map(submission => {
-                                return submission.mainSubmission;
-                            })}
-                        />
-                    )}
-            </div>
+                        ) : (
+                            <ShowSubmissionThumbnails
+                                previews={filteredSubmissions.map(submission => {
+                                    return submission.mainSubmission;
+                                })}
+                            />
+                        )}
+                    </div>
+                )}
         </div>
     );
 }
