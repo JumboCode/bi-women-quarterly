@@ -171,7 +171,7 @@ export default function SubmissionForm() {
                     </select>
 
                 <label className="pl-[50px] pr-[6px] font-bold">*Type: </label>
-                    {/* drop down element for issue selection */}
+                    {/* drop down element for type selection */}
                     <select name="medium" className="h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" value={submission.medium} onChange={handleSubmissionChange}>
                         <option defaultValue="Select Type">Select Type</option>
                         <option value={Mediums.Fiction}>{Mediums.Fiction}</option>
