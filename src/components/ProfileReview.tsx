@@ -106,6 +106,11 @@ const reducer = (state: State, action: Action): State => {
     }
 };
 
+const getDateFromString = (date: string) => {
+    // Subtract 1 from month because months use indexing for some reason
+    return new Date(+date.substring(0, 4), +date.substring(5, 7) - 1, +date.substring(8, 10));
+}
+
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
@@ -160,11 +165,6 @@ const ProfileReview: React.FC<{}> = () => {
     /*------------------------------------------------------------------------*/
     /* ------------------------- Lifecycle Functions ------------------------ */
     /*------------------------------------------------------------------------*/
-
-    const getDateFromString = (date: string) => {
-        // Subtract 1 from month because months use indexing for some reason
-        return new Date(+date.substring(0, 4), +date.substring(5, 7) - 1, +date.substring(8, 10));
-    }
 
     /**
      * Mount
@@ -375,7 +375,7 @@ const ProfileReview: React.FC<{}> = () => {
      * @param field the field to be updated in the user data
      * @param value - The new value for the specified field
      */
-    const handleChange = (field: string, value: any) => {
+    const handleChange = (field: string, value: string) => {
         const deepCopy = JSON.parse(JSON.stringify(userInfo));
 
         dispatch({
@@ -383,6 +383,25 @@ const ProfileReview: React.FC<{}> = () => {
             updatedUserInfo: {
                 ...deepCopy,
                 [field]: value
+            },
+        });
+    };
+
+    // NOTE: new
+    /**
+     * Handle any new changes to existing user data
+     * @author Lucien Bao, Lydia Chen
+     * @param field the field to be updated in the user data
+     * @param value - The new value for the specified field
+     */
+    const handleBirthdayChange = (field: string, value: string) => {
+        const deepCopy = JSON.parse(JSON.stringify(userInfo));
+
+        dispatch({
+            type: ActionType.UpdateUserInfo,
+            updatedUserInfo: {
+                ...deepCopy,
+                [field]: getDateFromString(value)
             },
         });
     };
@@ -629,7 +648,7 @@ const ProfileReview: React.FC<{}> = () => {
                                 type="date"
                                 id="birthday"
                                 defaultValue={extractDateString(userInfo.birthday!)}
-                                onChange={(e) => handleChange('birthday', e.target.value)}
+                                onChange={(e) => handleBirthdayChange('birthday', e.target.value)}
                             />
                         </div>
 
