@@ -451,12 +451,15 @@ const ProfileReview: React.FC<{}> = () => {
 
     // Helper function for Preview mode display of user birthday
     const extractDateString = (date: Date): string => {
-        if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
-            return "No date given";
-        }
-
         return (date.getUTCMonth() + 1) + '/' + date.getUTCDate() + '/' + date.getUTCFullYear();
     };
+
+    const extractDateStringHTML = (date: Date): string => {
+        const getMonth = date.getUTCMonth() + 1;
+        const m = getMonth < 10 ? "0" + (getMonth + "") : getMonth;
+        const d = date.getUTCDate() < 10 ? "0" + (date.getUTCDate() + "") : date.getUTCDate();
+        return (date.getUTCFullYear()) + '-' + m + '-' + d;
+    }
 
     // No current user
     if (!isLoaded) {
@@ -647,7 +650,7 @@ const ProfileReview: React.FC<{}> = () => {
                                 className="border-b-2 my-4 w-48"
                                 type="date"
                                 id="birthday"
-                                defaultValue={extractDateString(userInfo.birthday!)}
+                                defaultValue={extractDateStringHTML(userInfo.birthday!)}
                                 onChange={(e) => handleBirthdayChange('birthday', e.target.value)}
                             />
                         </div>
@@ -662,12 +665,12 @@ const ProfileReview: React.FC<{}> = () => {
                                 onChange={(e) => selectRaceEthnicity(e.target.value)}>
 
                                 <option value="default">Select</option>
-                                <option value="American Indian or Alaskan Native">{RaceEthnicity.AmericanIndian}</option>
-                                <option value="Asian">{RaceEthnicity.Asian}</option>
-                                <option value="Black or African American">{RaceEthnicity.Black}</option>
-                                <option value="Native Hawaiian or Pacific Islander">{RaceEthnicity.NativeHawaiian}</option>
-                                <option value="White or Caucasian">{RaceEthnicity.White}</option>
-                                <option value="Other or prefer not to say">{RaceEthnicity.Other}</option>
+                                <option value="american indian or alaskan native">{RaceEthnicity.AmericanIndian}</option>
+                                <option value="asian">{RaceEthnicity.Asian}</option>
+                                <option value="black or african american">{RaceEthnicity.Black}</option>
+                                <option value="native hawaiian or pacific islander">{RaceEthnicity.NativeHawaiian}</option>
+                                <option value="white or caucasian">{RaceEthnicity.White}</option>
+                                <option value="other or prefer not to say">{RaceEthnicity.Other}</option>
                             </select>
                         </div>
 
@@ -677,14 +680,14 @@ const ProfileReview: React.FC<{}> = () => {
                                 form="profileEdit"
                                 name="profileEdit"
                                 id="gender"
-                                defaultValue={userInfo?.raceEthnicity?.toLowerCase()}
+                                defaultValue={userInfo?.gender?.toLowerCase()}
                                 onChange={(e) => selectGender(e.target.value)}>
 
                                 <option value="default">Select</option>
-                                <option value="Female">{Gender.Female}</option>
-                                <option value="Male">{Gender.Male}</option>
-                                <option value="Non-binary">{Gender.Nonbinary}</option>
-                                <option value="Other or prefer not to say">{Gender.Other}</option>
+                                <option value="female">{Gender.Female}</option>
+                                <option value="male">{Gender.Male}</option>
+                                <option value="non-binary">{Gender.Nonbinary}</option>
+                                <option value="other or prefer not to say">{Gender.Other}</option>
                             </select>
                         </div>
 
@@ -695,7 +698,7 @@ const ProfileReview: React.FC<{}> = () => {
                                     value={country!}
                                     onChange={selectCountry}
                                     priorityOptions={["US"]}
-                                // style={{ width: '192px' }}
+                                    style={{ width: '192px' }}
                                 />
                                 <div className="border-b-2 border-gray-500 w-48"></div>
                             </div>
@@ -708,7 +711,7 @@ const ProfileReview: React.FC<{}> = () => {
                                     country={country!}
                                     value={stateProvince!}
                                     onChange={selectStateProvince}
-                                // style={{ width: '192px' }}
+                                    style={{ width: '192px' }}
                                 />
                                 <div className="border-b-2 border-gray-500 w-48"></div>
                             </div>
