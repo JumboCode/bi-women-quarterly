@@ -55,24 +55,20 @@ function LocalFile(props: Props) {
         event.preventDefault();
 
         fileName.push(event.target.files[0].name);
-        console.log("HERE: " + event.target.files[0]);
         
         setShowModal(true);
         setShowFile(true);
-        for (let item of fileName) {
-            console.log("item: " + item);
-        }
 
         let formData = new FormData();
         formData.append(event.target.files[0].name, event.target.files[0]);
 
         // posts user response to server to be fetched in index.tsx
-        const response = await fetch("http://localhost:3001/update", {
+        await fetch("http://localhost:3001/update", {
             method: "POST",
             body: formData
         })
-            .then(res => res.json())
-            .catch(err => console.error(err));
+        .then(res => res.json())
+        .catch(err => console.error(err));
     }
 
     /*------------------------------------------------------------------------*/

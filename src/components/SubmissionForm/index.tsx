@@ -103,7 +103,6 @@ export default function SubmissionForm() {
 
         const responses = await fetch("http://localhost:3001/upload")
             .then(res => res.json());
-        console.log(responses);
 
         for (let i = 0; i < responses.length; i++) {
             // TODO: Make unique submissions

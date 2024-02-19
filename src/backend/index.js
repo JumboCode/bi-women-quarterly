@@ -45,8 +45,8 @@ app.get("/upload", async (req, res) => {
 
         const responses = [];
 
-        for (let i = 0; i < uploads.length; i++) {
-            const file = uploads[i];
+        while (uploads.length > 0) {
+            const file = uploads.shift();
             const response = await drive.files
                 .create({
                     requestBody: {
@@ -78,7 +78,6 @@ app.get("/upload", async (req, res) => {
             responses.push(response);
         }
         res.json({ body: responses });
-        // console.log(responses);
 
     } catch (error) {
         console.error("Error uploading files:", error);
@@ -90,7 +89,6 @@ app.get("/upload", async (req, res) => {
 
 app.post("/update", upload.any("inputFile"), async (req, res) => {
     uploads.push(req.files[0]);
-    // console.log(uploads);
 });
 
 const port = 3001;
