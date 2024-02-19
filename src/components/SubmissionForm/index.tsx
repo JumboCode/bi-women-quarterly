@@ -106,10 +106,38 @@ export default function SubmissionForm() {
 
         for (let i = 0; i < responses.length; i++) {
             // TODO: Make unique submissions
-            submission.mainSubmission.contentDriveUrl = "https://drive.google.com/file/d/" + responses[i].id;
+
+            const newSubmission: Submission = {
+                id : user.id,
+                author : user.fullName ?? "", 
+                title : "",
+                date: Date().toString(),
+                issue: "",
+                medium: Mediums.None,
+                isApproved : false,
+                mainSubmission: {
+                    type: PreviewType.Submission,
+                    title: "",
+                    description: "",
+                    imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
+                    contentDriveUrl: "https://drive.google.com/file/d/" + responses[i].id,
+                },
+            }
+            
+            try {
+                // add submission to database
+                await fetch("/api/submissions/add", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        newSubmission
+                    }),
+                });
+            } catch (error) {
+                console.log(error);
+            }
 
             // push new submission to front of array
-            submissions.unshift(submission);
+            submissions.unshift(newSubmission);
         }
 
         try {
@@ -123,18 +151,16 @@ export default function SubmissionForm() {
             console.log(error);
         }
 
-        for (let i = 0; i < submissions.length; i++) {
-            try {
-                // add submission to database
-                await fetch("/api/submissions/add", {
-                    method: "POST",
-                    body: JSON.stringify({
-                        submission
-                    }),
-                });
-            } catch (error) {
-                console.log(error);
-            }
+        // fetch on get by user api and pass in user id as part of request, user instead of submission in body, query is user instead of 
+        try {
+            // fetch user submission
+            await fetch("/api/submissions/get-by-user?user=" + user.id, {
+                method: "GET",
+            })
+            .then(res => console.log(res.json()));
+            // .then(console.log(res));
+        } catch (error) {
+            console.log(error);
         }
     };
     
