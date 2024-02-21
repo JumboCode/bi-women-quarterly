@@ -25,6 +25,81 @@ import Preview from '@/types/Preview';
 
 
 /*------------------------------------------------------------------------*/
+/* -------------------------------- State ------------------------------- */
+/*------------------------------------------------------------------------*/
+
+/* -------------- Views ------------- */
+
+enum View {
+    // Add description of view
+    SubmissionGuideline = 'SubmissionGuideline',
+    NewSubmission = 'NewSubmission'
+}
+
+/* -------- State Definition -------- */
+
+type State = (
+| {
+    // Submission Guideline view
+    view: View.SubmissionGuideline;
+}
+| {
+    // New Submission view
+    view: View.NewSubmission; 
+}
+);
+
+/* ------------- Actions ------------ */
+
+// Types of actions
+enum ActionType {
+    // Change view from Submission Guideline ot New Submission
+    SwitchView = 'SwitchView',
+}
+
+// Action definitions
+type Action = (
+| {
+    // Switch view from Submission Guideline to New Submission 
+    type: ActionType.SwitchView; 
+    // TODO: New view to change to 
+    //newView: View,
+    // Add description of optional payload property
+    addPayloadPropertyName?: addPayloadPropertyType,
+}
+| {
+    // Action type
+    type: (
+    | ActionType.AddActionTypeWithNoPayload
+    | ActionType.AddActionTypeWithNoPayload
+    ),
+}
+);
+
+/**
+* Reducer that executes actions
+* @author Add Your Name
+* @param state current state
+* @param action action to execute
+* @returns updated state
+*/
+const reducer = (state: State, action: Action): State => {
+    switch (action.type) {
+        case ActionType.SwitchView: {
+        return {
+            ...state,
+            //TODO: this should switch from the SubmissionGuideline option for view
+            // to NewSubmission
+            addStateVariableName: addStateVariableNewValue,
+        };
+        }
+        default: {
+        return state;
+        }
+    }
+};
+
+/*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
 
