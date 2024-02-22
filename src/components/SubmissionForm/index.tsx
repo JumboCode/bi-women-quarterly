@@ -6,7 +6,7 @@
  */
 
 // Import React
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 
 // Import types
 import Submission from "@/types/Submission"
@@ -30,22 +30,18 @@ import Preview from '@/types/Preview';
 
 /* -------------- Views ------------- */
 
-enum View {
-    // Add description of view
-    SubmissionGuideline = 'SubmissionGuideline',
-    NewSubmission = 'NewSubmission'
-}
+// enum View {
+//     // Add description of view
+//     SubmissionGuideline = 'SubmissionGuideline',
+//     NewSubmission = 'NewSubmission'
+// }
 
 /* -------- State Definition -------- */
 
 type State = (
 | {
     // Submission Guideline view
-    view: View.SubmissionGuideline;
-}
-| {
-    // New Submission view
-    view: View.NewSubmission; 
+    view: "SubmissionGuideline" | "NewSubmission";
 }
 );
 
@@ -62,17 +58,8 @@ type Action = (
 | {
     // Switch view from Submission Guideline to New Submission 
     type: ActionType.SwitchView; 
-    // TODO: New view to change to 
-    //newView: View,
-    // Add description of optional payload property
-    addPayloadPropertyName?: addPayloadPropertyType,
-}
-| {
-    // Action type
-    type: (
-    | ActionType.AddActionTypeWithNoPayload
-    | ActionType.AddActionTypeWithNoPayload
-    ),
+    // New view to change to 
+    newView: "SubmissionGuideline" | "NewSubmission"; //payload
 }
 );
 
@@ -87,10 +74,10 @@ const reducer = (state: State, action: Action): State => {
     switch (action.type) {
         case ActionType.SwitchView: {
         return {
-            ...state,
+            ...state, //return state as is except what's underneath
             //TODO: this should switch from the SubmissionGuideline option for view
             // to NewSubmission
-            addStateVariableName: addStateVariableNewValue,
+            view: action.newView,
         };
         }
         default: {
@@ -116,6 +103,26 @@ export default function SubmissionForm() {
     /*------------------------------------------------------------------------*/
 
     /* -------------- State ------------- */
+
+    // Initial state
+    const initialState: State = {
+        view: 'SubmissionGuideline',
+    };
+
+    // Initialize state
+    const [state, dispatch] = useReducer(reducer, initialState);
+
+    // Destructure common state
+    const {
+        view
+    } = state;
+
+    // To actually switch view use below chunk of code
+    // TODO: put in start button
+    // dispatch({
+    //     type: ActionType.SwitchView,
+    //     newView: "NewSubmission"
+    // });
 
     // Initialize state
     const [submission, setSubmission] = useState<Submission>(
@@ -224,6 +231,9 @@ export default function SubmissionForm() {
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
+
+//react node variable and assign something different depending on view and then return that variable at end
+// or multiple returns 
 
     return (
         <div className="p-8 h-screen bg-[#ecf0f6]">
