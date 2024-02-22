@@ -21,3 +21,7 @@ body {
     height: 7rem;
     background-color:  rgb(237, 239, 244);
 }
+
+[contentEditable] {
+    outline: 0px solid transparent;
+}
