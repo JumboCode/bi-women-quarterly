@@ -237,16 +237,16 @@ export default function SubmissionForm() {
 // <Link href="/submissionguideline">Submission Guideline</Link>
     if (view == "SubmissionGuideline") {
         return (
-            <div className="p-8 h-screen bg-[#ecf0f6] tile col-span-3">
+            <div className="p-8 h-screen bg-[#ecf0f6] tile col-span-3 row-span-6">
                 <div>
-                    <button className="absolute rounded-lg h-[40px] w-[90px] items-center ">
+                    <button className="rounded-lg h-[40px] w-[90px] items-center ">
                         <Link href="/"> &larr; Back</Link>
                     </button>
                 </div>
-                <div>
-                    <h1 className="text-2xl font-bold pb-8 tile-marker">Submission Guideline</h1>
-                </div>
-                <div>
+                <div> 
+                    <h1 className="text-2xl font-bold pb-8 tile-marker indent-px">Submission Guideline</h1>
+                </div> 
+                <div className="py-8">
                 Please review Submission Guideline before submitting.     
                 </div> 
                 <div >
@@ -260,7 +260,7 @@ export default function SubmissionForm() {
                             newView: "NewSubmission"
                         });
                     }}
-                    className="absolute left-[10px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg"
+                    className="absolute left-[10px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg"
                 >
                     Start
                 </button>
