@@ -243,37 +243,44 @@ export default function SubmissionForm() {
                         <Link href="/"> &larr; Back</Link>
                     </button>
                 </div>
-                <div> 
-                    <h1 className="text-2xl font-bold pb-8 tile-marker indent-px">Submission Guideline</h1>
-                </div> 
-                <div className="py-8">
+                {/* // Title */}
+                <h1 className="text-2xl font-bold pb-8 mt-3 ml-24">Submission Guideline</h1>
+                {/* // Submission instructions */}
+                <div className="mb-20 ml-24">
                 Please review Submission Guideline before submitting.     
                 </div> 
-                <div >
+                <div className="ml-24">
                     <input type="checkbox" id="submission" name="submission" />
                     <label for="submission"> I have read the Submission Guideline</label>
                 </div> 
-                <button type="submit"
-                    onClick={() => {
-                        dispatch({
-                            type: ActionType.SwitchView,
-                            newView: "NewSubmission"
-                        });
-                    }}
-                    className="absolute left-[10px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg"
-                >
-                    Start
-                </button>
+                <div className="ml-32"> 
+                        <button type="submit"
+                        onClick={() => {
+                            dispatch({
+                                type: ActionType.SwitchView,
+                                newView: "NewSubmission"
+                            });
+                        }}
+                        className="absolute rounded-lg mt-5 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg">
+                        Start
+                        </button>
+                    </div>
             </div>
         )
     } else {
         return (
             <div className="p-8 h-screen bg-[#ecf0f6]">
-                <h1 className="text-2xl font-bold pb-8">New Submission</h1>
+                <div>
+                    <button className="rounded-lg h-[40px] w-[90px] items-center ">
+                        <Link href="/submit"> &larr; Back</Link>
+                    </button>
+                </div>
             {/* // Creates a form to retrieve title, issue, and name information */}
                 <div>
                     {/* drop down element for issue selection */}
-                    <div className="pb-[20px]">
+                    <h1 className="text-2xl font-bold pb-8 mt-3 ml-24 justify=">New Submission</h1>
+                    
+                    <div className="flex md:flex md:flex-grow flex-row justify-end space-x-1 px-[20px] py-[10px]">
                         <label className="pr-[6px] font-bold"> *Issue: </label>
                         <select name="issue" className="inline-block h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" value={submission.issue} onChange={handleSubmissionChange}>
                             <option defaultValue="Select Issues">Select Issue</option> 
