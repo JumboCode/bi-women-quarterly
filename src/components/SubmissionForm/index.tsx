@@ -28,14 +28,6 @@ import Preview from '@/types/Preview';
 /* -------------------------------- State ------------------------------- */
 /*------------------------------------------------------------------------*/
 
-/* -------------- Views ------------- */
-
-// enum View {
-//     // Add description of view
-//     SubmissionGuideline = 'SubmissionGuideline',
-//     NewSubmission = 'NewSubmission'
-// }
-
 /* -------- State Definition -------- */
 
 type State = (
@@ -65,7 +57,7 @@ type Action = (
 
 /**
 * Reducer that executes actions
-* @author Add Your Name
+* @author So Hyun Kim, Avery Hanna
 * @param state current state
 * @param action action to execute
 * @returns updated state
@@ -116,13 +108,6 @@ export default function SubmissionForm() {
     const {
         view
     } = state;
-
-    // To actually switch view use below chunk of code
-    // TODO: put in start button
-    // dispatch({
-    //     type: ActionType.SwitchView,
-    //     newView: "NewSubmission"
-    // });
 
     // Initialize state
     const [submission, setSubmission] = useState<Submission>(
@@ -231,7 +216,10 @@ export default function SubmissionForm() {
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
-
+    /**
+     * Main UI of New Submission 
+     * @author So Hyun Kim, Avery Hannah
+     */
 //react node variable and assign something different depending on view and then return that variable at end
 // or multiple returns 
 // <Link href="/submissionguideline">Submission Guideline</Link>
