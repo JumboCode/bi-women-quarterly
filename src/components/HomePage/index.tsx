@@ -55,7 +55,8 @@ type State = {
 enum ActionType {
     ChangeFilter = "ChangeFilter",
     UpdateAllSubmissions = "UpdateAllSubmissions",
-    ToggleLoading = "ToggleLoading"
+    ToggleLoadingOn = "ToggleLoadingOn",
+    ToggleLoadingOff = "ToggleLoadingOff"
 }
 
 // Action definitions
@@ -74,7 +75,11 @@ type Action = (
     }
     | {
         // Action type
-        type: ActionType.ToggleLoading;
+        type: ActionType.ToggleLoadingOn;
+    }
+    | {
+        // Action type
+        type: ActionType.ToggleLoadingOff;
     }
 );
 
@@ -104,10 +109,16 @@ const reducer = (state: State, action: Action): State => {
                 allSubmissions: action.newSubmissions,
             };
         }
-        case ActionType.ToggleLoading: {
+        case ActionType.ToggleLoadingOn: {
             return {
                 ...state,
-                isLoading: !state.isLoading,
+                isLoading: true,
+            };
+        }
+        case ActionType.ToggleLoadingOff: {
+            return {
+                ...state,
+                isLoading: false,
             };
         }
         default: {
@@ -192,7 +203,7 @@ export default function HomePage() {
     const getSubmissions = async () => {
         // Show loading spinner
         dispatch({
-            type: ActionType.ToggleLoading,
+            type: ActionType.ToggleLoadingOn,
         });
 
         if (!user) {
@@ -220,7 +231,7 @@ export default function HomePage() {
             .then(() => {
                 // Hide loading spinner
                 dispatch({
-                    type: ActionType.ToggleLoading,
+                    type: ActionType.ToggleLoadingOff,
                 });
             });
         } catch (error) {
