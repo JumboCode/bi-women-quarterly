@@ -13,11 +13,11 @@ body {
     width: 10rem;
     height: 2rem;
     background-color: rgb(255, 63, 169);
-    border-radius: 0.25rem; 
-    color: white; 
+    border-radius: 0.25rem;
+    color: white;
 }
 
 .HomePage-top-bar {
     height: 7rem;
-    background-color:  rgb(237, 239, 244);
+    background-color: rgb(237, 239, 244);
 }

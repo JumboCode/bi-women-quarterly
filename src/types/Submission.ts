@@ -17,10 +17,10 @@
 
 // Import types
 import Preview from "./Preview";
-import Mediums from './Mediums';
-import Issues from './Issues';
+import Mediums from "./Mediums";
+import Issues from "./Issues";
 
-type  Submission = {
+type Submission = {
     id: string; // "author|title|date"
     author: string;
     title: string;

@@ -18,12 +18,15 @@ const storage = multer.diskStorage({
     filename: function (req, file, callback) {
         const extension = file.originalname.split(".").pop();
         const today = new Date();
-        const day = String(today.getDate()).padStart(2, '0');
-        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, "0");
+        const month = String(today.getMonth() + 1).padStart(2, "0");
         const year = today.getFullYear();
 
         const date = year + "-" + month + "-" + day;
-        callback(null, `${file.originalname.split(".")[0]}-${date}.${extension}`);
+        callback(
+            null,
+            `${file.originalname.split(".")[0]}-${date}.${extension}`
+        );
     }
 });
 
@@ -71,13 +74,12 @@ app.get("/upload", async (req, res) => {
                     });
 
                     responses.push({
-                        name: response.data.name, 
+                        name: response.data.name,
                         id: response.data.id
                     });
                 });
         }
         res.json({ body: responses });
-
     } catch (error) {
         console.error("Error uploading files:", error);
         res.status(500).json({
