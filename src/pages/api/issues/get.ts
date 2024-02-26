@@ -6,10 +6,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const client = await clientPromise;
         const db = client.db("BiWomenQuarterly");
 
-        const collection = await db
-            .collection("Issues")
-            .find({})
-            .toArray();
+        const collection = await db.collection("Issues").find({}).toArray();
 
         res.status(201).json({ success: true, data: collection });
     } catch (e) {
