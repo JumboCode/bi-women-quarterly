@@ -107,6 +107,9 @@ const reducer = (state: State, action: Action): State => {
 };
 
 const getDateFromString = (date: string) => {
+    if (!date) {
+        return undefined;
+    }
     // Subtract 1 from month because months use indexing for some reason
     return new Date(+date.substring(0, 4), +date.substring(5, 7) - 1, +date.substring(8, 10));
 }
@@ -210,7 +213,7 @@ const ProfileReview: React.FC<{}> = () => {
                 authorName: userProps.authorName as string ?? 'No author name given',
                 pronouns: userProps.pronouns as string ?? 'No pronouns given',
                 bio: userProps.bio as string ?? 'No bio given',
-                birthday: userProps.birthday ? getDateFromString(userProps.birthday as string) : new Date(),
+                birthday: getDateFromString(userProps.birthday as string) ?? new Date(),
                 raceEthnicity: userProps.raceEthnicity as RaceEthnicity ?? 'No race/ethnicity given',
                 gender: userProps.gender as Gender ?? 'No gender given',
                 country: userProps.country as string ?? 'No country given',
