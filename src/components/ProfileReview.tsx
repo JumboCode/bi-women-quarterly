@@ -210,7 +210,7 @@ const ProfileReview: React.FC<{}> = () => {
                 authorName: userProps.authorName as string ?? 'No author name given',
                 pronouns: userProps.pronouns as string ?? 'No pronouns given',
                 bio: userProps.bio as string ?? 'No bio given',
-                birthday: getDateFromString(userProps.birthday as string) ?? new Date(),
+                birthday: userProps.birthday ? getDateFromString(userProps.birthday as string) : new Date(),
                 raceEthnicity: userProps.raceEthnicity as RaceEthnicity ?? 'No race/ethnicity given',
                 gender: userProps.gender as Gender ?? 'No gender given',
                 country: userProps.country as string ?? 'No country given',
