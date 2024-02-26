@@ -47,7 +47,7 @@ type UserInfo = {
     authorName: string, // required
     pronouns?: string,
     bio: string,  // required
-    birthday?: Date,
+    birthday?: string,
     raceEthnicity?: RaceEthnicity,
     gender?: Gender,
     country?: string,
@@ -138,7 +138,7 @@ const ProfileReview: React.FC<{}> = () => {
             authorName: 'No author name given',
             pronouns: 'No pronouns given',
             bio: 'No bio given',
-            birthday: new Date(),
+            birthday: '01/01/1999',
             raceEthnicity: RaceEthnicity.Other,
             gender: Gender.Other,
             country: 'No country given',
@@ -213,7 +213,7 @@ const ProfileReview: React.FC<{}> = () => {
                 authorName: userProps.authorName as string ?? 'No author name given',
                 pronouns: userProps.pronouns as string ?? 'No pronouns given',
                 bio: userProps.bio as string ?? 'No bio given',
-                birthday: getDateFromString(userProps.birthday as string) ?? new Date(),
+                birthday: userProps.birthday as string,
                 raceEthnicity: userProps.raceEthnicity as RaceEthnicity ?? 'No race/ethnicity given',
                 gender: userProps.gender as Gender ?? 'No gender given',
                 country: userProps.country as string ?? 'No country given',
@@ -530,7 +530,7 @@ const ProfileReview: React.FC<{}> = () => {
                     <div className="grid md:grid-cols-3 grid-cols-2 lg:pr-96">
                         <div>
                             <div className="font-bold">Birthday</div>
-                            <div className="py-4">{extractDateString(userInfo.birthday!)}</div>
+                            <div className="py-4">{userInfo!.birthday!}</div>
                         </div>
 
                         <div>
@@ -653,8 +653,10 @@ const ProfileReview: React.FC<{}> = () => {
                                 className="border-b-2 my-4 w-48"
                                 type="date"
                                 id="birthday"
-                                defaultValue={extractDateStringHTML(userInfo.birthday!)}
-                                onChange={(e) => handleBirthdayChange('birthday', e.target.value)}
+                                // defaultValue={extractDateStringHTML(userInfo.birthday!)}
+                                defaultValue="01/01/1999"
+                                // onChange={(e) => handleBirthdayChange('birthday', e.target.value)}
+                                onChange={(e) => handleChange('birthday', e.target.value)}
                             />
                         </div>
 
