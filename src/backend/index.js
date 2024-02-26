@@ -47,7 +47,7 @@ app.get("/upload", async (req, res) => {
 
         while (uploads.length > 0) {
             const file = uploads.shift();
-            const response = await drive.files
+            await drive.files
                 .create({
                     requestBody: {
                         name: file.filename,
@@ -69,13 +69,12 @@ app.get("/upload", async (req, res) => {
                                 .send("Error deleting local file.");
                         }
                     });
-                    return {
+
+                    responses.push({
                         name: response.data.name, 
                         id: response.data.id
-                    };
+                    });
                 });
-
-            responses.push(response);
         }
         res.json({ body: responses });
 

@@ -39,7 +39,7 @@ function LocalFile(props: Props) {
     const [showFile, setShowFile] = React.useState(false);
 
     // storing string of file name
-    const [fileName, setFileName] = React.useState<any>([]);
+    const [fileName, setFileName] = React.useState<string[]>([]);
 
     /*------------------------------------------------------------------------*/
     /* ------------------------- Lifecycle Functions ------------------------ */

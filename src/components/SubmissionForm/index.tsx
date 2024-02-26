@@ -101,44 +101,44 @@ export default function SubmissionForm() {
      */
     const handleSubmit = async () => {
 
-        const responses = await fetch("http://localhost:3001/upload")
-            .then(res => res.json());
+        await fetch("http://localhost:3001/upload")
+            .then(res => res.json())
+            .then(res => res.body)
+            .then(responses => {
+                for (let i = 0; i < responses.length; i++) {
+                    const newSubmission: Submission = {
+                        id : user.id,
+                        author : user.fullName ?? "", 
+                        title : "",
+                        date: Date().toString(),
+                        issue: "",
+                        medium: Mediums.None,
+                        isApproved : false,
+                        mainSubmission: {
+                            type: PreviewType.Submission,
+                            title: "",
+                            description: "",
+                            imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
+                            contentDriveUrl: "https://drive.google.com/file/d/" + responses[i].id,
+                        },
+                    }
 
-        for (let i = 0; i < responses.length; i++) {
-            // TODO: Make unique submissions
+                    try {
+                        // add submission to database
+                        fetch("/api/submissions/add", {
+                            method: "POST",
+                            body: JSON.stringify({
+                                newSubmission
+                            }),
+                        });
+                    } catch (error) {
+                        console.log(error);
+                    }
 
-            const newSubmission: Submission = {
-                id : user.id,
-                author : user.fullName ?? "", 
-                title : "",
-                date: Date().toString(),
-                issue: "",
-                medium: Mediums.None,
-                isApproved : false,
-                mainSubmission: {
-                    type: PreviewType.Submission,
-                    title: "",
-                    description: "",
-                    imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
-                    contentDriveUrl: "https://drive.google.com/file/d/" + responses[i].id,
-                },
-            }
-            
-            try {
-                // add submission to database
-                await fetch("/api/submissions/add", {
-                    method: "POST",
-                    body: JSON.stringify({
-                        newSubmission
-                    }),
-                });
-            } catch (error) {
-                console.log(error);
-            }
-
-            // push new submission to front of array
-            submissions.unshift(newSubmission);
-        }
+                    // push new submission to front of array
+                    submissions.unshift(newSubmission);
+                }
+            });
 
         try {
             // update user metadata with submission
@@ -154,15 +154,16 @@ export default function SubmissionForm() {
         // fetch on get by user api and pass in user id as part of request, user instead of submission in body, query is user instead of 
         try {
             // fetch user submission
-            await fetch(`/api/submissions/get-by-user?user=${user.id}`, {
+            const response = await fetch(`/api/submissions/get-by-user?user=${user.id}`, {
                 method: "GET",
             })
-            .then(res => console.log(res.json()));
+            .then(res => res.json());
+            console.log(response);
             // .then(console.log(res));
         } catch (error) {
             console.log(error);
         }
-    };
+    }
     
     /**
      * Handles the change of elements in the form by updating useState variable
