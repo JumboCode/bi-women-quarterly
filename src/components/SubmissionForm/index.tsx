@@ -150,19 +150,6 @@ export default function SubmissionForm() {
         } catch (error) {
             console.log(error);
         }
-
-        // fetch on get by user api and pass in user id as part of request, user instead of submission in body, query is user instead of 
-        try {
-            // fetch user submission
-            const response = await fetch(`/api/submissions/get-by-user?user=${user.id}`, {
-                method: "GET",
-            })
-            .then(res => res.json());
-            console.log(response);
-            // .then(console.log(res));
-        } catch (error) {
-            console.log(error);
-        }
     }
     
     /**
