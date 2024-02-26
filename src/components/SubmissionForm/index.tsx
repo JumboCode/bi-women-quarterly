@@ -102,7 +102,32 @@ export default function SubmissionForm() {
     };
 
     // Initialize state
+    // first box 
     const [state, dispatch] = useReducer(reducer, initialState);
+    const [type, setType] = useState(PreviewType.Submission); 
+    // second box 
+    const [title, setTitle] = useState(""); 
+    const [description, setDescription] = useState(""); 
+
+    /**
+         * Prints the title, issue, and type of the publication to the console
+         * when the form is submitted
+         * @author Alana Sendlakowski, Vanessa Rose
+         * @param event the event that has been changed
+         */
+     const handleModalSubmit = (event : any) => {
+        handleNewPreview({
+            type,
+            title,
+            description,
+            imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
+            contentDriveUrl: "",
+        })
+        event.preventDefault();
+        console.log('type: ' + type);
+        console.log("title: " + title);
+        console.log("description: " + description);
+    }
 
     // Destructure common state
     const {
@@ -163,6 +188,13 @@ export default function SubmissionForm() {
     const handleSubmit = async () => {
         // push new submission to front of array
         // submissions.unshift(submission);
+        handleNewPreview({
+            type,
+            title,
+            description,
+            imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
+            contentDriveUrl: "",
+        })
         submission.title = submission.mainSubmission.title;
 
         try {
@@ -194,6 +226,26 @@ export default function SubmissionForm() {
         setSubmission( prevValues => {
             return { ...prevValues, mainSubmission: newPreview}
          })
+    }
+
+    /**
+     * Handles the change of elements in the form by updating useState variable
+     * @author Alana Sendlakowski, Vanessa Rose
+     * @param event the event that has been changed
+     * @returns new states of all the elements in the form
+     */
+    const handleTitleChange = (event : any) => {
+        setTitle(event.target.value);
+    }
+
+    /**
+     * Handles the change of elements in the form by updating useState variable
+     * @author Alana Sendlakowski, Vanessa Rose
+     * @param event the event that has been changed
+     * @returns new states of all the elements in the form
+     */
+    const handleDescriptionChange = (event : any) => {
+        setDescription(event.target.value);
     }
 
     /*------------------------------------------------------------------------*/
@@ -279,16 +331,15 @@ export default function SubmissionForm() {
                                     ))
                                 }
                         </select>
-    
                         {/* drop down element for type selection */}
-                        <select name="medium" className="absolute right-[80px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" value={submission.medium} onChange={handleSubmissionChange}>
-                            <option defaultValue="Select Type">Select Type</option>
-                            <option value={Mediums.Fiction}>{Mediums.Fiction}</option>
-                            <option value={Mediums.Nonfiction}>{Mediums.Nonfiction}</option>
-                            <option value={Mediums.Poetry}>{Mediums.Poetry}</option>
-                            <option value={Mediums.VisualArt}>{Mediums.VisualArt}</option>
-                            <option value={Mediums.Other}>{Mediums.Other}</option>
-                        </select>
+                            <select name="medium" className="absolute right-[80px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" value={submission.medium} onChange={handleSubmissionChange}>
+                                <option defaultValue="Select Type">Select Type</option>
+                                <option value={Mediums.Fiction}>{Mediums.Fiction}</option>
+                                <option value={Mediums.Nonfiction}>{Mediums.Nonfiction}</option>
+                                <option value={Mediums.Poetry}>{Mediums.Poetry}</option>
+                                <option value={Mediums.VisualArt}>{Mediums.VisualArt}</option>
+                                <option value={Mediums.Other}>{Mediums.Other}</option>
+                            </select>
                     </div>
                 </div>
                 {/* Submission Boxes */}
@@ -317,13 +368,20 @@ export default function SubmissionForm() {
 
                     {/* Submission Box 2 */}
                     <div className="p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-dashed outline-[#768fcd] outline-offset-[-3px]">
-                
-                        <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-1 px-3">Title*</h3>
-                        <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Title of your piece" required />
- 
-                        <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Description</h3>
-                        <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Describe your piece" required />
-                        <p className="text-xs text-gray-400 pt-1"><em>Max 400 Characters</em></p>
+                        <div onChange={handleTitleChange}>
+                            <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-1 px-3">Title*</h3>
+                            <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Title of your piece" required />
+                            {/* <div className="pt-2 pb-8" onChange={handleTitleChange}>
+                                <label className="flex items-start justify-between py-2 px-5 rounded-t text-black font-bold">Title of Piece *</label>
+                                <input className="appearance-none ml-4 bg-transparent border-none w-full text-[#676c75] mr-3 px-2 leading-tight focus:outline-none" type="text" placeholder="title of piece"/>
+                                <hr className="h-px mx-6 my-1 border-[#676c75] border-[1px]"/>
+                            </div> */}
+                        </div>
+                        <div onChange={handleDescriptionChange}>
+                            <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Description</h3>
+                            <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Describe your piece" required />
+                            <p className="text-xs text-gray-400 pt-1"><em>Max 400 Characters</em></p>
+                        </div>
                     </div>
                 </div>
                 <div>

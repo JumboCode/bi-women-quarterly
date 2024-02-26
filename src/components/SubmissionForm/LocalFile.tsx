@@ -242,7 +242,7 @@ function LocalFile(props: Props) {
                     </label>
                 </div>
                 
-                <div> {showModal ? ( <SubmissionModal handleNewPreview={handleNewPreview}/> ) : null} </div>
+                {/* <div> {showModal ? ( <SubmissionModal handleNewPreview={handleNewPreview}/> ) : null} </div> */}
                 
                 <br></br>
                 <br></br>
