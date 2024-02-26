@@ -19,7 +19,7 @@
 
 // Import types
 import Preview from "./Preview";
-import Mediums from './Mediums';
+import Mediums from "./Mediums";
 import Statuses from './Statuses';
 
 type  Submission = {
@@ -37,9 +37,9 @@ type  Submission = {
     additionalReferences?: Preview[];
 
     // Admin only
-    tags: string[];
-    rating: number;
-    notes: string;
+    tags?: string[];
+    rating?: number;
+    notes?: string;
 };
 
 export default Submission;
