@@ -357,7 +357,7 @@ export default function SubmissionForm() {
                         
                         <div className="grid grid-cols-2 gap-4 pt-[20px]"> 
                         <div className="flex grow text-justify justify-center text-[#3b60ba]">
-                                <LocalFile handleNewPreview={handleNewPreview}/> 
+                                <LocalFile/> 
                         </div>
                         {/* "absolute right-[120px] mt-[100px] rounded-lg bg-white  m-6 h-[40px] w-[200px]  items-center shadow-lg"> */}
                         <button  className="flex grow justify-center text-justify align-middle h-[30px] w-[115px] rounded-sm outline outline-[#5072c0] text-[#3b60ba] outline-offset-[3px]">
