@@ -36,11 +36,6 @@ export default function SubmissionForm() {
         return null;
     }
 
-    let submissions: Submission[] = [];
-    if (user && user.unsafeMetadata.submissions) {
-        submissions = user.unsafeMetadata.submissions as Submission[];
-    }
-
     /*------------------------------------------------------------------------*/
     /* -------------------------------- Setup ------------------------------- */
     /*------------------------------------------------------------------------*/
@@ -66,7 +61,6 @@ export default function SubmissionForm() {
             },
         })
 
-    const [files, setFiles] = useState<File[]>([]);
     const [issues, setIssues] = useState<string[]>([]);
 
     /*------------------------------------------------------------------------*/
@@ -100,58 +94,59 @@ export default function SubmissionForm() {
      * @param event the event that has been changed
      */
     const handleSubmit = async () => {
+        submission.title = submission.mainSubmission.title;
+
+        // upload submission to google drive
         await fetch("http://localhost:3001/upload")
             .then(res => res.json())
             .then(res => res.body)
             .then(responses => {
-                for (let i = 0; i < responses.length; i++) {
-                    const newSubmission: Submission = {
-                        id: user.id,
-                        author: user.fullName ?? "",
-                        title: "",
-                        date: Date().toString(),
-                        issue: "",
-                        medium: Mediums.None,
-                        status: Statuses.Pending,
+                // set main submission contentDriveUrl
+                setSubmission(prevValues => {
+                    return {
+                        ...prevValues,
                         mainSubmission: {
-                            type: PreviewType.Submission,
-                            title: "",
-                            description: "",
-                            imageUrl:
-                                "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
+                            ...prevValues.mainSubmission,
                             contentDriveUrl:
                                 "https://drive.google.com/file/d/" +
-                                responses[i].id
+                                responses[0].id
                         },
                     };
+                });
+                // set additional references contentDriveUrl
+                for (let i = 1; i < responses.length; i++) {
+                    setSubmission(prevValues => {
+                        if (prevValues.additionalReferences) {
+                            const newReference: Preview = {
+                                ...prevValues.additionalReferences[i],
+                                contentDriveUrl:
+                                    "https://drive.google.com/file/d/" +
+                                    responses[i].id
+                            }
+                            const newAdditionalReferences = prevValues.additionalReferences;
+                            newAdditionalReferences[i] = newReference;
+                            return {
+                                ...prevValues,
+                                additionalReferences: newAdditionalReferences,
+                            };
+                        } else {
+                            return prevValues;
+                        }
+                    });
+                }
 
-                    try {
-                        // add submission to database
-                        fetch("/api/submissions/add", {
-                            method: "POST",
-                            body: JSON.stringify({
-                                newSubmission
-                            })
-                        });
-                    } catch (error) {
-                        console.log(error);
-                    }
-
-                    // push new submission to front of array
-                    submissions.unshift(newSubmission);
+                try {
+                    // add submission to database
+                    fetch("../api/submissions/add", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            submission
+                        }),
+                    });
+                } catch (error) {
+                    console.log(error);
                 }
             });
-
-        try {
-            // update user metadata with submission
-            user.update({
-                unsafeMetadata: {
-                    submissions
-                }
-            });
-        } catch (error) {
-            console.log(error);
-        }
     };
 
     /**
