@@ -22,6 +22,7 @@ import ShowSubmissionThumbnails from "@/components/HomePage/ShowSubmissionThumbn
 import Submission from "@/types/Submission";
 import PreviewType from "@/types/PreviewType";
 import Issues from '@/types/Issues';
+import Statuses from '@/types/Statuses';
 
 enum FilterType {
     // No filtering of submissions
@@ -145,7 +146,7 @@ const filterSubmissions = (
     switch (filter) {
         case FilterType.Approved: {
             return submissions.filter(submission => {
-                return submission.isApproved;
+                return submission.status === Statuses.Approved;
             });
         }
         case FilterType.Current: {

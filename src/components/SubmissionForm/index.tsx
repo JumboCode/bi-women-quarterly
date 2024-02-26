@@ -22,6 +22,7 @@ import { useUser } from "@clerk/nextjs";
 // Import components
 import LocalFile from '@/components/SubmissionForm/LocalFile';
 import Preview from '@/types/Preview';
+import Statuses from '@/types/Statuses';
 
 
 /*------------------------------------------------------------------------*/
@@ -51,7 +52,7 @@ export default function SubmissionForm() {
             date: Date().toString(),
             issue: "",
             medium: Mediums.None,
-            isApproved : false,
+            status: Statuses.Pending,
             mainSubmission: {
                 type: PreviewType.Submission,
                 title: "",
@@ -59,6 +60,9 @@ export default function SubmissionForm() {
                 imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
                 contentDriveUrl: "",
             },
+            tags: [],
+            rating: 0,
+            notes: "",
         })
 
     const [issues, setIssues] = useState<string[]>([]);
