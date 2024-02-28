@@ -118,8 +118,7 @@ export default function SubmissionForm() {
                             type: PreviewType.Submission,
                             title: "",
                             description: "",
-                            // TODO
-                            imageUrl: "" + responses[i].thumbnailLink,
+                            imageUrl: responses[i].thumbnailLink,
                             contentDriveUrl: "https://drive.google.com/file/d/" + responses[i].id,
                         },
                     }

@@ -99,7 +99,7 @@ app.get("/upload", async (req, res) => {
                     responses.push({
                         name: response.data.name, 
                         id: response.data.id,
-                        thumbnail: ""
+                        thumbnail: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png"
                     });
                 });
 
@@ -107,14 +107,10 @@ app.get("/upload", async (req, res) => {
                 fileId: responses[responses.length - 1].id,
                 fields: "thumbnailLink"
             }).then(res => {
-                console.log(res);
-                // responses[responses.length - 1].thumbnail = "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png"
-                try {
+                
+                // Checks if thumbnail link is not undefined, means it's an image that has a thumbnail
+                if (res.data.thumbnailLink != undefined) {
                     responses[responses.length - 1].thumbnail = res.data.thumbnailLink;
-                } catch { // YOU ARE HERE RIGHT NOW
-                    // this is not working for non image files, should auto put this doc image in but does not
-                    // could try putting it default into thumbnail above and do nothing in the catch
-                    responses[responses.length - 1].thumbnail = "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png";
                 }
             });
 
