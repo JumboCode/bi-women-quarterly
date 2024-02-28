@@ -118,10 +118,13 @@ export default function SubmissionForm() {
                             type: PreviewType.Submission,
                             title: "",
                             description: "",
-                            imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
+                            // TODO
+                            imageUrl: "" + responses[i].thumbnailLink,
                             contentDriveUrl: "https://drive.google.com/file/d/" + responses[i].id,
                         },
                     }
+                    console.log(responses[i]);
+                    // https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png
 
                     try {
                         // add submission to database
