@@ -8,7 +8,7 @@ enum Issues {
     Current = "Current",
     Next = "Next",
     Previous = "Previous",
-    None = "None",
+    None = "None"
 }
 
 export default Issues;

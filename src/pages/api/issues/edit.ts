@@ -20,10 +20,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         await collect.updateOne({ id }, { $set: updates });
 
         // debugging info
-        const collection = await db
-            .collection("Issues")
-            .find({})
-            .toArray();
+        const collection = await db.collection("Issues").find({}).toArray();
 
         res.status(200).json({ success: true, data: collection });
     } catch (e) {
