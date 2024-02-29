@@ -5,12 +5,14 @@
  */
 
 import { UserButton } from "@clerk/nextjs";
+import AdminGrid from "@/components/AdminGrid";
 
 export default function AdminHomePage() {
     return (
         <div>
-            <UserButton></UserButton>
-            Welcome to the shadow realm
+            {/* <UserButton></UserButton> */}
+            {/* Welcome to the shadow realm */}
+            <AdminGrid></AdminGrid>
         </div>
     );
 }
