@@ -31,7 +31,9 @@ const SubmissionThumbnail: React.FC<Props> = props => {
     return (
         <div>
             <div className="flex-col items-start">
-                <div className="max-w-md min-w-min w-2/4 bg-gray-200"><img src={imageUrl} className="max-w-full"></img></div>
+                <div className="max-w-md min-w-min w-2/4 bg-gray-200">
+                    <img src={imageUrl} className="max-w-full"></img>
+                </div>
                 <div className="max-w-md min-w-min w-2/4">
                     <div className="font-normal">{title}</div>
                     <div className="font-normal">{contentDriveUrl}</div>
