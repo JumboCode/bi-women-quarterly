@@ -103,6 +103,7 @@ export default function SubmissionForm() {
             .then(responses => {
                 // set main submission contentDriveUrl
                 setSubmission(prevValues => {
+                    console.log(responses);
                     return {
                         ...prevValues,
                         mainSubmission: {
@@ -110,7 +111,7 @@ export default function SubmissionForm() {
                             contentDriveUrl:
                                 "https://drive.google.com/file/d/" +
                                 responses[0].id,
-                            imageUrl: responses[0].thumbnailLink
+                            imageUrl: responses[0].thumbnail
                         },
                     };
                 });
@@ -127,6 +128,7 @@ export default function SubmissionForm() {
                             }
                             const newAdditionalReferences = prevValues.additionalReferences;
                             newAdditionalReferences[i] = newReference;
+                            console.log("HIIII REF: " + newReference);
                             return {
                                 ...prevValues,
                                 additionalReferences: newAdditionalReferences,
