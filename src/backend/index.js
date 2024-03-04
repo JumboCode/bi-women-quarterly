@@ -28,7 +28,7 @@ const storage = multer.diskStorage({
             `${file.originalname.split(".")[0]}-${date}.${extension}`
         );
     }
-    // hihi: 
+    // hihi:
 });
 
 const upload = multer({ storage: storage });
@@ -69,8 +69,6 @@ app.get("/upload", async (req, res) => {
         const responses = [];
 
         while (uploads.length > 0) {
-
-            
             const file = uploads.shift();
 
             console.log(file);
@@ -99,24 +97,36 @@ app.get("/upload", async (req, res) => {
                         }
                     });
 
+                    const permissions = {
+                        type: "anyone",
+                        role: "writer"
+                    };
+                    drive.permissions.create({
+                        resource: permissions,
+                        fileId: response.data.id,
+                        fields: "id"
+                    });
+
                     responses.push({
-                        name: response.data.name, 
+                        name: response.data.name,
                         id: response.data.id,
-                        thumbnail: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png"
+                        thumbnail:
+                            "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png"
                     });
                 });
 
-            await drive.files.get({
-                fileId: responses[responses.length - 1].id,
-                fields: "thumbnailLink"
-            }).then(res => {
-                
-                // Checks if thumbnail link is not undefined, means it's an image that has a thumbnail
-                if (res.data.thumbnailLink != undefined) {
-                    responses[responses.length - 1].thumbnail = res.data.thumbnailLink;
-                }
-            });
-
+            await drive.files
+                .get({
+                    fileId: responses[responses.length - 1].id,
+                    fields: "thumbnailLink"
+                })
+                .then(res => {
+                    // Checks if thumbnail link is not undefined, means it's an image that has a thumbnail
+                    if (res.data.thumbnailLink != undefined) {
+                        responses[responses.length - 1].thumbnail =
+                            res.data.thumbnailLink;
+                    }
+                });
         }
         res.json({ body: responses });
     } catch (error) {

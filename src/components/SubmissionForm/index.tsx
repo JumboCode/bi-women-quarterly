@@ -19,10 +19,9 @@ import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 
 // Import components
-import LocalFile from '@/components/SubmissionForm/LocalFile';
-import Preview from '@/types/Preview';
-import Statuses from '@/types/Statuses';
-
+import LocalFile from "@/components/SubmissionForm/LocalFile";
+import Preview from "@/types/Preview";
+import Statuses from "@/types/Statuses";
 
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
@@ -43,23 +42,23 @@ export default function SubmissionForm() {
     /* -------------- State ------------- */
 
     // Initialize state
-    const [submission, setSubmission] = useState<Submission>(
-        {
-            id : user.id,
-            author : user.fullName ?? "", 
-            title : "",
-            date: Date().toString(),
-            issue: "",
-            medium: Mediums.None,
-            status: Statuses.Pending,
-            mainSubmission: {
-                type: PreviewType.Submission,
-                title: "",
-                description: "",
-                imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
-                contentDriveUrl: "",
-            },
-        })
+    const [submission, setSubmission] = useState<Submission>({
+        id: user.id,
+        author: user.fullName ?? "",
+        title: "",
+        date: Date().toString(),
+        issue: "",
+        medium: Mediums.None,
+        status: Statuses.Pending,
+        mainSubmission: {
+            type: PreviewType.Submission,
+            title: "",
+            description: "",
+            imageUrl:
+                "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
+            contentDriveUrl: ""
+        }
+    });
 
     const [issues, setIssues] = useState<string[]>([]);
 
@@ -110,7 +109,7 @@ export default function SubmissionForm() {
                             contentDriveUrl:
                                 "https://drive.google.com/file/d/" +
                                 responses[0].id
-                        },
+                        }
                     };
                 });
                 // set additional references contentDriveUrl
@@ -122,12 +121,13 @@ export default function SubmissionForm() {
                                 contentDriveUrl:
                                     "https://drive.google.com/file/d/" +
                                     responses[i].id
-                            }
-                            const newAdditionalReferences = prevValues.additionalReferences;
+                            };
+                            const newAdditionalReferences =
+                                prevValues.additionalReferences;
                             newAdditionalReferences[i] = newReference;
                             return {
                                 ...prevValues,
-                                additionalReferences: newAdditionalReferences,
+                                additionalReferences: newAdditionalReferences
                             };
                         } else {
                             return prevValues;
@@ -141,7 +141,7 @@ export default function SubmissionForm() {
                         method: "POST",
                         body: JSON.stringify({
                             submission
-                        }),
+                        })
                     });
                 } catch (error) {
                     console.log(error);

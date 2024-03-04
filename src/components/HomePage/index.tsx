@@ -21,8 +21,8 @@ import ShowSubmissionThumbnails from "@/components/HomePage/ShowSubmissionThumbn
 // Import types
 import Submission from "@/types/Submission";
 import PreviewType from "@/types/PreviewType";
-import Issues from '@/types/Issues';
-import Statuses from '@/types/Statuses';
+import Issues from "@/types/Issues";
+import Statuses from "@/types/Statuses";
 
 enum FilterType {
     // No filtering of submissions
