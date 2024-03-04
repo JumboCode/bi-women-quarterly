@@ -1,33 +1,35 @@
 import Submission from "@/types/Submission";
-import { useUser } from "@clerk/nextjs";
+// import { useUser } from "@clerk/nextjs";
 import { DataGrid, GridRowsProp, GridColDef, GridToolbar } from "@mui/x-data-grid";
 
-interface SubmissionProp {
-    submissions: Submission[]; /* An array of Submissions objects */
+type Props = {
+    submissionArray: Submission[];
 }
 
-const Grid: React.FC<{ submissions: SubmissionProp }> = (props) => {
-    const { isSignedIn, user, isLoaded } = useUser();
+const AdminGrid: React.FC<Props> = (properties) => {
+    // const { isSignedIn, user, isLoaded } = useUser();
 
     /* Checks if the user has admin role */
     // if (!user || !isSignedIn || user!.unsafeMetadata['role'] !== 'admin') {
     //     return;
     // }
 
+    const props = properties.submissionArray;
+
     let rows: GridRowsProp = [];
 
-    console.log("This is length: ", props.submissions.length);
+    console.log("This is length: ", props.length);
 
-    for (let i = 0; i < props.submissions.length; i++) {
+    for (let i = 0; i < props.length; i++) {
         const id = i;
-        const issue = props.submissions[i].issue;
-        const type = props.submissions[i].medium;
-        const title = props.submissions[i].title;
-        const author = props.submissions[i].author;
-        const status = props.submissions[i].statuses;
-        const tags: string[] = props.submissions[i].tags;
-        const rating = props.submissions[i].rating;
-        const notes = props.submissions[i].notes;
+        const issue = props[i].issue;
+        const type = props[i].medium;
+        const title = props[i].title;
+        const author = props[i].author;
+        const status = props[i].status;
+        const tags = props[i].tags;
+        const rating = props[i].rating;
+        const notes = props[i].notes;
 
         const row = {
             id: id,
@@ -104,4 +106,4 @@ const Grid: React.FC<{ submissions: SubmissionProp }> = (props) => {
 //     );
 // }
 
-export default Grid;
+export default AdminGrid;

@@ -5,20 +5,32 @@
  */
 
 import { UserButton } from "@clerk/nextjs";
+import Submission from "@/types/Submission";
+import Preview from "@/types/Preview";
+import PreviewType from "@/types/PreviewType";
 import AdminGrid from "@/components/AdminGrid";
+import Statuses from "@/types/Statuses";
+import Mediums from "@/types/Mediums";
 
 export default function AdminHomePage() {
+    const blank: Preview = {
+        type: PreviewType.Submission,
+        title: "string",
+        description: "string",
+        imageUrl: "string",
+        contentDriveUrl: "string"
+    }
 
-    const sampleData = [
-        { id: 1, issue: 1, type: "Type 1", title: "Example A", name: "Author A", status: "Accepted", demographics: "United States", tags: "Family", ratings: 5, notes: "None" },
-        { id: 2, issue: 2, type: "Type 1", title: "Example B", name: "Author B", status: "Accepted", demographics: "United States", tags: "Love", ratings: 5, notes: "None" },
-        { id: 3, issue: 3, type: "Type 1", title: "Example C", name: "Author C", status: "Pending", demographics: "United States", tags: "Other", ratings: 5, notes: "None" },
-        { id: 4, issue: 4, type: "Type 2", title: "Example D", name: "Author D", status: "Pending", demographics: "Canada", tags: "Other", ratings: 5, notes: "None" },
-        { id: 5, issue: 5, type: "Type 2", title: "Example E", name: "Author E", status: "Pending", demographics: "Canada", tags: "Other", ratings: 5, notes: "None" },
-        { id: 6, issue: 6, type: "Type 2", title: "Example F", name: "Author F", status: "Pending", demographics: "Canada", tags: "Other", ratings: 4, notes: "None" },
-        { id: 7, issue: 7, type: "Type 3", title: "Example G", name: "Author G", status: "Pending", demographics: "Antarctica", tags: "Other", ratings: 3, notes: "None" },
-        { id: 8, issue: 8, type: "Type 3", title: "Example H", name: "Author H", status: "Pending", demographics: "Antarctica", tags: "Other", ratings: 2, notes: "None" },
-        { id: 9, issue: 9, type: "Type 3", title: "Example I", name: "Author I", status: "Pending", demographics: "Antarctica", tags: "Other", ratings: 1, notes: "None" }
+    const sampleData: Submission[] = [
+        { id: "author|title|date", issue: "1", medium: Mediums.Fiction, title: "Example A", author: "Author A", status: Statuses.Approved, /*demographics: "United States",*/ tags: ["Family"], rating: 5, notes: "None", mainSubmission: blank, date: "3/3/2024" },
+        { id: "author|title|date", issue: "2", medium: Mediums.Fiction, title: "Example B", author: "Author B", status: Statuses.Approved, /*demographics: "United States",*/ tags: ["Love"], notes: "None", mainSubmission: blank, date: "3/3/2024" }, // has no rating
+        { id: "author|title|date", issue: "3", medium: Mediums.Nonfiction, title: "Example C", author: "Author C", status: Statuses.Pending, /*demographics: "United States",*/ tags: ["Other"], rating: 5, notes: "One!", mainSubmission: blank, date: "3/3/2024" },
+        { id: "author|title|date", issue: "4", medium: Mediums.Poetry, title: "Example D", author: "Author D", status: Statuses.Pending, /*demographics: "Canada",*/ tags: ["Tag1", "Tag2"], rating: 5, mainSubmission: blank, date: "3/7/2024" }, // has no notes
+        { id: "author|title|date", issue: "5", medium: Mediums.VisualArt, title: "Example E", author: "Author E", status: Statuses.Pending, /*demographics: "Canada",*/ tags: ["Other"], rating: 5, notes: "None", mainSubmission: blank, date: "3/3/2024" },
+        { id: "author|title|date", issue: "6", medium: Mediums.Other, title: "Example F", author: "Author F", status: Statuses.Declined, /*demographics: "Canada",*/ tags: ["Other"], rating: 4, notes: "None", mainSubmission: blank, date: "3/3/2024" },
+        { id: "author|title|date", issue: "7", medium: Mediums.Other, title: "Example G", author: "Author G", status: Statuses.Declined, /*demographics: "Antarctica",*/ tags: ["Other"], rating: 3, notes: "None", mainSubmission: blank, date: "3/3/2024" },
+        { id: "author|title|date", issue: "8", medium: Mediums.Other, title: "Example H", author: "Author H", status: Statuses.Declined, /*demographics: "Antarctica",*/ tags: [], rating: 2, notes: "None", mainSubmission: blank, date: "1/1/1111" }, // tags is empty
+        { id: "author|title|date", issue: "9", medium: Mediums.Other, title: "Example I", author: "Author I", status: Statuses.Declined, /*demographics: "Antarctica",*/ rating: 1, notes: "None", mainSubmission: blank, date: "3/3/2024" } // has no tags
     ];
 
     console.log("This is length from main:", sampleData.length);
@@ -27,7 +39,7 @@ export default function AdminHomePage() {
         <div>
             {/* <UserButton></UserButton> */}
             {/* Welcome to the shadow realm */}
-            <AdminGrid submissions={sampleData}></AdminGrid>
+            <AdminGrid submissionArray={sampleData}></AdminGrid>
         </div>
     );
 }
