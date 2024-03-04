@@ -109,7 +109,8 @@ export default function SubmissionForm() {
                             ...prevValues.mainSubmission,
                             contentDriveUrl:
                                 "https://drive.google.com/file/d/" +
-                                responses[0].id
+                                responses[0].id,
+                            imageUrl: responses[0].thumbnailLink
                         },
                     };
                 });
@@ -121,7 +122,8 @@ export default function SubmissionForm() {
                                 ...prevValues.additionalReferences[i],
                                 contentDriveUrl:
                                     "https://drive.google.com/file/d/" +
-                                    responses[i].id
+                                    responses[i].id,
+                                imageUrl: responses[i].thumbnailLink
                             }
                             const newAdditionalReferences = prevValues.additionalReferences;
                             newAdditionalReferences[i] = newReference;
