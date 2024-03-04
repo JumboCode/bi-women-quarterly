@@ -619,7 +619,7 @@ const ProfileReview: React.FC<{}> = () => {
                     <div className="grid xl:grid-cols-2 lg:pr-96 grid-cols-1">
                         <div>
                             <label className="font-bold" htmlFor="fname">First Name</label><br />
-                            <input className="border-b-2 my-4 w-80" type="text" id="fname" defaultValue={userInfo.firstName} onChange={(e) => handleChange('firstName', e.target.value)} />
+                            <input className="border-b-2 my-4 w-80" type="text" id="fname"  defaultValue={userInfo.firstName} onChange={(e) => handleChange('firstName', e.target.value)} />
                         </div>
 
                         <div>
