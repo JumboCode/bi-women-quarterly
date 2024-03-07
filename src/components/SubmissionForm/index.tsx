@@ -343,9 +343,9 @@ export default function SubmissionForm() {
                     </div>
                 </div>
                 {/* Submission Boxes */}
-                <div className="grid grid-cols-2 place-items-center">
+                <div className="grid grid-cols-2">
                     {/* Submission Box 1 */}
-                    <div className="p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-dashed outline-[#768fcd] outline-offset-[-3px]">
+                    <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-dashed outline-[#768fcd] outline-offset-[-3px]">
                         <div className="break-normal">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3b60ba" className="mx-auto flex h-20 w-20 items-center justify-center">
                                 <path fillRule="evenodd" d="M10.5 3.75a6 6 0 00-5.98 6.496A5.25 5.25 0 006.75 20.25H18a4.5 4.5 0 002.206-8.423 3.75 3.75 0 00-4.133-4.303A6.001 6.001 0 0010.5 3.75zm2.03 5.47a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72v4.94a.75.75 0 001.5 0v-4.94l1.72 1.72a.75.75 0 101.06-1.06l-3-3z" clipRule="evenodd" />
@@ -367,7 +367,7 @@ export default function SubmissionForm() {
                     </div>
 
                     {/* Submission Box 2 */}
-                    <div className="p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
+                    <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                         <div onChange={handleTitleChange}>
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-1 ">Title*</h3>
                             <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Title of your piece" required />
@@ -382,7 +382,6 @@ export default function SubmissionForm() {
                                 <p className="text-xs text-gray-400 pt-1"><em>Max 400 Characters</em></p>
                             </div>
                         </div>
-                        
                     </div>
                 </div>
                 <div>
@@ -392,19 +391,19 @@ export default function SubmissionForm() {
                 </div>
                 {/* Artist Statement */}
                 <div>
-                <h1 className="text-1xl font-bold pb-4 mt-3 justify=">Artist Statement</h1>
+                <h1 className="text-1xl font-bold pb-4 mt-3 pt-8 justify=">Artist Statement</h1>
                     <div className="p-6 h-[150px] w-[full] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                         
                         <div onChange={handleDescriptionChange}> {/* TODO: change handleDescriptionChange to handleStatementChange*/}
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Note</h3>
                             <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Your Artist Statement" required />
-                            <p className="text-xs text-gray-400 pt-1"><em>Max 400 Characters</em></p>
+                            <p className="text-xs text-gray-400 pt-1 pb-4"><em>Max 400 Characters</em></p>
                         </div>
                     </div>
                 </div>
                 {/* Note to Editor */}
                 <div>
-                    <h1 className="text-1xl font-bold pb-4 mt-3  justify=">Note to Editor</h1>
+                    <h1 className="text-1xl font-bold pb-4 mt-3 pt-8 justify=">Note to Editor</h1>
                     <div className="p-6 h-[250px] w-[full] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                         <div>
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Subject</h3>
