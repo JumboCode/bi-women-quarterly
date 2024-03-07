@@ -109,26 +109,6 @@ export default function SubmissionForm() {
     const [title, setTitle] = useState(""); 
     const [description, setDescription] = useState(""); 
 
-    /**
-         * Prints the title, issue, and type of the publication to the console
-         * when the form is submitted
-         * @author Alana Sendlakowski, Vanessa Rose
-         * @param event the event that has been changed
-         */
-     const handleModalSubmit = (event : any) => {
-        handleNewPreview({
-            type,
-            title,
-            description,
-            imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
-            contentDriveUrl: "",
-        })
-        event.preventDefault();
-        console.log('type: ' + type);
-        console.log("title: " + title);
-        console.log("description: " + description);
-    }
-
     // Destructure common state
     const {
         view
@@ -179,13 +159,27 @@ export default function SubmissionForm() {
         }
     };
 
+    // const handleModalSubmit = (event : any) => {
+    //     handleNewPreview({
+    //         type,
+    //         title,
+    //         description,
+    //         imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
+    //         contentDriveUrl: "",
+    //     })
+    //     event.preventDefault();
+    //     console.log('type: ' + type);
+    //     console.log("title: " + title);
+    //     console.log("description: " + description);
+    // }
+
     /**
      * Prints the title, issue, and type of the publication to the console
      * when the form is submitted
      * @author Alana Sendlakowski, Vanessa Rose
      * @param event the event that has been changed
      */
-    const handleSubmit = async () => {
+    const handleSubmit = async() => {
         // push new submission to front of array
         // submissions.unshift(submission);
         handleNewPreview({
@@ -194,9 +188,13 @@ export default function SubmissionForm() {
             description,
             imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
             contentDriveUrl: "",
-        })
-        submission.title = submission.mainSubmission.title;
-
+        });
+        console.log("title: " + title);
+        submission.title = submission.mainSubmission.title; //TODO This is making submission.title empty
+        //submission.title = title;
+        console.log("title: " + title);
+        console.log("title: " + submission.title);
+        console.log("submission" + submission); 
         try {
             // add submission to database
             await fetch("../api/submissions/add", {
@@ -270,7 +268,7 @@ export default function SubmissionForm() {
     /*----------------------------------------*/
     /**
      * Main UI of New Submission 
-     * @author So Hyun Kim, Avery Hannah
+     * @author So Hyun Kim, Avery Hanna
      */
 //react node variable and assign something different depending on view and then return that variable at end
 // or multiple returns 
@@ -320,7 +318,9 @@ export default function SubmissionForm() {
                     {/* drop down element for issue selection */}
                     <h1 className="text-2xl font-bold pb-8 mt-3 ml-24 justify=">New Submission</h1>
                     <div className="flex md:flex md:flex-grow flex-row justify-end space-x-1 px-[20px] py-[10px]">
-                        <select name="issue" className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" value={submission.issue} onChange={handleSubmissionChange}>
+                        <select name="issue" className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
+                                value={submission.issue} 
+                                onChange={handleSubmissionChange}>
                             <option defaultValue="Select Issues">Select Issue</option> 
                                 <option value="Any">Any</option>
                                 {
@@ -357,10 +357,10 @@ export default function SubmissionForm() {
                         
                         <div className="grid grid-cols-2 gap-4 pt-[20px]"> 
                         <div className="flex grow text-justify justify-center text-[#3b60ba]">
-                                <LocalFile/> 
+                                <LocalFile/>
                         </div>
                         {/* "absolute right-[120px] mt-[100px] rounded-lg bg-white  m-6 h-[40px] w-[200px]  items-center shadow-lg"> */}
-                        <button  className="flex grow justify-center text-justify align-middle h-[30px] w-[115px] rounded-sm outline outline-[#5072c0] text-[#3b60ba] outline-offset-[3px]">
+                        <button  type="submit" className="flex grow justify-center text-justify align-middle h-[30px] w-[115px] rounded-sm outline outline-[#5072c0] text-[#3b60ba] outline-offset-[3px]">
                             Google Drive
                         </button>
                         </div>
@@ -394,7 +394,7 @@ export default function SubmissionForm() {
                         Save & Continue Later
                     </Link>
                 </button>
-                <button type="submit" onClick={handleSubmit} className="absolute right-[64px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg">
+                <button onClick={handleSubmit} className="absolute right-[64px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg">
                     <Link href="/">
                         Review
                     </Link>
