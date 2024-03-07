@@ -100,22 +100,7 @@ export default function SubmissionForm() {
             .then(res => res.json())
             .then(res => res.body)
             .then(responses => {
-                // set main submission contentDriveUrl
-                setSubmission(prevValues => {
-                    console.log(responses);
-                    return {
-                        ...prevValues,
-                        mainSubmission: {
-                            ...prevValues.mainSubmission,
-                            contentDriveUrl:
-                                "https://drive.google.com/file/d/" +
-                                responses[0].id,
-                            imageUrl: responses[0].thumbnail
-                        },
-                    };
-                });
-                // set additional references contentDriveUrl
-                for (let i = 1; i < responses.length; i++) {
+                for (let i = 0; i < responses.length; i++) {
                     setSubmission(prevValues => {
                         if (prevValues.additionalReferences) {
                             const newReference: Preview = {
@@ -123,11 +108,10 @@ export default function SubmissionForm() {
                                 contentDriveUrl:
                                     "https://drive.google.com/file/d/" +
                                     responses[i].id,
-                                imageUrl: responses[i].thumbnailLink
+                                imageUrl: responses[i].thumbnail
                             }
                             const newAdditionalReferences = prevValues.additionalReferences;
                             newAdditionalReferences[i] = newReference;
-                            console.log("HIIII REF: " + newReference);
                             return {
                                 ...prevValues,
                                 additionalReferences: newAdditionalReferences
@@ -136,18 +120,18 @@ export default function SubmissionForm() {
                             return prevValues;
                         }
                     });
-                }
+                    try {
+                        // add submission to database
+                        fetch("../api/submissions/add", {
+                            method: "POST",
+                            body: JSON.stringify({
+                                submission
+                            })
+                        });
+                    } catch (error) {
+                        console.log(error);
+                    }
 
-                try {
-                    // add submission to database
-                    fetch("../api/submissions/add", {
-                        method: "POST",
-                        body: JSON.stringify({
-                            submission
-                        })
-                    });
-                } catch (error) {
-                    console.log(error);
                 }
             });
     };
