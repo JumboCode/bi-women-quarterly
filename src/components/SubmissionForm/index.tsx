@@ -307,7 +307,7 @@ export default function SubmissionForm() {
         )
     } else {
         return (
-            <div className="p-8 h-screen bg-[#ecf0f6]">
+            <div className="p-8 mx-10 h-screen bg-[#ecf0f6]">
                 <div>
                     <button className="rounded-lg h-[40px] w-[90px] items-center ">
                         <Link href="/submit"> &larr; Back</Link>
@@ -316,7 +316,7 @@ export default function SubmissionForm() {
             {/* // Creates a form to retrieve title, issue, and name information */}
                 <div className="grid grid-cols-2 gap-4">
                     {/* drop down element for issue selection */}
-                    <h1 className="text-2xl font-bold pb-8 mt-3 ml-24 justify=">New Submission</h1>
+                    <h1 className="text-2xl font-bold pb-8 mt-3 justify=">New Submission</h1>
                     <div className="flex md:flex md:flex-grow flex-row justify-end space-x-1 px-[20px] py-[10px]">
                         <select name="issue" className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
                                 value={submission.issue} 
@@ -367,27 +367,54 @@ export default function SubmissionForm() {
                     </div>
 
                     {/* Submission Box 2 */}
-                    <div className="p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-dashed outline-[#768fcd] outline-offset-[-3px]">
+                    <div className="p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                         <div onChange={handleTitleChange}>
-                            <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-1 px-3">Title*</h3>
+                            <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-1 ">Title*</h3>
                             <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Title of your piece" required />
                             {/* <div className="pt-2 pb-8" onChange={handleTitleChange}>
                                 <label className="flex items-start justify-between py-2 px-5 rounded-t text-black font-bold">Title of Piece *</label>
                                 <input className="appearance-none ml-4 bg-transparent border-none w-full text-[#676c75] mr-3 px-2 leading-tight focus:outline-none" type="text" placeholder="title of piece"/>
                                 <hr className="h-px mx-6 my-1 border-[#676c75] border-[1px]"/>
                             </div> */}
+                            <div onChange={handleDescriptionChange}>
+                                <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Description</h3>
+                                <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Describe your piece" required />
+                                <p className="text-xs text-gray-400 pt-1"><em>Max 400 Characters</em></p>
+                            </div>
                         </div>
-                        <div onChange={handleDescriptionChange}>
-                            <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Description</h3>
-                            <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Describe your piece" required />
-                            <p className="text-xs text-gray-400 pt-1"><em>Max 400 Characters</em></p>
-                        </div>
+                        
                     </div>
                 </div>
                 <div>
                     <button className="rounded-lg items-center pt-4 ml-20">
                         <Link href="/submit"> + Add Additional Photos</Link>
                     </button>
+                </div>
+                {/* Artist Statement */}
+                <div>
+                <h1 className="text-1xl font-bold pb-4 mt-3 justify=">Artist Statement</h1>
+                    <div className="p-6 h-[150px] w-[full] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
+                        
+                        <div onChange={handleDescriptionChange}> {/* TODO: change handleDescriptionChange to handleStatementChange*/}
+                            <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Note</h3>
+                            <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Your Artist Statement" required />
+                            <p className="text-xs text-gray-400 pt-1"><em>Max 400 Characters</em></p>
+                        </div>
+                    </div>
+                </div>
+                {/* Note to Editor */}
+                <div>
+                    <h1 className="text-1xl font-bold pb-4 mt-3  justify=">Note to Editor</h1>
+                    <div className="p-6 h-[250px] w-[full] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
+                        <div>
+                            <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Subject</h3>
+                            <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Subject of your Note" required />
+                        
+                            <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Note</h3>
+                            <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Note to Editor" required />
+                            <p className="text-xs text-gray-400 pt-1"><em>Max 400 Characters</em></p>
+                        </div>
+                    </div>
                 </div>
                 <button className="absolute right-[176px] mt-[100px] rounded-lg bg-white  m-6 h-[40px] w-[200px]  items-center shadow-lg">
                     <Link href="/">
