@@ -21,3 +21,20 @@ body {
     height: 7rem;
     background-color: rgb(237, 239, 244);
 }
+
+.submission_type {
+    display:flex;
+}
+
+.submission_type_mobile {
+    display:none;
+}
+
+@media (max-width:750px) {
+    .submission_type {
+        display:none;
+    }
+    .submission_type_mobile {
+        display:block;
+    }
+}

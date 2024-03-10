@@ -6,7 +6,7 @@
  */
 
 // Import React
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { TailSpin } from "react-loader-spinner";
 
 // Import Next
@@ -266,6 +266,17 @@ export default function HomePage() {
         return null;
     }
 
+
+    /**
+     * to display or block submission menu for mobile state
+     * @author Jessie Huang
+     */
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleMenu = () => {
+        setIsOpen((open) => !open)
+    }
+
     /*------------------------------------------------------------------------*/
     /* ------------------------------- Render ------------------------------- */
     /*------------------------------------------------------------------------*/
@@ -289,8 +300,8 @@ export default function HomePage() {
                         </div>
                     </li>
                 </div>
-                <div className="top-16 left-20">
-                    <li className="flex pt-4 pl-16 space-x-20">
+                <div className={`submission_type top-16 left-20 ${isOpen ? "isopen" : ""}`}> {/* flex-row justify-around justify-items-stretch */}
+                    <li className="flex pt-4 pl-16 space-x-20"> {/*pt-4 pl-16 space-x-20*/}
                         <button
                             onClick={() => {
                                 dispatch({
@@ -332,6 +343,7 @@ export default function HomePage() {
                         </button>
                     </li>
                 </div>
+                <div className="submission_type_mobile">Trigger</div>
             </div>
             {isLoading ? (
                 <div className="flex h-screen">
