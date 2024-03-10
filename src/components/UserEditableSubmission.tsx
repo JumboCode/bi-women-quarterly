@@ -104,71 +104,23 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
   </div>  
   )
 
+  const containerStyle = {
+    backgroundImage: 'linear-gradient(to bottom right, #FFD3CB, #E7A5FF, #B3C9FF)',
+    fontFamily: 'Open Sans, sans-serif', 
+  };
 
-
-
-  // const body = editOn ? (
-  //   <form onSubmit={handleSave} className="submission-container flex flex-col bg-pink p-20">
-  //     <div className="flex items-center">
-  //       <img src={submission.mainSubmission.imageUrl} alt="Submission" className="w-560 h-400" />
-  //       <div className="text ml-4">
-  //         <h3>{submission.title}</h3>
-  //         <h4>Issue: {submission.mainSubmission.type}</h4>
-  //         <p>{submission.mainSubmission.description}</p>
-  //         <h4>Artist Statement</h4>
-  //         <p>{submission.author}</p>
-  //       </div>
-  //     </div>
-  //     <div className="flex justify-end mt-4">
-  //       <button type="button" onClick={handleEdit} className="mr-2">
-  //         Edit
-  //       </button>
-  //       <button type="submit">
-  //         Save
-  //       </button>
-  //     </div>
-  //   </form>
-  // ) : (
-  //   <div className="submission-container flex flex-col bg-pink p-20">
-  //     <button type="button" onClick={handleEdit} className="mb-4">
-  //       Edit
-  //     </button>
-  //     <div className="ml-28 mt-28 font-bold text-3xl">
-  //       {submission.title}
-  //     </div>
-  //     <div className="flex items-center mt-4">
-  //       {submission.mainSubmission.imageUrl && (
-  //         <img src={submission.mainSubmission.imageUrl} alt="Submission" className="w-560 h-400" />
-  //       )}
-  //       <div className="ml-4">
-  //         <div>
-  //           {submission.mainSubmission.type}
-  //         </div>
-  //         <div>
-  //           {submission.mainSubmission.description}
-  //         </div>
-  //         <div>
-  //           {submission.author}
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
   
-
-
-
   /*----------------------------------------*/
   /* --------------- Main UI -------------- */
   /*----------------------------------------*/
   const body = editOn ? (
-    <div className="submission-container flex flex-col bg-pink h-screen p-10 bg-pink-300">
+    <div className="submission-container flex flex-col h-screen" style={containerStyle}>
       <form onSubmit={handleEdit} className="flex flex-row justify-start mb-4">
-        <button type="submit" className="bg-pink-500 text-white px-4 py-2 rounded shadow mb-4 inline-block">
+        <button type="submit" className="text-white px-4 py-2 mb-4 inline-block" style={{ color: '#395EB9', fontSize: '24px' }}>
           &lt;- Back
         </button>
       </form>
-      <div className="author-date flex items-center justify-between mb-4">
+      <div className="author-date flex items-center justify-between mb-4 pl-10">
         <div className="flex items-center">
           <form>
             <div className="issue-type text font-bold">
@@ -187,12 +139,12 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             </div>
           </form>
         </div>
-        <div className="submission-date text-white">
+        <div className="submission-date text-white pr-10">
           Submitted: {submission.date}
         </div>
       </div>
       
-      <div className="flex flex-row">
+      <div className="flex flex-row pl-10">
         <img
           src={submission.mainSubmission.imageUrl}
           alt="Submission"
@@ -214,7 +166,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
         </div>
        
       </div>
-      <div className="artist-statement mt-4">
+      <div className="artist-statement mt-4 pl-10">
         <div className="font-bold">Artist Statement</div>
         <div>
           Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
@@ -226,36 +178,23 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
         </div>
       </div>
       <form onSubmit={handleSave} className="flex flex-row justify-between mt-10">
-        <button type="button" className="mr-auto">
+        <button type="button" className="mr-auto pl-10 rounded shadow">
           Delete Submission
         </button>
-        <div className="flex flex-row">
-          <button type="button" onClick={handleEdit} className="mr-2">
+        <div className="flex flex-row pr-10">
+          <button type="button" onClick={handleEdit} className="mr-2 rounded shadow">
             Edit
           </button>
-          <button type="submit">
+          <button type="submit" className ="rounded shadow bg-pink-500 text-white size-100">
             Save
           </button>
         </div>
       </form>
-      <div className="bg-pink p-3 flex justify-between items-center mt-auto">
-        <div className="text-blue-500">
-          © 2024 <span className="font-bold">BiWomenQuarterly</span>
-        </div>
-        <div className="flex items-center">
-          <div className="mr-8">
-            <a href="https://www.biwomenquarterly.com/about/" target="_blank" rel="noopener noreferrer" className="text-blue-500">About Us</a>
-          </div>
-          <div>
-            <a href="https://www.biwomenquarterly.com/contact/" target="_blank" rel="noopener noreferrer" className="text-blue-500">Contact Us</a>
-          </div>
-        </div>
-      </div>
     </div>
   ) : (
-    <div className="submission-container flex flex-col bg-pink h-screen p-10 bg-pink-300">
+    <div className="submission-container flex flex-col h-screen" style={{backgroundImage: 'linear-gradient(to bottom right, #FFD3CB, #E7A5FF, #B3C9FF)'}}>
       <form onSubmit={handleEdit} className="flex flex-row justify-start mb-4">
-        <button type="submit" className="bg-pink-500 text-white px-4 py-2 rounded shadow mb-4 inline-block">
+        <button type="submit" className="bg-pink-500 text-white px-4 py-2 mb-4 inline-block">
           &lt;- Back
         </button>
       </form>
@@ -306,20 +245,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
           </button>
         </div>
       </form>
-      <div className="bg-pink p-3 flex justify-between items-center mt-auto">
-        <div className="text-blue-500">
-          © 2024 <span className="font-bold">BiWomenQuarterly</span>
-        </div>
-        <div className="flex items-center">
-          <div className="mr-8">
-            <a href="https://www.biwomenquarterly.com/about/" target="_blank" rel="noopener noreferrer" className="text-blue-500">About Us</a>
-          </div>
-          <div>
-            <a href="https://www.biwomenquarterly.com/contact/" target="_blank" rel="noopener noreferrer" className="text-blue-500">Contact Us</a>
-          </div>
-        </div>
       </div>
-    </div>
   );
 
 
