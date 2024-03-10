@@ -343,7 +343,7 @@ export default function SubmissionForm() {
                     </div>
                 </div>
                 {/* Submission Boxes */}
-                <div className="grid grid-cols-2">
+                <div className="flex flex-cols-2 gap-4">
                     {/* Submission Box 1 */}
                     <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-dashed outline-[#768fcd] outline-offset-[-3px]">
                         <div className="break-normal">
@@ -355,7 +355,7 @@ export default function SubmissionForm() {
                         <h1 className="flex grow text-center justify-center text-l font-bold pb-1 pt-1">Drag & Drop Files Here</h1>
                         <h1 className="flex grow text-center justify-center text-m pb-1 pt-1">or</h1>
                         
-                        <div className="grid grid-cols-2 gap-4 pt-[20px]"> 
+                        <div className="flex grid grid-cols-2 gap-4 pt-[20px]"> 
                         <div className="flex grow text-justify justify-center text-[#3b60ba]">
                                 <LocalFile/>
                         </div>
