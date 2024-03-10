@@ -114,25 +114,25 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
   /* --------------- Main UI -------------- */
   /*----------------------------------------*/
   const body = editOn ? (
-    <div className="submission-container flex flex-col h-screen" style={containerStyle}>
+    <div className="submission-container flex flex-col h-screen" style={{backgroundImage: 'linear-gradient(to bottom right, #FFD3CB, #E7A5FF, #B3C9FF)'}}>
       <form onSubmit={handleEdit} className="flex flex-row justify-start mb-4">
         <button type="submit" className="text-white px-4 py-2 mb-4 inline-block" style={{ color: '#395EB9', fontSize: '24px' }}>
           &lt;- Back
         </button>
       </form>
-      <div className="author-date flex items-center justify-between mb-4 pl-10">
+      <div className="title-date flex items-center justify-between mb-4">
         <div className="flex items-center">
           <form>
             <div className="issue-type text font-bold">
-              <label>Issue:</label>
-              <select name=" ">
+              <label>Issue: </label>
+              <select name="issue" style={{ background: '#FADADD', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', padding: '6px', borderRadius: '4px'}}>
                   <option value="Current">{Issues.Current}</option>
                   <option value="Next">{Issues.Next}</option>
                   <option value="None">{Issues.None}</option>
               </select>
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <label>Type:</label>
-              <select>
+              <label>Type: </label>
+              <select name="issue" style={{ background: '#FADADD', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', padding: '6px', borderRadius: '4px' }}>
                   <option value="Submission">{PreviewType.Submission}</option>
                   <option value="addRef">{PreviewType.AdditionalReference}</option>
               </select>
@@ -150,21 +150,19 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
           alt="Submission"
           className="w-60 h-400 mr-4 rounded-lg"
         />
-        <div className="flex-col items-center py-2 bg-[#eac4f9] rounded-lg drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)] max-w-[30%] w-[100%]">
-          <div className="title text-xl border-b border-blue-500 p-[10%] text-left">
-            <b>Title:</b>
+        <div className="flex-col items-center py-2 bg-[#eac4f9] rounded-lg drop-shadow-[0_0px_10px_rgba(0,0,0,0.25)] max-w-[40%] w-[100%]">
+          <div className="title text-xl border-b border-blue-500 p-[5%] text-left">
+            <b style={{ color: "#395EB9" }}>Title*</b>
             <br></br>
-            <br></br>
-            <span contentEditable="true">{submission.title}</span>
+            <span style={{ fontSize: "14px" }}  contentEditable="true">{submission.title}</span>
           </div>
-          <div className="image-description text-black border-b border-blue-500 p-[10%] text-left">
-            Description: 
+          <div className="image-description text-xl text-black p-[5%] text-left">
+            <b style={{ color: "#395EB9" }}>Description</b>
             <br></br>
-            <br></br>
-            <span contentEditable="true">{submission.mainSubmission.description}</span>
+            <span style={{ fontSize: "14px" }}  contentEditable="true">{submission.mainSubmission.description}</span>
           </div>
         </div>
-       
+ 
       </div>
       <div className="artist-statement mt-4 pl-10">
         <div className="font-bold">Artist Statement</div>
@@ -174,7 +172,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
           ratione ipsum, illo voluptatem. Vel pariatur adipisci quidem dolorum, 
           exercitationem dicta. Vero, officia? Lorem, ipsum dolor sit amet consectetur 
           adipisicing elit. Tenetur nobis temporibus iusto odio vitae amet ex, 
-          nemo quae veniam rem dolore sequi aliquam eius eveniet optio non totam voluptas et.
+          nemo quae veniam rem dolore sequi aliquam eius even.
         </div>
       </div>
       <form onSubmit={handleSave} className="flex flex-row justify-between mt-10">
@@ -182,10 +180,10 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
           Delete Submission
         </button>
         <div className="flex flex-row pr-10">
-          <button type="button" onClick={handleEdit} className="mr-2 rounded shadow">
+          <button type="button" onClick={handleEdit} className="mr-2 rounded shadow p-[7%]">
             Edit
           </button>
-          <button type="submit" className ="rounded shadow bg-pink-500 text-white size-100">
+          <button type="submit" className ="rounded shadow bg-pink-500 text-white size-100 p-[7%]">
             Save
           </button>
         </div>
@@ -194,7 +192,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
   ) : (
     <div className="submission-container flex flex-col h-screen" style={{backgroundImage: 'linear-gradient(to bottom right, #FFD3CB, #E7A5FF, #B3C9FF)'}}>
       <form onSubmit={handleEdit} className="flex flex-row justify-start mb-4">
-        <button type="submit" className="bg-pink-500 text-white px-4 py-2 mb-4 inline-block">
+      <button type="submit" className="text-white px-4 py-2 mb-4 inline-block" style={{ color: '#395EB9', fontSize: '24px' }}>
           &lt;- Back
         </button>
       </form>
@@ -202,13 +200,14 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
         <div className="title text-xl font-bold">
           {submission.title}
         </div>
-        <div className="submission-date text-white">
+        <div className="submission-date text-white pr-10">
           Submitted: {submission.date}
         </div>
       </div>
-      <div className="flex items-center">
-        <div className="issue-type text font-bold">
-          Issue: {submission.issue}&nbsp;&nbsp;&nbsp;&nbsp;Type: {submission.mainSubmission.type}
+      <div className="flex items-center justify-between mb-4">
+        <div className="issue-type">
+          <span className="font-bold">Issue:</span> {submission.issue}&nbsp;&nbsp;&nbsp;&nbsp;
+          <span className="font-bold">Type:</span> {submission.mainSubmission.type}
         </div>
       </div>
       <div className="flex flex-row">
