@@ -345,7 +345,7 @@ export default function SubmissionForm() {
                 {/* Submission Boxes */}
                 <div className="flex flex-cols-2 gap-4">
                     {/* Submission Box 1 */}
-                    <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-dashed outline-[#768fcd] outline-offset-[-3px]">
+                    <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">
                         <div className="break-normal">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3b60ba" className="mx-auto flex h-20 w-20 items-center justify-center">
                                 <path fillRule="evenodd" d="M10.5 3.75a6 6 0 00-5.98 6.496A5.25 5.25 0 006.75 20.25H18a4.5 4.5 0 002.206-8.423 3.75 3.75 0 00-4.133-4.303A6.001 6.001 0 0010.5 3.75zm2.03 5.47a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72v4.94a.75.75 0 001.5 0v-4.94l1.72 1.72a.75.75 0 101.06-1.06l-3-3z" clipRule="evenodd" />
@@ -360,9 +360,15 @@ export default function SubmissionForm() {
                                 <LocalFile/>
                         </div>
                         {/* "absolute right-[120px] mt-[100px] rounded-lg bg-white  m-6 h-[40px] w-[200px]  items-center shadow-lg"> */}
-                        <button  type="submit" className="flex grow justify-center text-justify align-middle h-[30px] w-[115px] rounded-sm outline outline-[#5072c0] text-[#3b60ba] outline-offset-[3px]">
+                        {/*"inline-block h-[30px] w-[115px] pt-[3px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]" */}
+                        {/* <button  type="submit" className="flex grow justify-center text-justify h-[30px] w-[115px] pt-[3px] rounded-sm outline outline-[#5072c0] text-[#3b60ba] outline-offset-[3px]">
                             Google Drive
-                        </button>
+                        </button> */}
+                        <div className="flex  text-justify justify-center text-[#3b60ba]">
+                            <button  type="submit" className="inline-block h-[30px] w-[115px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]">
+                                Google Drive
+                            </button>
+                        </div>
                         </div>
                     </div>
 
