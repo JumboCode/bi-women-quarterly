@@ -299,7 +299,7 @@ export default function HomePage() {
                                 });
                             }}
                             className={
-                                filter === FilterType.None ? "font-bold" : ""
+                                filter === FilterType.None ? "font-bold text-primary-blue": "text-primary-blue"
                             }
                         >
                             All Submissions
@@ -312,9 +312,7 @@ export default function HomePage() {
                                 });
                             }}
                             className={
-                                filter === FilterType.Approved
-                                    ? "font-bold"
-                                    : ""
+                                filter === FilterType.Approved ? "font-bold  text-primary-blue": "text-primary-blue"
                             }
                         >
                             Approved Works
@@ -327,7 +325,7 @@ export default function HomePage() {
                                 });
                             }}
                             className={
-                                filter === FilterType.Current ? "font-bold" : ""
+                                filter === FilterType.Current ? "font-bold text-primary-blue" : "text-primary-blue"
                             }
                         >
                             Current Submissions
