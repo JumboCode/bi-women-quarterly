@@ -18,24 +18,8 @@ import Gender from "@/types/Gender";
 import SocialMedias from "@/types/SocialMedias";
 
 /*------------------------------------------------------------------------*/
-/* -------------------------------- State ------------------------------- */
+/* -------------------------------- Types ------------------------------- */
 /*------------------------------------------------------------------------*/
-
-/* -------- State Definition -------- */
-
-type State = {
-    // Preview vs. edit mode
-    view: View;
-    // Info about the current user
-    userInfo: UserInfo;
-};
-
-/* ----------- View Definition ------------- */
-
-enum View {
-    Preview = "PreviewView",
-    Edit = "EditView"
-}
 
 /* -------- User Info Definition -------- */
 
@@ -58,6 +42,54 @@ type UserInfo = {
     // strings it contains are allowed to be empty
     socialMedias: SocialMedias
 };
+
+/*------------------------------------------------------------------------*/
+/* ------------------------------ Constants ----------------------------- */
+/*------------------------------------------------------------------------*/
+
+const PLACEHOLDERS: UserInfo = {
+    profilePicture: 'defaultpfp.png',
+    primaryEmailAddress: 'No email given',
+    firstName: 'No first name given',
+    lastName: 'No last name given',
+    authorName: 'No author name given',
+    pronouns: 'No pronouns given',
+    bio: 'No bio given',
+    birthday: '01/01/1999',
+    raceEthnicity: RaceEthnicity.Other,
+    gender: Gender.Other,
+    country: 'No country given',
+    stateProvince: 'No state/province given',
+    cityTown: 'No city/town given',
+    socialMedias: {
+        LinkedIn: 'N/A',
+        Facebook: 'N/A',
+        Instagram: 'N/A',
+        X: 'N/A',
+        TikTok: 'N/A',
+    },
+};
+
+/*------------------------------------------------------------------------*/
+/* -------------------------------- State ------------------------------- */
+/*------------------------------------------------------------------------*/
+
+/* -------- State Definition -------- */
+
+type State = {
+    // Preview vs. edit mode
+    view: View;
+    // Info about the current user
+    userInfo: UserInfo;
+};
+
+/* ----------- View Definition ------------- */
+
+enum View {
+    Preview = "PreviewView",
+    Edit = "EditView"
+}
+
 
 /* ------------- Actions ------------ */
 
@@ -207,24 +239,24 @@ const ProfileReview: React.FC<{}> = () => {
             type: ActionType.UpdateUserInfo,
             updatedUserInfo: {
                 profilePicture: userProps.profilePicture as string ?? "defaultpfp.png",
-                primaryEmailAddress: userProps.primaryEmailAddress as string ?? 'No email given',
-                firstName: userProps.firstName as string ?? 'No first name given',
-                lastName: userProps.lastName as string ?? 'No last name given',
-                authorName: userProps.authorName as string ?? 'No author name given',
-                pronouns: userProps.pronouns as string ?? 'No pronouns given',
-                bio: userProps.bio as string ?? 'No bio given',
+                primaryEmailAddress: userProps.primaryEmailAddress as string ?? '',
+                firstName: userProps.firstName as string ?? '',
+                lastName: userProps.lastName as string ?? '',
+                authorName: userProps.authorName as string ?? '',
+                pronouns: userProps.pronouns as string ?? '',
+                bio: userProps.bio as string ?? '',
                 birthday: userProps.birthday as string,
-                raceEthnicity: userProps.raceEthnicity as RaceEthnicity ?? 'No race/ethnicity given',
-                gender: userProps.gender as Gender ?? 'No gender given',
-                country: userProps.country as string ?? 'No country given',
-                stateProvince: userProps.stateProvince as string ?? 'No state/province given',
-                cityTown: userProps.cityTown as string ?? 'No city/town given',
+                raceEthnicity: userProps.raceEthnicity as RaceEthnicity ?? '',
+                gender: userProps.gender as Gender ?? '',
+                country: userProps.country as string ?? '',
+                stateProvince: userProps.stateProvince as string ?? '',
+                cityTown: userProps.cityTown as string ?? '',
                 socialMedias: userProps.socialMedias as SocialMedias ?? {
-                    LinkedIn: 'N/A',
-                    Facebook: 'N/A',
-                    Instagram: 'N/A',
-                    X: 'N/A',
-                    TikTok: 'N/A',
+                    LinkedIn: '',
+                    Facebook: '',
+                    Instagram: '',
+                    X: '',
+                    TikTok: '',
                 },
             }
         });
@@ -614,29 +646,63 @@ const ProfileReview: React.FC<{}> = () => {
                 {/* Biographical info */}
                 <div className="bg-white border border-solid border-slate-400 rounded-xl mb-5 p-5">
                     <label className="font-bold" htmlFor="email">Email*</label><br />
-                    <input className="border-b-2 my-4 w-80" type="text" id="email" defaultValue={userInfo!.primaryEmailAddress} onChange={(e) => handleChange('primaryEmailAddress', e.target.value)} required /><br />
-
+                    <input
+                        className="border-b-2 my-4 w-80" 
+                        placeholder={PLACEHOLDERS.primaryEmailAddress}
+                        type="text"
+                        id="email"
+                        defaultValue={(userInfo!.primaryEmailAddress === '') ? PLACEHOLDERS.primaryEmailAddress : userInfo!.primaryEmailAddress }
+                        onChange={(e) => handleChange('primaryEmailAddress', e.target.value)}
+                        required
+                    />
+                    <br />
                     <div className="grid xl:grid-cols-2 lg:pr-96 grid-cols-1">
                         <div>
                             <label className="font-bold" htmlFor="fname">First Name</label><br />
-                            <input className="border-b-2 my-4 w-80" type="text" id="fname"  defaultValue={userInfo.firstName} onChange={(e) => handleChange('firstName', e.target.value)} />
+                            <input
+                                className="border-b-2 my-4 w-80" 
+                                placeholder={PLACEHOLDERS.firstName}
+                                type="text"
+                                id="fname"
+                                defaultValue={(userInfo!.firstName === '') ? PLACEHOLDERS.firstName : userInfo!.firstName}
+                                onChange={(e) => handleChange('firstName', e.target.value)}
+                            />
                         </div>
 
                         <div>
                             <label className="font-bold" htmlFor="lname">Last Name</label><br />
-                            <input className="border-b-2 my-4 w-80" type="text" id="lname" defaultValue={userInfo.lastName} onChange={(e) => handleChange('lastName', e.target.value)} />
+                            <input
+                                className="border-b-2 my-4 w-80" 
+                                placeholder={PLACEHOLDERS.lastName}
+                                type="text"
+                                id="lname"
+                                defaultValue={(userInfo!.lastName === '') ? PLACEHOLDERS.lastName : userInfo!.lastName}
+                                onChange={(e) => handleChange('lastName', e.target.value)}
+                            />
                         </div>
                     </div>
 
                     <div className="grid xl:grid-cols-2 lg:pr-96 grid-cols-1">
                         <div>
                             <label className="font-bold" htmlFor="aname">Author Name*</label><br />
-                            <input className="border-b-2 my-4 w-80" type="text" id="aname" defaultValue={userInfo.authorName} onChange={(e) => handleChange('authorName', e.target.value)} required />
+                            <input
+                                className="border-b-2 my-4 w-80" 
+                                placeholder={PLACEHOLDERS.authorName}
+                                type="text"
+                                id="aname"
+                                defaultValue={}
+                                onChange={(e) => handleChange('authorName', e.target.value)}
+                                required />
                         </div>
 
                         <div>
                             <label className="font-bold" htmlFor="pronouns">Pronouns</label><br />
-                            <input className="border-b-2 my-4 w-80" type="text" id="pronouns" defaultValue={userInfo.pronouns} onChange={(e) => handleChange('pronouns', e.target.value)} />
+                            <input
+                                className="border-b-2 my-4 w-80" 
+                                placeholder={PLACEHOLDERS.pronouns}
+                                type="text"
+                                id="pronouns"
+                                defaultValue={userInfo.pronouns} onChange={(e) => handleChange('pronouns', e.target.value)} />
                         </div>
                     </div>
 
@@ -653,9 +719,7 @@ const ProfileReview: React.FC<{}> = () => {
                                 className="border-b-2 my-4 w-48"
                                 type="date"
                                 id="birthday"
-                                // defaultValue={extractDateStringHTML(userInfo.birthday!)}
                                 defaultValue="01/01/1999"
-                                // onChange={(e) => handleBirthdayChange('birthday', e.target.value)}
                                 onChange={(e) => handleChange('birthday', e.target.value)}
                             />
                         </div>
@@ -738,22 +802,22 @@ const ProfileReview: React.FC<{}> = () => {
                     <div className="grid lg:grid-cols-2 grid-cols-1">
                         <div>
                             <label className="font-bold pr-4" htmlFor="linkedin">LinkedIn</label>
-                            <input className="border-b-2 my-4 w-80" type="text" id="linkedin" defaultValue={userInfo?.socialMedias.LinkedIn} onChange={(e) => updateSocialMedia('LinkedIn', e.target.value)} />
+                            <input placeholder={PLACEHOLDERS.socialMedias.LinkedIn} className="border-b-2 my-4 w-80" type="text" id="linkedin" defaultValue={userInfo?.socialMedias.LinkedIn} onChange={(e) => updateSocialMedia('LinkedIn', e.target.value)} />
                         </div>
 
                         <div>
                             <label className="font-bold pr-4" htmlFor="instagram">Instagram</label>
-                            <input className="border-b-2 my-4 w-80" type="text" id="instagram" defaultValue={userInfo?.socialMedias.Instagram} onChange={(e) => updateSocialMedia('Instagram', e.target.value)} />
+                            <input placeholder={PLACEHOLDERS.socialMedias.Instagram} className="border-b-2 my-4 w-80" type="text" id="instagram" defaultValue={userInfo?.socialMedias.Instagram} onChange={(e) => updateSocialMedia('Instagram', e.target.value)} />
                         </div>
 
                         <div>
                             <label className="font-bold pr-4" htmlFor="xTwitter">X/Twitter</label>
-                            <input className="border-b-2 my-4 w-80" type="text" id="xTwitter" defaultValue={userInfo?.socialMedias.X} onChange={(e) => updateSocialMedia('X', e.target.value)} />
+                            <input placeholder={PLACEHOLDERS.socialMedias.X} className="border-b-2 my-4 w-80" type="text" id="xTwitter" defaultValue={userInfo?.socialMedias.X} onChange={(e) => updateSocialMedia('X', e.target.value)} />
                         </div>
 
                         <div>
                             <label className="font-bold pr-4" htmlFor="facebook">Facebook</label>
-                            <input className="border-b-2 my-4 w-80" type="text" id="facebook" defaultValue={userInfo?.socialMedias.Facebook} onChange={(e) => updateSocialMedia('Facebook', e.target.value)} />
+                            <input placeholder={PLACEHOLDERS.socialMedias.Facebook} className="border-b-2 my-4 w-80" type="text" id="facebook" defaultValue={userInfo?.socialMedias.Facebook} onChange={(e) => updateSocialMedia('Facebook', e.target.value)} />
                         </div>
                     </div>
 
