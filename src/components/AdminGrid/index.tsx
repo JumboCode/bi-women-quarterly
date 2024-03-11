@@ -1,5 +1,6 @@
 import Submission from "@/types/Submission";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import Button from '@mui/material/Button';
 
 type Props = {
     submissionArray: Submission[];
@@ -25,6 +26,11 @@ const AdminGrid: React.FC<Props> = (properties) => {
         rows.push(row);
     }
 
+    const handleClick = (event: any, cellValues: any) => {
+        console.log(event);
+        console.log(cellValues);
+    }
+
     const columns: GridColDef[] = [
         { field: "issue", headerName: "Issue", width: 100, type: "singleSelect", valueOptions: [1, 2, 3, 4, 5, 6, 7, 8, 9], editable: false },
         { field: "type", headerName: "Type", width: 100, type: "singleSelect", valueOptions: ["Type 1", "Type 2", "Type 3"], editable: false },
@@ -34,7 +40,22 @@ const AdminGrid: React.FC<Props> = (properties) => {
         // { field: "demographics", headerName: "Demographics", width: 200, type: "singleSelect", valueOptions: ["United States", "Canada", "Antarctica"], editable: false },
         { field: "tags", headerName: "Tags", width: 200, editable: false },
         { field: "ratings", headerName: "Rating", width: 100, type: "singleSelect", valueOptions: [1, 2, 3, 4, 5], editable: false },
-        { field: "notes", headerName: "Notes", width: 250, editable: false }
+        { field: "notes", headerName: "Notes", width: 250, editable: false },
+        {
+            field: "Print",
+            renderCell: (cellValues) => {
+                return (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={(event) => {
+                            handleClick(event, cellValues);
+                        }}>
+                        Print
+                    </Button>
+                );
+            }
+        }
     ];
 
     return (
