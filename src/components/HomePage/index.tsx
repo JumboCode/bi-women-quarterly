@@ -288,7 +288,7 @@ export default function HomePage() {
         <div className="h-screen w-screen flex flex-col gradient-background">
             <div className="HomePage-top-bar border-b border-primary-blue">
                 <div className="m-6 mx-5 flex flex-row justify-between">
-                    <div className="flex text-2xl font-bold text-primary-blue">
+                    <div className="flex text-2xl lg:text-3xl xl:text-4xl font-bold text-primary-blue">
                         My Work
                     </div>
                     <li className="flex items-center space-x-4">
@@ -313,7 +313,7 @@ export default function HomePage() {
                                 });
                             }}
                             className={
-                                filter === FilterType.Current ? "font-bold text-primary-blue" : "text-primary-blue"
+                                `text-primary-blue ${filter === FilterType.Current ? "font-bold " : ""} text-base lg:text-lg xl:text-xl`
                             }
                         >
                             Current Submissions
@@ -326,7 +326,7 @@ export default function HomePage() {
                                 });
                             }}
                             className={
-                                filter === FilterType.None ? "font-bold text-primary-blue": "text-primary-blue"
+                                `text-primary-blue ${filter === FilterType.None ? "font-bold " : ""} text-base lg:text-lg xl:text-xl`
                             }
                         >
                             All Submissions
@@ -339,7 +339,7 @@ export default function HomePage() {
                                 });
                             }}
                             className={
-                                filter === FilterType.Approved ? "font-bold  text-primary-blue": "text-primary-blue"
+                                `text-primary-blue ${filter === FilterType.Approved ? "font-bold " : ""} text-base lg:text-lg xl:text-xl`
                             }
                         >
                             Approved Works
