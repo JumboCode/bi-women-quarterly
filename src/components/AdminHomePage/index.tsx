@@ -33,12 +33,9 @@ export default function AdminHomePage() {
         { id: "author|title|date", issue: "9", medium: Mediums.Other, title: "Example I", author: "Author I", status: Statuses.Declined, /*demographics: "Antarctica",*/ rating: 1, notes: "None", mainSubmission: blank, date: "3/3/2024" } // has no tags
     ];
 
-    console.log("This is length from main:", sampleData.length);
-
     return (
         <div>
-            {/* <UserButton></UserButton> */}
-            {/* Welcome to the shadow realm */}
+            <UserButton></UserButton>
             <AdminGrid submissionArray={sampleData}></AdminGrid>
         </div>
     );
