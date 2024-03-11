@@ -11,6 +11,7 @@
         "backend": "npx nodemon src/backend/index.js"
     },
     "dependencies": {
+        "@clerk/clerk-js": "^4.70.0",
         "@clerk/nextjs": "^4.29.5",
         "@google-cloud/local-auth": "^3.0.1",
         "child_process": "^1.0.2",

@@ -1,20 +1,19 @@
 /**
  * Submission form components that takes in title, issue and type of
  * publication
- * @author Alana Sendlakowski, Vanessa Rose
- * @author So Hyun Kim, Avery Hanna
+ * @author Alana Sendlakowski, Vanessa Rose, Shreyas Ravi, Austen Money
  */
 
 // Import React
 import { useEffect, useReducer, useState } from 'react';
 
 // Import types
-import Submission from "@/types/Submission"
-import PreviewType from "@/types/PreviewType"
-import Mediums from '@/types/Mediums';
+import Submission from "@/types/Submission";
+import PreviewType from "@/types/PreviewType";
+import Mediums from "@/types/Mediums";
 
 // Import Next
-import Link from 'next/link'
+import Link from "next/link";
 
 // Import clerk
 import { useUser } from "@clerk/nextjs";
@@ -22,6 +21,7 @@ import { useUser } from "@clerk/nextjs";
 // Import components
 import LocalFile from '@/components/SubmissionForm/LocalFile';
 import Preview from '@/types/Preview';
+import Statuses from '@/types/Statuses';
 
 
 /*------------------------------------------------------------------------*/
@@ -87,7 +87,7 @@ export default function SubmissionForm() {
     const { user } = useUser();
 
     if (!user) {
-         return null;
+        return null;
     }
 
     /*------------------------------------------------------------------------*/
@@ -123,7 +123,7 @@ export default function SubmissionForm() {
             date: Date().toString(),
             issue: "",
             medium: Mediums.None,
-            isApproved : false,
+            status: Statuses.Pending,
             mainSubmission: {
                 type: PreviewType.Submission,
                 title: "",
@@ -147,12 +147,12 @@ export default function SubmissionForm() {
      */
     const fetchIssueThemes = async () => {
         try {
-            await fetch("../api/issues/get", {method: "GET"})
-            .then(response => response.json())
-            .then(res => res.data.map((issue: any) => issue.title))
-            .then(titles => {
-                setIssues(titles)
-            });
+            await fetch("../api/issues/get", { method: "GET" })
+                .then(response => response.json())
+                .then(res => res.data.map((issue: any) => issue.title))
+                .then(titles => {
+                    setIssues(titles);
+                });
         } catch (error) {
             console.error("Error fetching issue themes: ", error);
             return [];
@@ -176,12 +176,10 @@ export default function SubmissionForm() {
     /**
      * Prints the title, issue, and type of the publication to the console
      * when the form is submitted
-     * @author Alana Sendlakowski, Vanessa Rose
+     * @author Alana Sendlakowski, Vanessa Rose, Shreyas Ravi
      * @param event the event that has been changed
      */
-    const handleSubmit = async() => {
-        // push new submission to front of array
-        // submissions.unshift(submission);
+    const handleSubmit = async () => {
         handleNewPreview({
             type,
             title,
@@ -190,41 +188,86 @@ export default function SubmissionForm() {
             contentDriveUrl: "",
         });
         console.log("title: " + title);
-        submission.title = submission.mainSubmission.title; //TODO This is making submission.title empty
-        //submission.title = title;
-        console.log("title: " + title);
-        console.log("title: " + submission.title);
-        console.log("submission" + submission); 
-        try {
-            // add submission to database
-            await fetch("../api/submissions/add", {
-                method: "POST",
-                body: JSON.stringify({
-                    submission
-                }),
+        
+        submission.title = submission.mainSubmission.title;
+
+        // upload submission to google drive
+        await fetch("http://localhost:3001/upload")
+            .then(res => res.json())
+            .then(res => res.body)
+            .then(responses => {
+                // set main submission contentDriveUrl
+                setSubmission(prevValues => {
+                    return {
+                        ...prevValues,
+                        mainSubmission: {
+                            ...prevValues.mainSubmission,
+                            contentDriveUrl:
+                                "https://drive.google.com/file/d/" +
+                                responses[0].id
+                        },
+                    };
+                });
+                // set additional references contentDriveUrl
+                for (let i = 1; i < responses.length; i++) {
+                    setSubmission(prevValues => {
+                        if (prevValues.additionalReferences) {
+                            const newReference: Preview = {
+                                ...prevValues.additionalReferences[i],
+                                contentDriveUrl:
+                                    "https://drive.google.com/file/d/" +
+                                    responses[i].id
+                            }
+                            const newAdditionalReferences = prevValues.additionalReferences;
+                            newAdditionalReferences[i] = newReference;
+                            return {
+                                ...prevValues,
+                                additionalReferences: newAdditionalReferences,
+                            };
+                        } else {
+                            return prevValues;
+                        }
+                    });
+                }
+
+                try {
+                    // add submission to database
+                    fetch("../api/submissions/add", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            submission
+                        }),
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
             });
-        } catch (error) {
-            console.log(error);
-        }
     };
-    
+
     /**
      * Handles the change of elements in the form by updating useState variable
-     * @author Alana Sendlakowski, Vanessa Rose
+     * @author Austen Money
+     * @param event the event that has been changed (when a new file is ubloaded
+     *              within the modal)
+     * @returns new states of all the elements in the form
+     */
+    const handleSubmissionChange = (event: any) => {
+        setSubmission(prevValues => {
+            return { ...prevValues, [event.target.name]: event.target.value };
+        });
+    };
+
+    /**
+     * Handles the change of file submissions
+     * @author Austen Money
      * @param event the event that has been changed
      * @returns new states of all the elements in the form
      */
-    const handleSubmissionChange = (event : any) => {
-        setSubmission( prevValues => {
-            return { ...prevValues,[event.target.name]: event.target.value}
-         })
-    }
-
     const handleNewPreview = (newPreview: Preview) => {
-        setSubmission( prevValues => {
-            return { ...prevValues, mainSubmission: newPreview}
-         })
-    }
+        setSubmission(prevValues => {
+            return { ...prevValues, mainSubmission: newPreview };
+        });
+    };
 
     /**
      * Handles the change of elements in the form by updating useState variable
@@ -254,14 +297,11 @@ export default function SubmissionForm() {
      * Mount
      * @author Austen Money
      */
-    useEffect(
-        () => {
+    useEffect(() => {
         (async () => {
             await fetchIssueThemes();
         })();
-        },
-        [ user ],
-    );
+    }, [user]);
 
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
