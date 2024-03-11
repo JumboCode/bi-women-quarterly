@@ -268,7 +268,7 @@ export default function HomePage() {
 
 
     /**
-     * to display or block submission menu for mobile state
+     * Display or block submission menu for mobile state
      * @author Jessie Huang
      */
     const [isOpen, setIsOpen] = useState(false);
@@ -285,10 +285,13 @@ export default function HomePage() {
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
     return (
-        <div className="h-screen w-screen flex flex-col">
-            <div className="HomePage-top-bar border-b border-gray-300">
-                <div className="m-3 mx-5 flex flex-row justify-end">
-                    <li className="flex items-center space-x-5">
+        <div className="h-screen w-screen flex flex-col gradient-background">
+            <div className="HomePage-top-bar border-b border-primary-blue">
+                <div className="m-6 mx-5 flex flex-row justify-between">
+                    <div className="flex text-2xl font-bold text-primary-blue">
+                        My Work
+                    </div>
+                    <li className="flex items-center space-x-4">
                         <button className="HomePage-submit-button shadow-md">
                             <Link href="/previews">Review Work</Link>
                         </button>
@@ -300,8 +303,21 @@ export default function HomePage() {
                         </div>
                     </li>
                 </div>
-                <div className={`submission_type top-16 left-20 ${isOpen ? "isopen" : ""}`}> {/* flex-row justify-around justify-items-stretch */}
-                    <li className="flex pt-4 pl-16 space-x-20"> {/*pt-4 pl-16 space-x-20*/}
+                <div className="flex items-end"> {/* ${isOpen ? "is-open" : ""} flex-row justify-around justify-items-stretch top-16 left-20 */}
+                    <li className="flex m-5 space-x-8 flex-col sm:flex-row"> {/*pt-4 pl-16 space-x-20*/}
+                        <button
+                            onClick={() => {
+                                dispatch({
+                                    type: ActionType.ChangeFilter,
+                                    newFilter: FilterType.Current
+                                });
+                            }}
+                            className={
+                                filter === FilterType.Current ? "font-bold text-primary-blue" : "text-primary-blue"
+                            }
+                        >
+                            Current Submissions
+                        </button>
                         <button
                             onClick={() => {
                                 dispatch({
@@ -328,19 +344,7 @@ export default function HomePage() {
                         >
                             Approved Works
                         </button>
-                        <button
-                            onClick={() => {
-                                dispatch({
-                                    type: ActionType.ChangeFilter,
-                                    newFilter: FilterType.Current
-                                });
-                            }}
-                            className={
-                                filter === FilterType.Current ? "font-bold text-primary-blue" : "text-primary-blue"
-                            }
-                        >
-                            Current Submissions
-                        </button>
+                        
                     </li>
                 </div>
                 <div className="submission_type_mobile">Trigger</div>
