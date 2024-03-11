@@ -690,7 +690,7 @@ const ProfileReview: React.FC<{}> = () => {
                                 placeholder={PLACEHOLDERS.authorName}
                                 type="text"
                                 id="aname"
-                                defaultValue={}
+                                defaultValue={(userInfo!.authorName === '') ? PLACEHOLDERS.authorName : userInfo!.authorName}
                                 onChange={(e) => handleChange('authorName', e.target.value)}
                                 required />
                         </div>
@@ -702,7 +702,8 @@ const ProfileReview: React.FC<{}> = () => {
                                 placeholder={PLACEHOLDERS.pronouns}
                                 type="text"
                                 id="pronouns"
-                                defaultValue={userInfo.pronouns} onChange={(e) => handleChange('pronouns', e.target.value)} />
+                                defaultValue={(userInfo!.pronouns === '') ? PLACEHOLDERS.pronouns : userInfo!.pronouns}
+                                onChange={(e) => handleChange('pronouns', e.target.value)} />
                         </div>
                     </div>
 
