@@ -271,11 +271,11 @@ export default function HomePage() {
      * Display or block submission menu for mobile state
      * @author Jessie Huang
      */
-    const [isOpen, setIsOpen] = useState(false);
+    // const [isOpen, setIsOpen] = useState(false);
 
-    const toggleMenu = () => {
-        setIsOpen((open) => !open)
-    }
+    // const toggleMenu = () => {
+    //     setIsOpen((open) => !open)
+    // }
 
     /*------------------------------------------------------------------------*/
     /* ------------------------------- Render ------------------------------- */
@@ -292,10 +292,10 @@ export default function HomePage() {
                         My Work
                     </div>
                     <li className="flex items-center space-x-4">
-                        <button className="HomePage-submit-button shadow-md">
+                        <button className="HomePage-submit-button lg:text-lg xl:text-xl shadow-md">
                             <Link href="/previews">Review Work</Link>
                         </button>
-                        <button className="HomePage-submit-button shadow-md">
+                        <button className="HomePage-submit-button lg:text-lg xl:text-xl shadow-md">
                             <Link href="/submit">Submit Work</Link>
                         </button>
                         <div className="ml-4">
