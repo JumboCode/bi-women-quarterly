@@ -76,7 +76,7 @@ function LocalFile() {
         <div>
             <form>
                 <div>
-                    <label className="inline-block h-[30px] w-[115px] absolute left-[200px] pt-[3px] rounded-sm content-center align-middle text-center  outline outline-[#5072c0] outline-offset-[3px]">
+                    <label className="inline-block h-[30px] w-[115px] pt-[3px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]">
                         <input
                             type="file"
                             name="files"

@@ -192,7 +192,7 @@ export default function SubmissionForm() {
         submission.title = submission.mainSubmission.title;
 
         // upload submission to google drive
-        await fetch("http://localhost:3001/upload")
+        await fetch("http://localhost:3000/upload")
             .then(res => res.json())
             .then(res => res.body)
             .then(responses => {
