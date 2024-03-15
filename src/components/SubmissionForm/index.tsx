@@ -78,6 +78,17 @@ const reducer = (state: State, action: Action): State => {
     }
 };
 
+/*----------------------------------------*/
+/* ---------- Additional UI -------------- */
+/*----------------------------------------*/
+
+// HTML for optional additional image upload. Renders when "add additional photos" clicked
+// const optional_image = () => {
+//     return <div> 
+//         TEST THE BUTTON 
+//     </div>; 
+// }
+
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
@@ -108,8 +119,11 @@ export default function SubmissionForm() {
     // second box 
     const [title, setTitle] = useState(""); 
     const [description, setDescription] = useState("");
-    const [artist_statement, setStatement] = useState(""); 
-    const [editor_note, setEditorNote] = useState("");  
+    // Optional box 
+    const [optionalBox, setOptionalBox] = useState([]);
+    // TODO delete 
+    // const [artist_statement, setStatement] = useState(""); 
+    // const [editor_note, setEditorNote] = useState("");  
 
     // Destructure common state
     const {
@@ -126,12 +140,13 @@ export default function SubmissionForm() {
             issue: "",
             medium: Mediums.None,
             status: Statuses.Pending,
+            // MAR15: Initialize the artist statement and editor note TODO temp comment
+            artist_statement: "",
+            editor_note: "",
             mainSubmission: {
                 type: PreviewType.Submission,
                 title: "",
                 description: "",
-                artist_statement: "",
-                editor_note: "",
                 imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
                 contentDriveUrl: "",
             },
@@ -163,6 +178,15 @@ export default function SubmissionForm() {
         }
     };
 
+    /**
+     * Adds the optional image and description when user presses button 
+     * @author So Hyun Kim
+     * @author Avery Hanna
+     */
+    // const onAddButtonClick = event => {
+    //     setOptionalBox(optionalBox.concat(<optional_image key={optionalBox.length}/>)); 
+    // }
+
     // const handleModalSubmit = (event : any) => {
     //     handleNewPreview({
     //         type,
@@ -188,8 +212,6 @@ export default function SubmissionForm() {
             type,
             title,
             description,
-            artist_statement,
-            editor_note,
             imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
             contentDriveUrl: "",
         });
@@ -284,25 +306,25 @@ export default function SubmissionForm() {
     const handleTitleChange = (event : any) => {
         setTitle(event.target.value);
     }
-    /**
-     * Handles the change of elements in the form by updating useState variable
-     * @author So Hyun Kim, Avery Hanna 
-     * @param event the event that has been changed
-     * @returns new states of all the elements in the form
-     */
-    const handleStatementChange = (event: any) => {
-        setStatement(event.target.value);
-    }    
+    // /** TODO delete
+    //  * Handles the change of elements in the form by updating useState variable
+    //  * @author So Hyun Kim, Avery Hanna 
+    //  * @param event the event that has been changed
+    //  * @returns new states of all the elements in the form
+    //  */
+    // const handleStatementChange = (event: any) => {
+    //     setStatement(event.target.value);
+    // }    
     
-    /**
-     * Handles the change of elements in the form by updating useState variable
-     * @author So Hyun Kim, Avery Hanna 
-     * @param event the event that has been changed
-     * @returns new states of all the elements in the form
-     */
-    const handleEditorNoteChange = (event: any) => {
-        setEditorNote(event.target.value);
-    }
+    // /**
+    //  * Handles the change of elements in the form by updating useState variable
+    //  * @author So Hyun Kim, Avery Hanna 
+    //  * @param event the event that has been changed
+    //  * @returns new states of all the elements in the form
+    //  */
+    // const handleEditorNoteChange = (event: any) => {
+    //     setEditorNote(event.target.value);
+    // }
 
     /**
      * Handles the change of elements in the form by updating useState variable
@@ -327,6 +349,7 @@ export default function SubmissionForm() {
             await fetchIssueThemes();
         })();
     }, [user]);
+
 
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
@@ -456,6 +479,7 @@ export default function SubmissionForm() {
                     </div>
                 </div>
                 <div>
+                    {/* Optional Image button */}
                     <button className="rounded-lg items-center pt-4 ml-20">
                         <Link href="/submit"> + Add Additional Photos</Link>
                     </button>
@@ -465,7 +489,7 @@ export default function SubmissionForm() {
                 <h1 className="text-1xl font-bold pb-4 mt-3 pt-8 justify=">Artist Statement</h1>
                     <div className="p-6 h-[150px] w-[full] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                         
-                        <div onChange={handleStatementChange}> 
+                        <div onChange={handleSubmissionChange}> 
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Note</h3>
                             <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Your Artist Statement" required />
                             <p className="text-xs text-gray-400 pt-1 pb-4"><em>Max 400 Characters</em></p>
@@ -476,7 +500,7 @@ export default function SubmissionForm() {
                 <div>
                     <h1 className="text-1xl font-bold pb-4 mt-3 pt-8 justify=">Note to Editor</h1>
                     <div className="p-6 h-[250px] w-[full] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
-                        <div onChange={handleEditorNoteChange}>
+                        <div onChange={handleSubmissionChange}>
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Subject</h3>
                             <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Subject of your Note" required />
                         
