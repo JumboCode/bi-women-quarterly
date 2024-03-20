@@ -6,7 +6,7 @@
  */
 
 // Import React
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { TailSpin } from "react-loader-spinner";
 
 // Import Next
@@ -281,27 +281,36 @@ export default function HomePage() {
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
     return (
-        <div className="h-screen w-screen flex flex-col">
-            <div className="HomePage-top-bar border-b border-gray-300">
-                <div className="m-3 mx-5 flex flex-row justify-end">
-                    <li className="flex items-center space-x-5">
-                        <button className="HomePage-submit-button shadow-md">
-                            <Link href="/previews">
-                                Review Work
-                            </Link>
-                        </button>
-                        <button className="HomePage-submit-button shadow-md">
-                            <Link href="/submit">
-                                Submit Work
-                            </Link>
+        <div className="h-screen w-screen flex flex-col gradient-background">
+            <div className="HomePage-top-bar border-b border-primary-blue">
+                <div className="m-6 mx-5 flex flex-row justify-between">
+                    <div className="flex text-2xl lg:text-3xl xl:text-4xl font-bold text-primary-blue">
+                        My Work
+                    </div>
+                    <li className="flex items-center space-x-4">
+                        <button className="HomePage-submit-button lg:text-lg xl:text-xl shadow-md">
+                            <Link href="/submit">Submit Work</Link>
                         </button>
                         <div className="ml-4">
                             <UserButton afterSignOutUrl="/" />
                         </div>
                     </li>
                 </div>
-                <div className="top-16 left-20">
-                    <li className="flex pt-4 pl-16 space-x-20">
+                <div className="flex items-end"> {/* ${isOpen ? "is-open" : ""} flex-row justify-around justify-items-stretch top-16 left-20 */}
+                    <li className="flex m-5 space-x-8 flex-col sm:flex-row"> {/*pt-4 pl-16 space-x-20*/}
+                        <button
+                            onClick={() => {
+                                dispatch({
+                                    type: ActionType.ChangeFilter,
+                                    newFilter: FilterType.Current
+                                });
+                            }}
+                            className={
+                                `text-primary-blue ${filter === FilterType.Current ? "font-bold " : ""} text-base lg:text-lg xl:text-xl`
+                            }
+                        >
+                            Current Submissions
+                        </button>
                         <button
                             onClick={() => {
                                 dispatch({
@@ -310,7 +319,7 @@ export default function HomePage() {
                                 });
                             }}
                             className={
-                                filter === FilterType.None ? "font-bold" : ""
+                                `text-primary-blue ${filter === FilterType.None ? "font-bold " : ""} text-base lg:text-lg xl:text-xl`
                             }
                         >
                             All Submissions
@@ -323,26 +332,12 @@ export default function HomePage() {
                                 });
                             }}
                             className={
-                                filter === FilterType.Approved
-                                    ? "font-bold"
-                                    : ""
+                                `text-primary-blue ${filter === FilterType.Approved ? "font-bold " : ""} text-base lg:text-lg xl:text-xl`
                             }
                         >
                             Approved Works
                         </button>
-                        <button
-                            onClick={() => {
-                                dispatch({
-                                    type: ActionType.ChangeFilter,
-                                    newFilter: FilterType.Current
-                                });
-                            }}
-                            className={
-                                filter === FilterType.Current ? "font-bold" : ""
-                            }
-                        >
-                            Current Submissions
-                        </button>
+                        
                     </li>
                 </div>
             </div>
@@ -356,9 +351,9 @@ export default function HomePage() {
                 <div className="flex item-center justify-center">
                     {filteredSubmissions.length == 0 ? (
                         <div className="relative pt-20">
-                            <div className="box-content bg-gray-300 relative w-full md:w-96 h-56 item-center left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                            <div className="box-content border border-primary-blue relative w-full md:w-96 h-56 item-center left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
                             <br></br>
-                            <div className="text-gray-400 text-center relative left-1/2 bottom-1/12 transform -translate-x-1/2 -translate-y-1/8">
+                            <div className="text-primary-blue text-center relative left-1/2 bottom-1/12 transform -translate-x-1/2 -translate-y-1/8">
                                 You have no submissions
                             </div>
                         </div>
