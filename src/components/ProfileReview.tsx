@@ -4,13 +4,13 @@
  */
 
 // Clerk imports
-import { clerkClient, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 
 // React imports
 import React, { useReducer, useEffect, useRef } from 'react';
 
 // Custom types, etc.
-import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
+import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import { TailSpin } from 'react-loader-spinner';
 
 import RaceEthnicity from "@/types/RaceEthnicity";
@@ -138,14 +138,6 @@ const reducer = (state: State, action: Action): State => {
     }
 };
 
-const getDateFromString = (date: string) => {
-    if (!date) {
-        return undefined;
-    }
-    // Subtract 1 from month because months use indexing for some reason
-    return new Date(+date.substring(0, 4), +date.substring(5, 7) - 1, +date.substring(8, 10));
-}
-
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
@@ -157,40 +149,35 @@ const ProfileReview: React.FC<{}> = () => {
     /*------------------------------------------------------------------------*/
 
     /* -------------- State ------------- */
-    const { isSignedIn, user, isLoaded } = useUser();
+    const { user, isLoaded } = useUser();
 
     const initialState: State = {
         view: View.Preview,
         userInfo: {
             profilePicture: "defaultpfp.png",
-            primaryEmailAddress: 'No email given'
-                || user?.primaryEmailAddress?.emailAddress,
-            firstName: 'No first name given' || user?.firstName,
-            lastName: 'No last name given' || user?.lastName,
-            authorName: 'No author name given',
-            pronouns: 'No pronouns given',
-            bio: 'No bio given',
-            birthday: '01/01/1999',
-            raceEthnicity: RaceEthnicity.Other,
-            gender: Gender.Other,
-            country: 'No country given',
-            stateProvince: 'No state/province given',
-            cityTown: 'No city/town given',
+            primaryEmailAddress: '',
+            firstName: '',
+            lastName: '',
+            authorName: '',
+            pronouns: '',
+            bio: '',
+            birthday: '',
+            raceEthnicity: undefined,
+            gender: undefined,
+            country: '',
+            stateProvince: '',
+            cityTown: '',
             socialMedias: {
-                LinkedIn: 'N/A',
-                Facebook: 'N/A',
-                Instagram: 'N/A',
-                X: 'N/A',
-                TikTok: 'N/A',
-            },
-        },
+                LinkedIn: '',
+                Facebook: '',
+                Instagram: '',
+                X: '',
+                TikTok: '',
+            }
+        }
     };
 
     const [state, dispatch] = useReducer(reducer, initialState);
-
-    if (isLoaded) {
-        // load stuff
-    }
 
     const {
         view,
@@ -422,25 +409,6 @@ const ProfileReview: React.FC<{}> = () => {
         });
     };
 
-    // NOTE: new
-    /**
-     * Handle any new changes to existing user data
-     * @author Lucien Bao, Lydia Chen
-     * @param field the field to be updated in the user data
-     * @param value - The new value for the specified field
-     */
-    const handleBirthdayChange = (field: string, value: string) => {
-        const deepCopy = JSON.parse(JSON.stringify(userInfo));
-
-        dispatch({
-            type: ActionType.UpdateUserInfo,
-            updatedUserInfo: {
-                ...deepCopy,
-                [field]: getDateFromString(value)
-            },
-        });
-    };
-
     /**
      * Change to view mode and update user info in Clerk.
      * @author Lucien Bao, Lydia Chen
@@ -448,18 +416,30 @@ const ProfileReview: React.FC<{}> = () => {
      */
     const updateClerk = async (event: any) => {
         event.preventDefault();
+
+        if (userInfo.primaryEmailAddress === '') {
+            alert("Please provide a valid email address.");
+            return;
+        }
+
+        if (userInfo.authorName === '') {
+            alert("Please provide an author name.");
+            return;
+        }
+
+        if (userInfo.bio === '') {
+            alert("Please provide an author bio.");
+            return;
+        }
+
         const deepCopy = JSON.parse(JSON.stringify(userInfo));
 
         try {
             await user?.update({
-                // primaryEmailAddressId: userInfo.primaryEmailAddress,
                 unsafeMetadata: {
                     ...deepCopy,
                 },
             });
-            // user?.update()
-            // user?.createEmailAddress({ email: "thing@example.com" });
-            // console.log(user?.emailAddresses)
             console.log("User updated successfully");
             dispatch({ type: ActionType.ToggleView });
         } catch (error) {
@@ -483,18 +463,6 @@ const ProfileReview: React.FC<{}> = () => {
 
     const country = userInfo!.country;
     const stateProvince = userInfo!.stateProvince;
-
-    // Helper function for Preview mode display of user birthday
-    const extractDateString = (date: Date): string => {
-        return (date.getUTCMonth() + 1) + '/' + date.getUTCDate() + '/' + date.getUTCFullYear();
-    };
-
-    const extractDateStringHTML = (date: Date): string => {
-        const getMonth = date.getUTCMonth() + 1;
-        const m = getMonth < 10 ? "0" + (getMonth + "") : getMonth;
-        const d = date.getUTCDate() < 10 ? "0" + (date.getUTCDate() + "") : date.getUTCDate();
-        return (date.getUTCFullYear()) + '-' + m + '-' + d;
-    }
 
     // No current user
     if (!isLoaded) {
@@ -562,32 +530,32 @@ const ProfileReview: React.FC<{}> = () => {
                     <div className="grid md:grid-cols-3 grid-cols-2 lg:pr-96">
                         <div>
                             <div className="font-bold">Birthday</div>
-                            <div className="py-4">{userInfo!.birthday!}</div>
+                            <div className="py-4">{userInfo!.birthday}</div>
                         </div>
 
                         <div>
                             <div className="font-bold">Race/Ethnicity</div>
-                            <div className="py-4">{userInfo.raceEthnicity}</div>
+                            <div className="py-4">{userInfo?.raceEthnicity?.toLowerCase() === "default" ? "" : userInfo?.raceEthnicity?.toLowerCase()}</div>
                         </div>
 
                         <div>
                             <div className="font-bold">Gender</div>
-                            <div className="py-4">{userInfo.gender}</div>
+                            <div className="py-4">{userInfo?.gender?.toLowerCase() === "" ? "" : userInfo?.gender}</div>
                         </div>
 
                         <div>
                             <div className="font-bold">Country</div>
-                            <div className="py-4">{userInfo.country}</div>
+                            <div className="py-4">{userInfo!.country}</div>
                         </div>
 
                         <div>
                             <div className="font-bold">State</div>
-                            <div className="py-4">{userInfo.stateProvince}</div>
+                            <div className="py-4">{userInfo!.stateProvince}</div>
                         </div>
 
                         <div>
                             <div className="font-bold">City</div>
-                            <div className="py-4">{userInfo.cityTown}</div>
+                            <div className="py-4">{userInfo!.cityTown}</div>
                         </div>
                     </div>
                 </div>
@@ -599,26 +567,22 @@ const ProfileReview: React.FC<{}> = () => {
                     <div className="grid md:grid-cols-2 grid-cols-1">
                         <div className="py-4">
                             <label className="font-bold inline mr-5">LinkedIn</label>
-                            <div className="inline">{userInfo!.socialMedias === undefined ?
-                                "No LinkedIn given" : userInfo!.socialMedias.LinkedIn}</div>
+                            <div className="inline">{userInfo!.socialMedias.LinkedIn}</div>
                         </div>
 
                         <div className="py-4">
                             <label className="font-bold inline mr-5">Instagram</label>
-                            <div className="inline">{userInfo!.socialMedias === undefined ?
-                                "No Instagram given" : userInfo!.socialMedias.Instagram}</div>
+                            <div className="inline">{userInfo!.socialMedias.Instagram}</div>
                         </div>
 
                         <div className="py-4">
                             <label className="font-bold inline mr-5">X/Twitter</label>
-                            <div className="inline">{userInfo!.socialMedias === undefined ?
-                                "No X/Twitter given" : userInfo!.socialMedias.X}</div>
+                            <div className="inline">{userInfo!.socialMedias.X}</div>
                         </div>
 
                         <div className="py-4">
                             <label className="font-bold inline mr-5">Facebook</label>
-                            <div className="inline">{userInfo!.socialMedias === undefined ?
-                                "No Facebook given" : userInfo!.socialMedias.Facebook}</div>
+                            <div className="inline">{userInfo!.socialMedias.Facebook}</div>
                         </div>
                     </div>
                 </div>
@@ -651,7 +615,7 @@ const ProfileReview: React.FC<{}> = () => {
                         placeholder={PLACEHOLDERS.primaryEmailAddress}
                         type="text"
                         id="email"
-                        defaultValue={(userInfo!.primaryEmailAddress === '') ? PLACEHOLDERS.primaryEmailAddress : userInfo!.primaryEmailAddress }
+                        defaultValue={userInfo!.primaryEmailAddress}
                         onChange={(e) => handleChange('primaryEmailAddress', e.target.value)}
                         required
                     />
@@ -664,7 +628,7 @@ const ProfileReview: React.FC<{}> = () => {
                                 placeholder={PLACEHOLDERS.firstName}
                                 type="text"
                                 id="fname"
-                                defaultValue={(userInfo!.firstName === '') ? PLACEHOLDERS.firstName : userInfo!.firstName}
+                                defaultValue={userInfo!.firstName}
                                 onChange={(e) => handleChange('firstName', e.target.value)}
                             />
                         </div>
@@ -676,7 +640,7 @@ const ProfileReview: React.FC<{}> = () => {
                                 placeholder={PLACEHOLDERS.lastName}
                                 type="text"
                                 id="lname"
-                                defaultValue={(userInfo!.lastName === '') ? PLACEHOLDERS.lastName : userInfo!.lastName}
+                                defaultValue={userInfo!.lastName}
                                 onChange={(e) => handleChange('lastName', e.target.value)}
                             />
                         </div>
@@ -690,7 +654,6 @@ const ProfileReview: React.FC<{}> = () => {
                                 placeholder={PLACEHOLDERS.authorName}
                                 type="text"
                                 id="aname"
-                                defaultValue={(userInfo!.authorName === '') ? PLACEHOLDERS.authorName : userInfo!.authorName}
                                 onChange={(e) => handleChange('authorName', e.target.value)}
                                 required />
                         </div>
@@ -702,7 +665,6 @@ const ProfileReview: React.FC<{}> = () => {
                                 placeholder={PLACEHOLDERS.pronouns}
                                 type="text"
                                 id="pronouns"
-                                defaultValue={(userInfo!.pronouns === '') ? PLACEHOLDERS.pronouns : userInfo!.pronouns}
                                 onChange={(e) => handleChange('pronouns', e.target.value)} />
                         </div>
                     </div>
@@ -753,7 +715,7 @@ const ProfileReview: React.FC<{}> = () => {
                                 defaultValue={userInfo?.gender?.toLowerCase()}
                                 onChange={(e) => selectGender(e.target.value)}>
 
-                                <option value="default">Select</option>
+                                <option value="">Select</option>
                                 <option value="female">{Gender.Female}</option>
                                 <option value="male">{Gender.Male}</option>
                                 <option value="non-binary">{Gender.Nonbinary}</option>
@@ -768,7 +730,7 @@ const ProfileReview: React.FC<{}> = () => {
                                     value={country!}
                                     onChange={selectCountry}
                                     priorityOptions={["US"]}
-                                    style={{ width: '192px' }}
+                                    classes='w-48'
                                 />
                                 <div className="border-b-2 border-gray-500 w-48"></div>
                             </div>
@@ -781,7 +743,7 @@ const ProfileReview: React.FC<{}> = () => {
                                     country={country!}
                                     value={stateProvince!}
                                     onChange={selectStateProvince}
-                                    style={{ width: '192px' }}
+                                    classes='w-48'
                                 />
                                 <div className="border-b-2 border-gray-500 w-48"></div>
                             </div>
@@ -789,7 +751,14 @@ const ProfileReview: React.FC<{}> = () => {
 
                         <div>
                             <div className="font-bold" >City</div>
-                            <input className="border-b-2 border-gray-500 my-4" type="text" id="cityTown" value={userInfo?.cityTown} onChange={(e) => handleChange('cityTown', e.target.value)} />
+                            <input 
+                                className="border-b-2 border-gray-500 my-4"
+                                placeholder={PLACEHOLDERS.cityTown}
+                                type="text"
+                                id="cityTown"
+                                value={userInfo?.cityTown}
+                                onChange={(e) => handleChange('cityTown', e.target.value)}
+                            />
                         </div>
 
                     </div>
