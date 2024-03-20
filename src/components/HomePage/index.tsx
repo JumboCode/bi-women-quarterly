@@ -293,9 +293,6 @@ export default function HomePage() {
                     </div>
                     <li className="flex items-center space-x-4">
                         <button className="HomePage-submit-button lg:text-lg xl:text-xl shadow-md">
-                            <Link href="/previews">Review Work</Link>
-                        </button>
-                        <button className="HomePage-submit-button lg:text-lg xl:text-xl shadow-md">
                             <Link href="/submit">Submit Work</Link>
                         </button>
                         <div className="ml-4">
@@ -347,7 +344,6 @@ export default function HomePage() {
                         
                     </li>
                 </div>
-                <div className="submission_type_mobile">Trigger</div>
             </div>
             {isLoading ? (
                 <div className="flex h-screen">
@@ -359,9 +355,9 @@ export default function HomePage() {
                 <div className="flex item-center justify-center">
                     {filteredSubmissions.length == 0 ? (
                         <div className="relative pt-20">
-                            <div className="box-content bg-gray-300 relative w-full md:w-96 h-56 item-center left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                            <div className="box-content border border-primary-blue relative w-full md:w-96 h-56 item-center left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
                             <br></br>
-                            <div className="text-gray-400 text-center relative left-1/2 bottom-1/12 transform -translate-x-1/2 -translate-y-1/8">
+                            <div className="text-primary-blue text-center relative left-1/2 bottom-1/12 transform -translate-x-1/2 -translate-y-1/8">
                                 You have no submissions
                             </div>
                         </div>
