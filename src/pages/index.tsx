@@ -1,5 +1,6 @@
-import HomePage from "@/components/HomePage";
+import AdminGrid from "@/components/AdminHomePage/AdminGrid";
 import AdminHomePage from "@/components/AdminHomePage";
+import HomePage from "@/components/HomePage";
 import { useUser } from "@clerk/nextjs";
 import ProfileReview from '@/components/ProfileReview';
 

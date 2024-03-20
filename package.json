@@ -13,7 +13,11 @@
     "dependencies": {
         "@clerk/clerk-js": "^4.70.0",
         "@clerk/nextjs": "^4.29.5",
+        "@emotion/styled": "^11.11.0",
         "@google-cloud/local-auth": "^3.0.1",
+        "@mui/material": "^5.15.12",
+        "@mui/system": "^5.15.12",
+        "@mui/x-data-grid": "^6.19.5",
         "child_process": "^1.0.2",
         "cors": "^2.8.5",
         "express": "^4.18.2",
