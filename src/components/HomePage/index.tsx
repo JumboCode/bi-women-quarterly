@@ -248,7 +248,6 @@ export default function HomePage() {
             await getSubmissions();
             await new Promise(r => setTimeout(r, 2000));
             await getSubmissions();
-
         })();
     }, [user]);
 
@@ -348,7 +347,7 @@ export default function HomePage() {
                     </div>
                 </div>
             ) : (
-                <div className="flex item-center justify-center">
+                <div className="flex item-center justify-center overflow-auto">
                     {filteredSubmissions.length == 0 ? (
                         <div className="relative pt-20">
                             <div className="box-content border border-primary-blue relative w-full md:w-96 h-56 item-center left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>

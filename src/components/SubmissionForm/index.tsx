@@ -107,32 +107,29 @@ export default function SubmissionForm() {
  * @param event the event that has been changed
  */
 const onSubmit = async () => {
-    submission.title = submission.mainSubmission.title;
+    // Create a copy of the submission object
+    let updatedSubmission: Submission = submission;
+    updatedSubmission.title = submission.mainSubmission.title;
 
     // upload submission to google drive
     await fetch("http://localhost:3001/upload")
         .then(res => res.json())
         .then(res => res.body)
         .then(responses => {
-            responses.forEach((response: any, i: number) => {
-                if (response.additionalReferences) {
-                    const newReference: Preview = {
-                        ...response.additionalReferences[i],
-                        contentDriveUrl:
-                            "https://drive.google.com/file/d/" +
-                            responses[i].id,
-                        imageUrl: responses[i].thumbnail
-                    }
-                    const newAdditionalReferences = response.additionalReferences;
-                    newAdditionalReferences[i] = newReference;
-                    setSubmission({
-                        ...response,
-                        additionalReferences: newAdditionalReferences
-                    });
-                } else {
-                    setSubmission(response);
+            // Update main submission with drive info
+            if (responses[0]) {
+                updatedSubmission.mainSubmission.contentDriveUrl = `https://drive.google.com/file/d/${responses[0].id}`;
+                updatedSubmission.mainSubmission.imageUrl = responses[0].thumbnail;
+            }
+            // Update additional references with drive info
+            if (updatedSubmission.additionalReferences) {
+                for (let i = 1; i < responses.length; i++) {
+                    updatedSubmission.additionalReferences[i - 1].contentDriveUrl = `https://drive.google.com/file/d/${responses[i].id}`;
+                    updatedSubmission.additionalReferences[i - 1].imageUrl = responses[i].thumbnail;
                 }
-            })
+
+                setSubmission(updatedSubmission);
+            }
         })
         .then(async () => {
             try {
@@ -156,9 +153,24 @@ const onSubmit = async () => {
      * @returns new states of all the elements in the form
      */
     const handleNewPreview = (newPreview: Preview) => {
-        setSubmission(prevValues => {
-            return { ...prevValues, mainSubmission: newPreview };
-        });
+        // If the new preview is a main submission, update the main submission
+        if (newPreview.type === PreviewType.Submission) {
+            setSubmission(prevValues => {
+                return { ...prevValues, mainSubmission: newPreview };
+            });
+        } else { 
+            // If this is additional reference, add it to (or create) the array
+            if (!submission.additionalReferences) {
+                setSubmission(prevValues => {
+                    return { ...prevValues, additionalReferences: [newPreview] };
+                });
+            } else {
+                const newReferences = submission.additionalReferences?.push(newPreview);
+                setSubmission(prevValues => {
+                    return { ...prevValues, newReferences };
+                });
+            }
+         }
     };
 
     /*------------------------------------------------------------------------*/
