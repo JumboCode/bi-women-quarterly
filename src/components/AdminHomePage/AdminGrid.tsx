@@ -4,12 +4,17 @@
  * @author Lucien Bao 
  */
 
-import Submission from "@/types/Submission";
-import { Box, Typography } from '@mui/material'
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
-import Button from '@mui/material/Button';
-import { Issue } from 'next/dist/build/swc';
 import { useEffect, useReducer } from 'react';
+
+// Import MUI components
+import { Box } from '@mui/material'
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+
+// Import next
+import Issues from '@/types/Issues';
+
+// Import types
+import Submission from "@/types/Submission";
 import Statuses from '@/types/Statuses';
 import Mediums from '@/types/Mediums';
 
@@ -39,7 +44,7 @@ const nameStyle = {
 
 type State = {
     // Issues of the publication to be displayed
-    issues: Issue[];
+    issues: Issues[];
 };
 
 /* ------------- Actions ------------ */
@@ -55,7 +60,7 @@ type Action = {
     // Action type
     type: ActionType.setIssues,
     // New issues to set 
-    newIssues: Issue[];
+    newIssues: Issues[];
 };
 
 /**
@@ -134,17 +139,7 @@ const AdminGrid: React.FC<Props> = (properties) => {
         }
     };
 
-    const rows: Submission[] = submissionArray.map((submission) => {
-        return {
-            ...submission,
-            // tags: submission.tags ? [submission.tags?.join(", ")] : [],
-        }
-    });
-
-    const handleClick = (event: any, cellValues: any) => {
-        console.log(event);
-        console.log(cellValues);
-    }
+    const rows: Submission[] = submissionArray;
 
     const columns: GridColDef[] = [
         {
@@ -232,7 +227,7 @@ const AdminGrid: React.FC<Props> = (properties) => {
                 );
             }
         },
-        // { field: "demographics", headerName: "Demographics", width: 200, type: "singleSelect", valueOptions: ["United States", "Canada", "Antarctica"], editable: false },
+
         {
             field: "tags",
             headerName: "Tags",
@@ -293,62 +288,50 @@ const AdminGrid: React.FC<Props> = (properties) => {
         })();
     }, []);
 
-    return (
-        /* move styling to index where the component is called */
-        <div className="bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300">
-            <Typography
-                variant="h6"
-                fontWeight={700}
-                fontSize={24}
-                color="#415db3"
-                paddingTop={8}
-                paddingLeft={10}
-            >
-                Submissions
-            </Typography>
 
-            <Box
+    /*------------------------------------------------------------------------*/
+    /* ------------------------------ Rendering ----------------------------- */
+    /*------------------------------------------------------------------------*/
+
+    return (
+        <Box
+            sx={{
+                "& .issue, & .type, & .title, & .name, & .status, \
+                & .tags, & .ratings, & .notes, & .print": {
+                    backgroundColor: "rgba(255, 255, 255, 0.3)",
+                    color: "#415db3",
+                    border: "none",
+                },
+                "& .issue-header, & .type-header, & .title-header, \
+                & .name-header, & .status-header, & .tags-header, \
+                & .ratings-header, & .notes-header, & .print-header": {
+                    color: "#415db3",
+                },
+            }}
+        >
+            <DataGrid
+                rows={rows}
+                columns={columns}
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{ toolbar: { showQuickFilter: true, quickFilterProps: { debounceMs: 500 } }}}
+                className="mx-20 mt-0 border-none"
+                getRowSpacing={params => ({
+                    top: params.isFirstVisible ? 0 : 3,
+                    bottom: params.isLastVisible ? 0 : 3
+                })}
                 sx={{
-                    "& .issue, & .type, & .title, & .name, & .status, \
-                    & .tags, & .ratings, & .notes, & .print": {
-                        backgroundColor: "rgba(255, 255, 255, 0.3)",
-                        color: "#415db3",
-                        border: "none",
+                    '&, [class^=MuiDataGrid]': { border: 'none' },
+                    '& .MuiDataGrid-virtualScroller': {
+                        transform: 'rotateX(180deg)',
+                        paddingBlock: "20px"
                     },
-                    "& .issue-header, & .type-header, & .title-header, \
-                    & .name-header, & .status-header, & .tags-header, \
-                    & .ratings-header, & .notes-header, & .print-header": {
-                        color: "#415db3",
-                        // backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                    '& .MuiDataGrid-virtualScrollerContent': {
+                        transform: 'rotateX(180deg)',
                     },
                 }}
-            >
-                <DataGrid
-                    rows={rows}
-                    columns={columns}
-                    // checkboxSelection
-                    slots={{ toolbar: GridToolbar }}
-                    slotProps={{ toolbar: { showQuickFilter: true } }}
-                    className="mx-20 mt-0 border-none"
-                    getRowSpacing={params => ({
-                        top: params.isFirstVisible ? 0 : 3,
-                        bottom: params.isLastVisible ? 0 : 3
-                    })}
-                    sx={{
-                        '&, [class^=MuiDataGrid]': { border: 'none' },
-                        '& .MuiDataGrid-virtualScroller': {
-                            transform: 'rotateX(180deg)',
-                            paddingBlock: "20px"
-                        },
-                        '& .MuiDataGrid-virtualScrollerContent': {
-                            transform: 'rotateX(180deg)',
-                        },
-                    }}
-                />
-            </Box>
-        </div >
+            />
+        </Box>
     );
-
 }
 
 export default AdminGrid;

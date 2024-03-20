@@ -11,6 +11,8 @@ import PreviewType from "@/types/PreviewType";
 import AdminGrid from "@/components/AdminHomePage/AdminGrid";
 import Statuses from "@/types/Statuses";
 import Mediums from "@/types/Mediums";
+import { Typography } from '@mui/material';
+import Link from 'next/link';
 
 export default function AdminHomePage() {
     const blank: Preview = {
@@ -43,9 +45,25 @@ export default function AdminHomePage() {
     ];
 
     return (
-        <div>
-            <UserButton></UserButton>
-            <AdminGrid submissionArray={sampleData}></AdminGrid>
+        <div className="h-screen w-screen flex flex-col gradient-background">
+            <div className="HomePage-top-bar">
+                <div className="m-6 mx-5 flex flex-row justify-between">
+                    <div className="ms-4 flex text-2xl lg:text-3xl xl:text-4xl font-bold text-primary-blue">
+                        Submissions
+                    </div>
+                    <li className="flex items-center space-x-4">
+                        <button className="HomePage-submit-button lg:text-lg xl:text-xl shadow-md">
+                            <Link href="/submit">Submit Work</Link>
+                        </button>
+                        <div className="ml-4">
+                            <UserButton afterSignOutUrl="/" />
+                        </div>
+                    </li>
+                </div>
+            </div>
+            <div className="overflow-scroll">
+                <AdminGrid submissionArray={sampleData}></AdminGrid>
+            </div>
         </div>
     );
 }
