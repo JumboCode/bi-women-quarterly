@@ -111,14 +111,11 @@ const onSubmit = async () => {
     let updatedSubmission: Submission = submission;
     updatedSubmission.title = submission.mainSubmission.title;
 
-    console.log("updatedSubmission BEFORE upload:", updatedSubmission);
-
     // upload submission to google drive
     await fetch("http://localhost:3001/upload")
         .then(res => res.json())
         .then(res => res.body)
         .then(responses => {
-            console.log("responses:", responses);
             // Update main submission with drive info
             if (responses[0]) {
                 updatedSubmission.mainSubmission.contentDriveUrl = `https://drive.google.com/file/d/${responses[0].id}`;
@@ -131,9 +128,7 @@ const onSubmit = async () => {
                     updatedSubmission.additionalReferences[i - 1].imageUrl = responses[i].thumbnail;
                 }
 
-                console.log("updatedSubmission:", updatedSubmission);
                 setSubmission(updatedSubmission);
-                console.log("submission AFTER setting:", submission);
             }
         })
         .then(async () => {
@@ -149,7 +144,6 @@ const onSubmit = async () => {
                 console.log(error);
             }
         });
-        console.log("submission AFTER upload:", submission);
     };
 
     /**
@@ -196,8 +190,6 @@ const onSubmit = async () => {
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
-
-    console.log("submission:", submission);
 
     return (
         <div className="p-8 h-screen bg-[#ecf0f6]">

@@ -178,7 +178,6 @@ export default function AdminHomePage() {
             await getSubmissions();
             await new Promise(r => setTimeout(r, 2000));
             await getSubmissions();
-            console.log("ALL SUBMISSIONES:", allSubmissions);
         })();
     }, []);
 
