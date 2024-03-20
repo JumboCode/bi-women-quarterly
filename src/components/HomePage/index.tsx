@@ -20,11 +20,11 @@ import ShowSubmissionThumbnails from "@/components/HomePage/ShowSubmissionThumbn
 
 // Import types
 import Submission from "@/types/Submission";
-import PreviewType from "@/types/PreviewType";
-import Issues from "@/types/Issues";
 import Statuses from "@/types/Statuses";
-import { time } from 'console';
-import Preview from '@/types/Preview';
+
+/*------------------------------------------------------------------------*/
+/* ------------------------------ Types --------------------------------- */
+/*------------------------------------------------------------------------*/
 
 enum FilterType {
     // No filtering of submissions
@@ -152,7 +152,7 @@ const filterSubmissions = (
         }
         case FilterType.Current: {
             return submissions.filter(submission => {
-                return submission.issue === Issues.Current; //TODO: connect to backend
+                return submission.issue === "Spring 2024: letters to self"; //TODO: connect to backend
             });
         }
         case FilterType.None: {

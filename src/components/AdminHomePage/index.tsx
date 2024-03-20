@@ -4,45 +4,187 @@
  * @author Lucien Bao
  */
 
+// Import clerk
 import { UserButton } from "@clerk/nextjs";
+
+// Import types
 import Submission from "@/types/Submission";
 import Preview from "@/types/Preview";
 import PreviewType from "@/types/PreviewType";
-import AdminGrid from "@/components/AdminHomePage/AdminGrid";
 import Statuses from "@/types/Statuses";
 import Mediums from "@/types/Mediums";
-import { Typography } from '@mui/material';
+
+// Import components
+import AdminGrid from "@/components/AdminHomePage/AdminGrid";
+
+// Import next
 import Link from 'next/link';
+import { useEffect, useReducer } from 'react';
+import { TailSpin } from 'react-loader-spinner';
+
+/*------------------------------------------------------------------------*/
+/* -------------------------------- State ------------------------------- */
+/*------------------------------------------------------------------------*/
+
+/* -------- State Definition -------- */
+
+type State = {
+    // All user submissions
+    allSubmissions: Submission[];
+    // Whether to show loading spinner
+    isLoading: boolean;
+};
+
+/* ------------- Actions ------------ */
+
+// Types of actions
+enum ActionType {
+    UpdateAllSubmissions = "UpdateAllSubmissions",
+    ToggleLoadingOn = "ToggleLoadingOn",
+    ToggleLoadingOff = "ToggleLoadingOff"
+}
+
+// Action definitions
+type Action =
+    | {
+          // Action type
+          type: ActionType.UpdateAllSubmissions;
+          // Submissions to update to
+          newSubmissions: Submission[];
+      }
+    | {
+          // Action type
+          type: ActionType.ToggleLoadingOn;
+      }
+    | {
+          // Action type
+          type: ActionType.ToggleLoadingOff;
+      };
+
+/**
+ * Reducer that executes actions
+ * @author Austen Money
+ * @param state current state
+ * @param action action to execute
+ * @returns updated state
+ */
+const reducer = (state: State, action: Action): State => {
+    switch (action.type) {
+        case ActionType.UpdateAllSubmissions: {
+            return {
+                ...state,
+                allSubmissions: action.newSubmissions
+            };
+        }
+        case ActionType.ToggleLoadingOn: {
+            return {
+                ...state,
+                isLoading: true
+            };
+        }
+        case ActionType.ToggleLoadingOff: {
+            return {
+                ...state,
+                isLoading: false
+            };
+        }
+        default: {
+            return state;
+        }
+    }
+};
+
+/*------------------------------------------------------------------------*/
+/* ------------------------------ Component ----------------------------- */
+/*------------------------------------------------------------------------*/
 
 export default function AdminHomePage() {
-    const blank: Preview = {
-        type: PreviewType.Submission,
-        title: "string",
-        description: "string",
-        imageUrl: "string",
-        contentDriveUrl: "string"
-    }
 
-    const sampleData: Submission[] = [
-        { id: "1", issue: 'Spring 2024: letters to self', medium: Mediums.Fiction, title: "Example A", author: "Author A", status: Statuses.Approved, /*demographics: "United States",*/ tags: ["Family"], rating: 5, notes: "", mainSubmission: blank, date: "3/3/2024" },
-        { id: "2", issue: 'Spring 2024: letters to self', medium: Mediums.Fiction, title: "Example B", author: "Author B", status: Statuses.Approved, /*demographics: "United States",*/ tags: ["Love"], notes: "None", mainSubmission: blank, date: "3/3/2024" }, // has no rating
-        { id: "3", issue: "Summer 2024: more than one letter", medium: Mediums.Nonfiction, title: "Example C", author: "Author C", status: Statuses.Pending, /*demographics: "United States",*/ tags: ["Other"], rating: 5, notes: "One!", mainSubmission: blank, date: "3/3/2024" },
-        { id: "4", issue: 'Spring 2024: letters to self', medium: Mediums.Poetry, title: "Example D", author: "Author D", status: Statuses.Pending, /*demographics: "Canada",*/ tags: ["Tag1", "Tag2"], rating: 5, mainSubmission: blank, date: "3/7/2024" }, // has no notes
-        { id: "5", issue: 'Spring 2024: letters to self', medium: Mediums.VisualArt, title: "Example E", author: "Author E", status: Statuses.Pending, /*demographics: "Canada",*/ tags: ["Other"], rating: 5, notes: "None", mainSubmission: blank, date: "3/3/2024" },
-        { id: "6", issue: 'Spring 2024: letters to self', medium: Mediums.Other, title: "Example F", author: "Author F", status: Statuses.Declined, /*demographics: "Canada",*/ tags: ["Other"], rating: 4, notes: "None", mainSubmission: blank, date: "3/3/2024" },
-        { id: "7", issue: "Summer 2024: more than one letter", medium: Mediums.Other, title: "Example G", author: "Author G", status: Statuses.Declined, /*demographics: "Antarctica",*/ tags: ["Other"], rating: 3, notes: "None", mainSubmission: blank, date: "3/3/2024" },
-        { id: "8", issue: "Summer 2024: more than one letter", medium: Mediums.Other, title: "Example H", author: "Author H", status: Statuses.Declined, /*demographics: "Antarctica",*/ tags: [], rating: 2, notes: "None", mainSubmission: blank, date: "1/1/1111" }, // tags is empty
-        { id: "9", issue: 'Spring 2024: letters to self', medium: Mediums.Other, title: "Example I", author: "Author I", status: Statuses.Declined, /*demographics: "Antarctica",*/ rating: 1, notes: "None", mainSubmission: blank, date: "3/3/2024" }, // has no tags
-        { id: "10", issue: 'Spring 2024: letters to self', medium: Mediums.Fiction, title: "Example A", author: "Author A", status: Statuses.Approved, /*demographics: "United States",*/ tags: ["Family"], rating: 5, notes: "None", mainSubmission: blank, date: "3/3/2024" },
-        { id: "11", issue: "Summer 2024: more than one letter", medium: Mediums.Fiction, title: "Example B", author: "Author B", status: Statuses.Approved, /*demographics: "United States",*/ tags: ["Love"], notes: "None", mainSubmission: blank, date: "3/3/2024" }, // has no rating
-        { id: "12", issue: "Summer 2024: more than one letter", medium: Mediums.Nonfiction, title: "Example C", author: "Author C", status: Statuses.Pending, /*demographics: "United States",*/ tags: ["Other"], rating: 5, notes: "One!", mainSubmission: blank, date: "3/3/2024" },
-        { id: "13", issue: 'Spring 2024: letters to self', medium: Mediums.Poetry, title: "Example D", author: "Author D", status: Statuses.Pending, /*demographics: "Canada",*/ tags: ["Tag1", "Tag2"], rating: 5, mainSubmission: blank, date: "3/7/2024" }, // has no notes
-        { id: "14", issue: 'Spring 2024: letters to self', medium: Mediums.VisualArt, title: "Example E", author: "Author E", status: Statuses.Pending, /*demographics: "Canada",*/ tags: ["Other"], rating: 5, notes: "None", mainSubmission: blank, date: "3/3/2024" },
-        { id: "15", issue: 'Spring 2024: letters to self', medium: Mediums.Other, title: "Example F", author: "Author F", status: Statuses.Declined, /*demographics: "Canada",*/ tags: ["Other"], rating: 4, notes: "None", mainSubmission: blank, date: "3/3/2024" },
-        { id: "16", issue: 'Spring 2024: letters to self', medium: Mediums.Other, title: "Example G", author: "Author G", status: Statuses.Declined, /*demographics: "Antarctica",*/ tags: ["Other"], rating: 3, notes: "None", mainSubmission: blank, date: "3/3/2024" },
-        { id: "17", issue: "Summer 2024: more than one letter", medium: Mediums.Other, title: "Example H", author: "Author H", status: Statuses.Declined, /*demographics: "Antarctica",*/ tags: [], rating: 2, notes: "None", mainSubmission: blank, date: "1/1/1111" }, // tags is empty
-        { id: "18", issue: "Summer 2024: more than one letter", medium: Mediums.Other, title: "Example I", author: "Author I", status: Statuses.Declined, /*demographics: "Antarctica",*/ rating: 1, notes: "None", mainSubmission: blank, date: "3/3/2024" } // has no tags
-    ];
+    /*------------------------------------------------------------------------*/
+    /* -------------------------------- Setup ------------------------------- */
+    /*------------------------------------------------------------------------*/
+
+    /* -------------- State ------------- */
+
+    // Initial state
+    const initialState: State = {
+        allSubmissions: [],
+        isLoading: false
+    };
+
+    // Initialize state
+    const [state, dispatch] = useReducer(reducer, initialState);
+
+    // Destructure common state
+    const {
+        allSubmissions,
+        isLoading 
+    } = state;
+
+    /*------------------------------------------------------------------------*/
+    /* ------------------------------ Functions ----------------------------- */
+    /*------------------------------------------------------------------------*/
+
+    /**
+     * Getting submission for user getting onto the webpage
+     * @author So Hyun Kim, Avery Hanna
+     * @returns submissions of all users
+     */
+    const getSubmissions = async () => {
+        // Show loading spinner
+        dispatch({
+            type: ActionType.ToggleLoadingOn
+        });
+
+        try {
+            // get submissions from database
+            const url = '/api/submissions/get';
+
+            await fetch(url, {
+                method: "GET"
+            })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.success) {
+                        console.log("Successfully connected to database");
+                        dispatch({
+                            type: ActionType.UpdateAllSubmissions,
+                            newSubmissions: res.data
+                                .reverse()
+                                .map((data: any) => data.submission)
+                        });
+                    } else {
+                        console.log("Failed to connect to database");
+                    }
+                })
+                .then(() => {
+                    // Hide loading spinner
+                    dispatch({
+                        type: ActionType.ToggleLoadingOff
+                    });
+                });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    /**
+     * Get submissions when user is loaded or updated
+     * @author Avery Hanna, So Hyun Kim
+     */
+    useEffect(() => {
+        (async () => {
+            // TODO: fix this hacky way of getting submissions
+            await getSubmissions();
+            await new Promise(r => setTimeout(r, 2000));
+            await getSubmissions();
+        })();
+    }, []);
+
+
+    /*------------------------------------------------------------------------*/
+    /* ------------------------------ Rendering ----------------------------- */
+    /*------------------------------------------------------------------------*/
 
     return (
         <div className="h-screen w-screen flex flex-col gradient-background">
@@ -61,9 +203,17 @@ export default function AdminHomePage() {
                     </li>
                 </div>
             </div>
-            <div className="overflow-scroll">
-                <AdminGrid submissionArray={sampleData}></AdminGrid>
-            </div>
+            {isLoading ? (
+                <div className="flex h-screen">
+                    <div className="m-auto">
+                        <TailSpin color="#8200B1"></TailSpin>
+                    </div>
+                </div>
+            ) : (
+                <div className="overflow-scroll">
+                    <AdminGrid submissionArray={allSubmissions}></AdminGrid>
+                </div>
+            )}
         </div>
     );
 }
