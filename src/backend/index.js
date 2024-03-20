@@ -8,20 +8,25 @@ const fs = require("fs");
 const app = express();
 app.use(cors());
 
+let uploads = [];
+
 const storage = multer.diskStorage({
     destination: function (req, file, callback) {
-        const uploadDir = path.dirname(__dirname) + "/uploads";
+        const uploadDir = path.join(path.dirname(__dirname), "..", "uploads");
         callback(null, `${uploadDir}`);
     },
     filename: function (req, file, callback) {
         const extension = file.originalname.split(".").pop();
         const today = new Date();
-        const day = String(today.getDate()).padStart(2, '0');
-        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, "0");
+        const month = String(today.getMonth() + 1).padStart(2, "0");
         const year = today.getFullYear();
 
         const date = year + "-" + month + "-" + day;
-        callback(null, `${file.originalname.split(".")[0]}-${date}.${extension}`);
+        callback(
+            null,
+            `${file.originalname.split(".")[0]}-${date}.${extension}`
+        );
     }
 });
 
@@ -29,10 +34,10 @@ const upload = multer({ storage: storage });
 
 app.use(express.static("public"));
 
-app.post("/upload", upload.any("files"), async (req, res) => {
+app.get("/upload", async (req, res) => {
     try {
         const auth = new google.auth.GoogleAuth({
-            keyFile: "backend/key.json",
+            keyFile: "src/backend/key.json",
             scopes: ["https://www.googleapis.com/auth/drive"]
         });
 
@@ -41,12 +46,11 @@ app.post("/upload", upload.any("files"), async (req, res) => {
             auth
         });
 
-        const files = req.files;
         const responses = [];
 
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const response = await drive.files
+        while (uploads.length > 0) {
+            const file = uploads.shift();
+            await drive.files
                 .create({
                     requestBody: {
                         name: file.filename,
@@ -68,10 +72,12 @@ app.post("/upload", upload.any("files"), async (req, res) => {
                                 .send("Error deleting local file.");
                         }
                     });
-                    return response;
-                });
 
-            responses.push(response);
+                    responses.push({
+                        name: response.data.name,
+                        id: response.data.id
+                    });
+                });
         }
         res.json({ body: responses });
     } catch (error) {
@@ -80,6 +86,10 @@ app.post("/upload", upload.any("files"), async (req, res) => {
             error: "An error occurred during file upload."
         });
     }
+});
+
+app.post("/update", upload.any("inputFile"), async (req, res) => {
+    uploads.push(req.files[0]);
 });
 
 const port = 3001;

@@ -20,15 +20,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         // Insert the defined document into the "Submissions" collection
         const body = JSON.parse(req.body);
+        console.log("body:" + body);
         await collect.insertOne(body);
 
-        // accesses collection to verify that everything was inserted correct
-        const collection = await db
-            .collection("Submissions")
-            .find({})
-            .toArray();
-
-        res.status(201).json({ success: true, data: collection });
+        res.status(201).json({ success: true });
     } catch (e) {
         res.status(400).json({ success: false });
     }

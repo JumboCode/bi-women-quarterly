@@ -652,6 +652,7 @@ const ProfileReview: React.FC<{}> = () => {
                             <input
                                 className="border-b-2 my-4 w-80" 
                                 placeholder={PLACEHOLDERS.authorName}
+                                defaultValue={userInfo!.authorName}
                                 type="text"
                                 id="aname"
                                 onChange={(e) => handleChange('authorName', e.target.value)}
@@ -663,6 +664,7 @@ const ProfileReview: React.FC<{}> = () => {
                             <input
                                 className="border-b-2 my-4 w-80" 
                                 placeholder={PLACEHOLDERS.pronouns}
+                                defaultValue={userInfo!.pronouns}
                                 type="text"
                                 id="pronouns"
                                 onChange={(e) => handleChange('pronouns', e.target.value)} />

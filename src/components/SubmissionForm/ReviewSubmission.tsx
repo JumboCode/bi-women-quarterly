@@ -5,8 +5,7 @@
  */
 
 // import components
-import PreviewType from "@/types/PreviewType";
-import SubmissionFilePreview from "./SubmissionFilePreview";
+import PreviewCard from "./PreviewCard";
 
 // import types
 import Preview from "@/types/Preview";
@@ -29,10 +28,10 @@ const ReviewSubmission: React.FC<Props> = props => {
         <div className="m-10 mx-12">
             {previews.map(preview => {
                 return (
-                    <SubmissionFilePreview
+                    <PreviewCard
                         key={preview.contentDriveUrl}
                         preview={preview}
-                    ></SubmissionFilePreview>
+                    ></PreviewCard>
                 );
             })}
         </div>

@@ -38,5 +38,6 @@ next-env.d.ts
 .vscode
 
 # credentials 
-/backend/key.json
 key.json
+backend/key.json
+backend/node_modules

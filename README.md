@@ -8,6 +8,7 @@ First, install all dependencies with:
 
 ```bash
 npm install
+npm install -g nodemon
 ```
 
 Then, run the development server:
