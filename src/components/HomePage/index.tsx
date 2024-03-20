@@ -21,8 +21,10 @@ import ShowSubmissionThumbnails from "@/components/HomePage/ShowSubmissionThumbn
 // Import types
 import Submission from "@/types/Submission";
 import PreviewType from "@/types/PreviewType";
-import Issues from '@/types/Issues';
-import Statuses from '@/types/Statuses';
+import Issues from "@/types/Issues";
+import Statuses from "@/types/Statuses";
+import { time } from 'console';
+import Preview from '@/types/Preview';
 
 enum FilterType {
     // No filtering of submissions
@@ -214,6 +216,7 @@ export default function HomePage() {
                 .then(res => res.json())
                 .then(res => {
                     if (res.success) {
+                        console.log("Successfully connected to database");
                         dispatch({
                             type: ActionType.UpdateAllSubmissions,
                             newSubmissions: res.data
@@ -241,7 +244,11 @@ export default function HomePage() {
      */
     useEffect(() => {
         (async () => {
+            // TODO: fix this hacky way of getting submissions
             await getSubmissions();
+            await new Promise(r => setTimeout(r, 2000));
+            await getSubmissions();
+
         })();
     }, [user]);
 
@@ -279,10 +286,14 @@ export default function HomePage() {
                 <div className="m-3 mx-5 flex flex-row justify-end">
                     <li className="flex items-center space-x-5">
                         <button className="HomePage-submit-button shadow-md">
-                            <Link href="/previews">Review Work</Link>
+                            <Link href="/previews">
+                                Review Work
+                            </Link>
                         </button>
                         <button className="HomePage-submit-button shadow-md">
-                            <Link href="/submit">Submit Work</Link>
+                            <Link href="/submit">
+                                Submit Work
+                            </Link>
                         </button>
                         <div className="ml-4">
                             <UserButton afterSignOutUrl="/" />
@@ -338,7 +349,7 @@ export default function HomePage() {
             {isLoading ? (
                 <div className="flex h-screen">
                     <div className="m-auto">
-                        <TailSpin></TailSpin>
+                        <TailSpin color="#8200B1"></TailSpin>
                     </div>
                 </div>
             ) : (
