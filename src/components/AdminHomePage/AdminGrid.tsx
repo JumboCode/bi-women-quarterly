@@ -8,6 +8,10 @@ import Submission from "@/types/Submission";
 import { Box, Typography } from '@mui/material'
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import Button from '@mui/material/Button';
+import { Issue } from 'next/dist/build/swc';
+import { useEffect, useReducer } from 'react';
+import Statuses from '@/types/Statuses';
+import Mediums from '@/types/Mediums';
 
 type Props = {
     submissionArray: Submission[];
@@ -16,6 +20,7 @@ type Props = {
 const tagStyle = {
     backgroundColor: "rgba(255, 255, 255, 0.5)",
     color: "#415db3",
+    marginLeft: "5px",
     paddingLeft: "20px",
     paddingRight: "20px",
     paddingBlock: "5px",
@@ -26,25 +31,115 @@ const nameStyle = {
     color: "#415db3",
 }
 
-const AdminGrid: React.FC<Props> = (properties) => {
-    const props = properties.submissionArray;
+/*------------------------------------------------------------------------*/
+/* -------------------------------- State ------------------------------- */
+/*------------------------------------------------------------------------*/
+  
+/* -------- State Definition -------- */
 
-    let rows = [];
-    for (let i = 0; i < props.length; i++) {
-        const submission = {
-            id: i,
-            issue: props[i].issue,
-            type: props[i].medium,
-            title: props[i].title,
-            name: props[i].author,
-            status: props[i].status,
-            // demographics: "United States",
-            tags: props[i].tags?.join(", "),
-            ratings: props[i].rating,
-            notes: props[i].notes
-        }
-        rows.push(submission);
+type State = {
+    // Issues of the publication to be displayed
+    issues: Issue[];
+};
+
+/* ------------- Actions ------------ */
+
+// Types of actions
+enum ActionType {
+// Set issues
+setIssues = 'setIssues',
+}
+
+// Action definitions
+type Action = {
+    // Action type
+    type: ActionType.setIssues,
+    // New issues to set 
+    newIssues: Issue[];
+};
+
+/**
+ * Reducer that executes actions
+ * @author Austen Money
+ * @param state current state
+ * @param action action to execute
+ * @returns updated state
+ */
+const reducer = (state: State, action: Action): State => {
+switch (action.type) {
+    case ActionType.setIssues: {
+    return {
+        ...state,
+        issues: action.newIssues,
+    };
     }
+    default: {
+        return state;
+    }
+}
+};
+
+/*------------------------------------------------------------------------*/
+/* ------------------------------ Component ----------------------------- */
+/*------------------------------------------------------------------------*/
+
+const AdminGrid: React.FC<Props> = (properties) => {
+    /*------------------------------------------------------------------------*/
+    /* -------------------------------- Setup ------------------------------- */
+    /*------------------------------------------------------------------------*/
+
+    /* -------------- Props ------------- */
+
+    // Destructure all props
+    const {
+        submissionArray,
+    } = properties;
+
+    /* -------------- State ------------- */
+
+    // Initial state
+    const initialState: State = {
+        issues: [],
+    };
+
+    // Initialize state
+    const [state, dispatch] = useReducer(reducer, initialState);
+
+    // Destructure common state
+    const {
+        issues,
+    } = state;
+
+    /*------------------------------------------------------------------------*/
+    /* ------------------------- Component Functions ------------------------ */
+    /*------------------------------------------------------------------------*/
+
+     /**
+     * Fetches the issue themes from the database and sets the issues state
+     * @author Austen Money
+     * @author Walid Nejmi
+     * @param event the event that has been changed
+     */
+    const fetchIssueThemes = async () => {
+        try {
+            await fetch("../api/issues/get", { method: "GET" })
+                .then(response => response.json())
+                .then(res => res.data.map((issue: any) => issue.title))
+                .then(titles => {
+                    dispatch({ type: ActionType.setIssues, newIssues: titles });
+                });
+        } catch (error) {
+            console.error("Error fetching issue themes: ", error);
+            return [];
+        }
+    };
+
+    const rows: Submission[] = submissionArray.map((submission) => {
+        return {
+            ...submission,
+            // tags: submission.tags ? [submission.tags?.join(", ")] : [],
+        }
+    });
 
     const handleClick = (event: any, cellValues: any) => {
         console.log(event);
@@ -55,9 +150,9 @@ const AdminGrid: React.FC<Props> = (properties) => {
         {
             field: "issue",
             headerName: "Issue",
-            width: 100,
+            width: 275,
             type: "singleSelect",
-            valueOptions: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            valueOptions: issues,
             editable: false,
             cellClassName: "issue",
             headerClassName: "issue-header",
@@ -70,18 +165,18 @@ const AdminGrid: React.FC<Props> = (properties) => {
             }
         },
         {
-            field: "type",
-            headerName: "Type",
+            field: "medium",
+            headerName: "Medium",
             width: 150,
             type: "singleSelect",
-            valueOptions: ["Type 1", "Type 2", "Type 3"],
+            valueOptions: Object.values(Mediums),
             editable: false,
             cellClassName: "type",
             headerClassName: "type-header",
             renderCell: (cellValues) => {
                 return (
                     <div style={tagStyle}>
-                        {cellValues.row.type}
+                        {cellValues.row.medium.toLowerCase()}
                     </div>
                 );
             }
@@ -89,7 +184,7 @@ const AdminGrid: React.FC<Props> = (properties) => {
         {
             field: "title",
             headerName: "Title of Piece",
-            width: 250,
+            width: 200,
             editable: false,
             cellClassName: "title",
             headerClassName: "title-header",
@@ -102,16 +197,16 @@ const AdminGrid: React.FC<Props> = (properties) => {
             }
         },
         {
-            field: "name",
-            headerName: "BWQ Name",
-            width: 200,
+            field: "author",
+            headerName: "Author",
+            width: 100,
             editable: false,
             cellClassName: "name",
             headerClassName: "name-header",
             renderCell: (cellValues) => {
                 return (
                     <div style={nameStyle}>
-                        {cellValues.row.name}
+                        {cellValues.row.author}
                     </div>
                 );
             }
@@ -123,9 +218,9 @@ const AdminGrid: React.FC<Props> = (properties) => {
            */
             field: "status",
             headerName: "Status",
-            width: 150,
+            width: 125,
             type: "singleSelect",
-            valueOptions: ["Accepted", "Pending", "Rejected"],
+            valueOptions: Object.values(Statuses),
             editable: false,
             cellClassName: "status",
             headerClassName: "status-header",
@@ -147,9 +242,12 @@ const AdminGrid: React.FC<Props> = (properties) => {
             headerClassName: "tags-header",
             renderCell: (cellValues) => {
                 return (
-                    <div style={tagStyle}>
-                        {cellValues.row.tags}
-                    </div>
+                    cellValues.row.tags &&
+                        cellValues.row.tags.map((tag: string) =>
+                            <div style={tagStyle}>
+                                {tag}
+                            </div>
+                        )
                 );
             }
         },
@@ -162,6 +260,14 @@ const AdminGrid: React.FC<Props> = (properties) => {
             editable: false,
             cellClassName: "ratings",
             headerClassName: "ratings-header",
+            renderCell: (cellValues) => {
+                return (
+                    cellValues.row.rating &&
+                    <div style={tagStyle}>
+                        {cellValues.row.rating}
+                    </div>
+                );
+            }
         },
         {
             field: "notes",
@@ -171,24 +277,21 @@ const AdminGrid: React.FC<Props> = (properties) => {
             cellClassName: "notes",
             headerClassName: "notes-header",
         },
-        {
-            field: "Print",
-            cellClassName: "print",
-            headerClassName: "print-header",
-            renderCell: (cellValues) => {
-                return (
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={(event) => {
-                            handleClick(event, cellValues);
-                        }}>
-                        Print
-                    </Button>
-                );
-            }
-        }
     ];
+
+    /*------------------------------------------------------------------------*/
+    /* ------------------------- Lifecycle Functions ------------------------ */
+    /*------------------------------------------------------------------------*/
+
+    /**
+     * Mount
+     * @author Austen Money
+     */
+    useEffect(() => {
+        (async () => {
+            await fetchIssueThemes();
+        })();
+    }, []);
 
     return (
         /* move styling to index where the component is called */
@@ -223,6 +326,7 @@ const AdminGrid: React.FC<Props> = (properties) => {
                 <DataGrid
                     rows={rows}
                     columns={columns}
+                    // checkboxSelection
                     slots={{ toolbar: GridToolbar }}
                     slotProps={{ toolbar: { showQuickFilter: true } }}
                     className="mx-20 mt-0 border-none"
