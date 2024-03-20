@@ -1,6 +1,7 @@
 import HomePage from "@/components/HomePage";
 import AdminHomePage from "@/components/AdminHomePage";
 import { useUser } from "@clerk/nextjs";
+import ProfileReview from '@/components/ProfileReview';
 
 export default function Home() {
     const { user } = useUser();
