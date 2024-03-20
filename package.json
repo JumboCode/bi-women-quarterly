@@ -14,6 +14,8 @@
         "@clerk/clerk-js": "^4.70.0",
         "@clerk/nextjs": "^4.29.5",
         "@emotion/styled": "^11.11.0",
+        "@fortawesome/free-solid-svg-icons": "^6.5.1",
+        "@fortawesome/react-fontawesome": "github:fortawesome/react-fontawesome",
         "@google-cloud/local-auth": "^3.0.1",
         "@mui/material": "^5.15.12",
         "@mui/system": "^5.15.12",

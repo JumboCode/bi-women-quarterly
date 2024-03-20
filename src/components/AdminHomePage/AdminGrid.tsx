@@ -6,6 +6,10 @@
 
 import { useEffect, useReducer } from 'react';
 
+// Import FontAwesome
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLink } from '@fortawesome/free-solid-svg-icons';
+
 // Import MUI components
 import { Box } from '@mui/material'
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
@@ -25,9 +29,18 @@ type Props = {
 const tagStyle = {
     backgroundColor: "rgba(255, 255, 255, 0.5)",
     color: "#415db3",
-    marginLeft: "5px",
-    paddingLeft: "20px",
-    paddingRight: "20px",
+    margin: "2px",
+    paddingLeft: "1rem",
+    paddingRight: "1rem",
+    paddingBlock: "5px",
+    borderRadius: "10px",
+}
+
+const linkStyle = {
+    backgroundColor: "#415db3",
+    color: "white",
+    paddingLeft: ".5rem",
+    paddingRight: ".5rem",
     paddingBlock: "5px",
     borderRadius: "10px",
 }
@@ -142,6 +155,28 @@ const AdminGrid: React.FC<Props> = (properties) => {
     const rows: Submission[] = submissionArray;
 
     const columns: GridColDef[] = [
+        {
+            field: "Drive",
+            headerName: "Drive",
+            width: 55,
+            type: "singleSelect",
+            editable: false,
+            cellClassName: "Drive",
+            headerClassName: "drive-header",
+            renderCell: (cellValues) => {
+                return (
+                    <button 
+                        onClick={(e) => {
+                            e.preventDefault();
+                            window.location.href=cellValues.row.mainSubmission.contentDriveUrl;
+                        }}
+                        style={linkStyle}
+                    >
+                        <FontAwesomeIcon icon={faLink} />
+                    </button>
+                );
+            }
+        },
         {
             field: "issue",
             headerName: "Issue",
@@ -296,13 +331,13 @@ const AdminGrid: React.FC<Props> = (properties) => {
     return (
         <Box
             sx={{
-                "& .issue, & .type, & .title, & .name, & .status, \
+                "& .drive, & .issue, & .type, & .title, & .name, & .status, \
                 & .tags, & .ratings, & .notes, & .print": {
                     backgroundColor: "rgba(255, 255, 255, 0.3)",
                     color: "#415db3",
                     border: "none",
                 },
-                "& .issue-header, & .type-header, & .title-header, \
+                "& .drive-header, & .issue-header, & .type-header, & .title-header, \
                 & .name-header, & .status-header, & .tags-header, \
                 & .ratings-header, & .notes-header, & .print-header": {
                     color: "#415db3",
