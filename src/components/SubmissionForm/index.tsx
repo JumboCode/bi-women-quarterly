@@ -19,10 +19,9 @@ import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 
 // Import components
-import LocalFile from '@/components/SubmissionForm/LocalFile';
-import Preview from '@/types/Preview';
-import Statuses from '@/types/Statuses';
-
+import LocalFile from "@/components/SubmissionForm/LocalFile";
+import Preview from "@/types/Preview";
+import Statuses from "@/types/Statuses";
 
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
@@ -43,23 +42,23 @@ export default function SubmissionForm() {
     /* -------------- State ------------- */
 
     // Initialize state
-    const [submission, setSubmission] = useState<Submission>(
-        {
-            id : user.id,
-            author : user.fullName ?? "", 
-            title : "",
-            date: Date().toString(),
-            issue: "",
-            medium: Mediums.None,
-            status: Statuses.Pending,
-            mainSubmission: {
-                type: PreviewType.Submission,
-                title: "",
-                description: "",
-                imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
-                contentDriveUrl: "",
-            },
-        })
+    const [submission, setSubmission] = useState<Submission>({
+        id: user.id,
+        author: user.fullName ?? "",
+        title: "",
+        date: Date().toString(),
+        issue: "",
+        medium: Mediums.None,
+        status: Statuses.Pending,
+        mainSubmission: {
+            type: PreviewType.Submission,
+            title: "",
+            description: "",
+            imageUrl:
+                "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
+            contentDriveUrl: ""
+        }
+    });
 
     const [issues, setIssues] = useState<string[]>([]);
 
@@ -88,68 +87,6 @@ export default function SubmissionForm() {
     };
 
     /**
-     * Prints the title, issue, and type of the publication to the console
-     * when the form is submitted
-     * @author Alana Sendlakowski, Vanessa Rose, Shreyas Ravi
-     * @param event the event that has been changed
-     */
-    const handleSubmit = async () => {
-        submission.title = submission.mainSubmission.title;
-
-        // upload submission to google drive
-        await fetch("http://localhost:3001/upload")
-            .then(res => res.json())
-            .then(res => res.body)
-            .then(responses => {
-                // set main submission contentDriveUrl
-                setSubmission(prevValues => {
-                    return {
-                        ...prevValues,
-                        mainSubmission: {
-                            ...prevValues.mainSubmission,
-                            contentDriveUrl:
-                                "https://drive.google.com/file/d/" +
-                                responses[0].id
-                        },
-                    };
-                });
-                // set additional references contentDriveUrl
-                for (let i = 1; i < responses.length; i++) {
-                    setSubmission(prevValues => {
-                        if (prevValues.additionalReferences) {
-                            const newReference: Preview = {
-                                ...prevValues.additionalReferences[i],
-                                contentDriveUrl:
-                                    "https://drive.google.com/file/d/" +
-                                    responses[i].id
-                            }
-                            const newAdditionalReferences = prevValues.additionalReferences;
-                            newAdditionalReferences[i] = newReference;
-                            return {
-                                ...prevValues,
-                                additionalReferences: newAdditionalReferences,
-                            };
-                        } else {
-                            return prevValues;
-                        }
-                    });
-                }
-
-                try {
-                    // add submission to database
-                    fetch("../api/submissions/add", {
-                        method: "POST",
-                        body: JSON.stringify({
-                            submission
-                        }),
-                    });
-                } catch (error) {
-                    console.log(error);
-                }
-            });
-    };
-
-    /**
      * Handles the change of elements in the form by updating useState variable
      * @author Austen Money
      * @param event the event that has been changed (when a new file is ubloaded
@@ -159,6 +96,56 @@ export default function SubmissionForm() {
     const handleSubmissionChange = (event: any) => {
         setSubmission(prevValues => {
             return { ...prevValues, [event.target.name]: event.target.value };
+        });
+    };
+
+
+/**
+ * Prints the title, issue, and type of the publication to the console
+ * when the form is submitted
+ * @author Alana Sendlakowski, Vanessa Rose, Shreyas Ravi
+ * @param event the event that has been changed
+ */
+const onSubmit = async () => {
+    submission.title = submission.mainSubmission.title;
+
+    // upload submission to google drive
+    await fetch("http://localhost:3001/upload")
+        .then(res => res.json())
+        .then(res => res.body)
+        .then(responses => {
+            responses.forEach((response: any, i: number) => {
+                if (response.additionalReferences) {
+                    const newReference: Preview = {
+                        ...response.additionalReferences[i],
+                        contentDriveUrl:
+                            "https://drive.google.com/file/d/" +
+                            responses[i].id,
+                        imageUrl: responses[i].thumbnail
+                    }
+                    const newAdditionalReferences = response.additionalReferences;
+                    newAdditionalReferences[i] = newReference;
+                    setSubmission({
+                        ...response,
+                        additionalReferences: newAdditionalReferences
+                    });
+                } else {
+                    setSubmission(response);
+                }
+            })
+        })
+        .then(async () => {
+            try {
+                // add submission to database
+                await fetch("../api/submissions/add", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        submission
+                    })
+                });
+            } catch (error) {
+                console.log(error);
+            }
         });
     };
 
@@ -284,7 +271,7 @@ export default function SubmissionForm() {
             <button
                 type="submit"
                 name="submit"
-                onClick={handleSubmit}
+                onClick={onSubmit}
                 className="absolute bottom-[10px] right-[10px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg"
             >
                 <Link href="/">Submit</Link>

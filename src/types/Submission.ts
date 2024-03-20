@@ -20,7 +20,7 @@
 // Import types
 import Preview from "./Preview";
 import Mediums from "./Mediums";
-import Statuses from './Statuses';
+import Statuses from "./Statuses";
 
 type Submission = {
     // Submission metadata
