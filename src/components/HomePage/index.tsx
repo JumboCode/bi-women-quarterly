@@ -266,17 +266,6 @@ export default function HomePage() {
         return null;
     }
 
-
-    /**
-     * Display or block submission menu for mobile state
-     * @author Jessie Huang
-     */
-    // const [isOpen, setIsOpen] = useState(false);
-
-    // const toggleMenu = () => {
-    //     setIsOpen((open) => !open)
-    // }
-
     /*------------------------------------------------------------------------*/
     /* ------------------------------- Render ------------------------------- */
     /*------------------------------------------------------------------------*/
