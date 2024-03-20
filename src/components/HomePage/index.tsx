@@ -21,8 +21,10 @@ import ShowSubmissionThumbnails from "@/components/HomePage/ShowSubmissionThumbn
 // Import types
 import Submission from "@/types/Submission";
 import PreviewType from "@/types/PreviewType";
-import Issues from '@/types/Issues';
-import Statuses from '@/types/Statuses';
+import Issues from "@/types/Issues";
+import Statuses from "@/types/Statuses";
+import { time } from 'console';
+import Preview from '@/types/Preview';
 
 enum FilterType {
     // No filtering of submissions
@@ -214,6 +216,7 @@ export default function HomePage() {
                 .then(res => res.json())
                 .then(res => {
                     if (res.success) {
+                        console.log("Successfully connected to database");
                         dispatch({
                             type: ActionType.UpdateAllSubmissions,
                             newSubmissions: res.data
@@ -241,7 +244,11 @@ export default function HomePage() {
      */
     useEffect(() => {
         (async () => {
+            // TODO: fix this hacky way of getting submissions
             await getSubmissions();
+            await new Promise(r => setTimeout(r, 2000));
+            await getSubmissions();
+
         })();
     }, [user]);
 
@@ -337,7 +344,7 @@ export default function HomePage() {
             {isLoading ? (
                 <div className="flex h-screen">
                     <div className="m-auto">
-                        <TailSpin></TailSpin>
+                        <TailSpin color="#8200B1"></TailSpin>
                     </div>
                 </div>
             ) : (

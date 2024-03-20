@@ -6,7 +6,7 @@
 enum Statuses {
     Approved = "Approved",
     Declined = "Declined",
-    Pending = "Pending",
+    Pending = "Pending"
 }
 
 export default Statuses;
