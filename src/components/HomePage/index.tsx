@@ -23,8 +23,6 @@ import Submission from "@/types/Submission";
 import PreviewType from "@/types/PreviewType";
 import Issues from "@/types/Issues";
 import Statuses from "@/types/Statuses";
-import { time } from 'console';
-import Preview from '@/types/Preview';
 
 enum FilterType {
     // No filtering of submissions

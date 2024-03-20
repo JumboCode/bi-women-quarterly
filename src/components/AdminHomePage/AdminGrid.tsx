@@ -1,5 +1,5 @@
 /**
- * An admin page to display a grid containnig all submissions and their related information
+ * An admin page to display a grid containing all submissions and their related information
  * @author Lydia Chen
  * @author Lucien Bao 
  */
@@ -312,6 +312,7 @@ const AdminGrid: React.FC<Props> = (properties) => {
             <DataGrid
                 rows={rows}
                 columns={columns}
+                getRowId={(row: any) =>  `${row.authorName}|${row.title}|${row.date}`}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true, quickFilterProps: { debounceMs: 500 } }}}
                 className="mx-20 mt-0 border-none"
