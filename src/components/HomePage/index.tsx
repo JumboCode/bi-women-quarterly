@@ -249,6 +249,9 @@ export default function HomePage() {
             await new Promise(r => setTimeout(r, 2000));
             await getSubmissions();
 
+            console.log("All submissions WOAH::::")
+            console.log(allSubmissions);
+
         })();
     }, [user]);
 
