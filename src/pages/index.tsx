@@ -1,5 +1,4 @@
 import HomePage from "@/components/HomePage";
-import ProfileReview from "@/components/ProfileReview";
 import { SignIn } from "@clerk/clerk-react";
 
 export default function Home() {
@@ -7,7 +6,6 @@ export default function Home() {
         <div>
             <SignIn></SignIn>
             <HomePage></HomePage>
-            <ProfileReview></ProfileReview>
         </div>
     );
 }
