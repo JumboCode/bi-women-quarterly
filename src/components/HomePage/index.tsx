@@ -347,7 +347,7 @@ export default function HomePage() {
                     </div>
                 </div>
             ) : (
-                <div className="flex item-center justify-center overflow-auto">
+                <div className="flex item-center justify-center overflow-auto mb-8">
                     {filteredSubmissions.length == 0 ? (
                         <div className="relative pt-20">
                             <div className="box-content border border-primary-blue relative w-full md:w-96 h-56 item-center left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
@@ -365,6 +365,17 @@ export default function HomePage() {
                     )}
                 </div>
             )}
+            <div className="p-1.5 ps-20 pe-20 flex justify-between items-center fixed bottom-0 w-full mr-8 text-primary-blue text-base text-sm lg:text-md">
+                <div className="font-semibold">© 2024 BiWomenQuarterly</div>
+                <div className="flex items-center">
+                    <div className="mr-8">
+                        <a href="https://www.biwomenquarterly.com/about/" target="_blank" rel="noopener noreferrer" className="text-base text-sm lg:text-md">About Us</a>
+                    </div>
+                    <div className="mr-8">
+                        <a href="https://www.biwomenquarterly.com/contact/" target="_blank" rel="noopener noreferrer" className="text-base text-sm lg:text-md">Contact Us</a>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
