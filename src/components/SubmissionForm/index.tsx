@@ -517,7 +517,8 @@ export default function SubmissionForm() {
                             //     imageUrl: "",
                             //     contentDriveUrl: "",
                             // }; 
-                            const newReferences = optionalReferences.push({
+                            const newReferences = optionalReferences
+                            newReferences.push({
                                 type: PreviewType.AdditionalReference,
                                 title: "",
                                 description: "",
@@ -528,7 +529,7 @@ export default function SubmissionForm() {
                             }}
 
                         className="rounded-lg items-center pt-4 ml-20">
-                        <Link href="/submit">  + Additional Photos</Link>
+                        <Link href="/submit"> + Additional Photos</Link>
                     </button>
                 </div>
                 {/* Artist Statement */}
