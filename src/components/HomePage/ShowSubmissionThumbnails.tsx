@@ -9,18 +9,18 @@
 // import components
 import SubmissionThumbnail from "./SubmissionThumbnail";
 // import types
-import Preview from "@/types/Preview";
+import Submission from "@/types/Submission";
 
 // Props definition
 type Props = {
-    previews: Preview[];
+    submissions: Submission[];
 };
 
 const ShowSubmissionThumbnails: React.FC<Props> = props => {
     /* -------------- Props ------------- */
 
     // Destructure all props
-    const { previews } = props;
+    const { submissions } = props;
 
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
@@ -28,11 +28,11 @@ const ShowSubmissionThumbnails: React.FC<Props> = props => {
     return (
         <div className="mx-auto">
             <div className="grid grid-cols-4 mx-20 my-20">
-                {previews.map(preview => {
+                {submissions.map(submission => {
                     return (
                         <SubmissionThumbnail
-                            key={preview.contentDriveUrl}
-                            preview={preview}
+                            key={submission.mainSubmission.contentDriveUrl}
+                            submission={submission}
                         ></SubmissionThumbnail>
                     );
                 })}

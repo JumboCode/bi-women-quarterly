@@ -6,11 +6,11 @@
  */
 
 // Import types
-import Preview from "@/types/Preview";
+import Submission from "@/types/Submission";
 
 // Props definition
 type Props = {
-    preview: Preview;
+    submission: Submission;
 };
 
 /*------------------------------------------------------------------------*/
@@ -21,22 +21,37 @@ const SubmissionThumbnail: React.FC<Props> = props => {
     /* -------------- Props ------------- */
 
     // Destructure all props
-    const { preview } = props;
+    const { submission } = props;
 
-    const { type, imageUrl, title, contentDriveUrl, description } = preview;
+    // id: string;
+    // author: string;
+    // title: string;
+    // date: string;
+    // issue: string;
+    // medium: Mediums;
+    // status: Statuses;
+    // mainSubmission: Preview;
+    // additionalReferences?: Preview[] | undefined;
+    // tags?: string[] | undefined;
+    // rating?: number | undefined;
+    // notes?: string | undefined;
 
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
     return (
         <div>
-            <div className="flex-col items-start">
-                <div className="max-w-md min-w-min w-2/4 bg-gray-200">
-                    <img src={imageUrl} className="max-w-full"></img>
+            <div onClick={() => {console.log('Button clicked!')}} className="flex-col items-start bg-[#F0C2FE] hover:bg-[#385FB8] cursor-pointer m-2 p-2.5 transition-colors rounded-lg">
+                <div className="max-w-md min-w-min w-2/4 bg-gray-200 m-auto">
+                    <img src={submission.mainSubmission.imageUrl} className="max-w-full rounded-lg"></img>
                 </div>
                 <div className="max-w-md min-w-min w-2/4">
-                    <div className="font-normal">{title}</div>
-                    <div className="font-normal">{contentDriveUrl}</div>
+                    <div className="text-[#385FB8] font-bold hover:text[#ECEFF4]">{submission.title}</div>
+                    {/* <div className="font-normal">{contentDriveUrl}</div> */}
+                </div>
+                <div className="max-w-md min-w-min w-2/4">
+                    <div className="text-[#385FB8] font-bold hover:text[#ECEFF4]">{submission.date}</div>
+                    {/* <div className="font-normal">{contentDriveUrl}</div> */}
                 </div>
             </div>
             <br />
