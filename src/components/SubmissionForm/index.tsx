@@ -302,7 +302,7 @@ export default function SubmissionForm() {
      * Handles the change of elements in the form by updating useState variable
      * @author Alana Sendlakowski, Vanessa Rose
      * @param event the event that has been changed
-     * @returns new states of all the elements in the form
+     * @returns new states of all the in the form
      */
     const handleTitleChange = (event : any) => {
         setTitle(event.target.value);
@@ -332,17 +332,20 @@ export default function SubmissionForm() {
         setDescription(event.target.value);
     }
 
-    // const render_add_photo = () => {
-    //     optionalReferences.map((reference) => {
-    //         return (
-    //             <div>
-    //                 Title: {reference.title}
-    //                 Description: {reference.description}
-    //                 {/* ...(fill in actual formatted tsx stuff here) */}
-    //             </div>
-    //         );
-    //     }
-    // }
+    /* 
+     * Remove optional related photo upload elements when click delete
+    */
+    const removeOptPhoto= () => {
+        const newReferences = optionalReferences
+        newReferences.push({
+            type: PreviewType.AdditionalReference,
+            title: "",
+            description: "",
+            imageUrl: "",
+            contentDriveUrl: "",
+        });
+        setOptionalReferences(newReferences); 
+    }
 
 
     
@@ -491,14 +494,22 @@ export default function SubmissionForm() {
                 </div> 
                 {/* Optional Images */}
                 {
-                    optionalReferences.map((reference) => {
+                    optionalReferences.map((reference, index) => {
                         return (
                             <div>
                                 <div>
                                     <h1 className="text-1xl font-bold pb-4 mt-3 pt-8 justify=">Optional Related Photo</h1>
-                                    <button className="rounded-lg items-center pt-4 ml-20">
+                                    <button className="rounded-lg items-center pt-4 ml-20"
+                                    onClick={() => {
+                                        console.log("got clicked")
+                                        optionalReferences.splice(index, 1)
+                                        // const newReferences = optionalReferences
+                                        // newReferences.splice(index, 1)
+                                        // setOptionalReferences(newReferences)
+                                    }}>
                                     {/* TODO: implement this button's functionality */}
                                         Delete</button> 
+                                    
                                 </div>
 
                                 {/* Submission Boxes */}
