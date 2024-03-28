@@ -38,9 +38,9 @@ const SubmissionThumbnail: React.FC<Props> = props => {
     let submission_date: string = submission.date;
     // console.log(submission_date);
 
-    function formatDate(submission.date: string): string {
-        const date = new Date(submission.date);
-        const options = { month: 'short', day: '2-digit', year: 'numeric' };
+    function formatDate(dateString: string): string {
+        const date = new Date(dateString);
+        const options: Intl.DateTimeFormatOptions = { month: 'short', day: '2-digit', year: 'numeric' };
         return date.toLocaleDateString('en-US', options);
     }
 
@@ -60,7 +60,7 @@ const SubmissionThumbnail: React.FC<Props> = props => {
                     {/* <div className="font-normal">{contentDriveUrl}</div> */}
                 </div>
                 <div className="max-w-md min-w-min w-2/4 group-hover:text-white">
-                    <div className="text-[#385FB8] md:text-lg group-hover:text-white">{submission.date}</div>
+                    <div className="text-[#385FB8] md:text-lg group-hover:text-white">{formatDate(submission.date)}</div>
                     {/* <div className="font-normal">{contentDriveUrl}</div> */}
                 </div> 
             </div>
