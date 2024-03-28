@@ -55,8 +55,9 @@ const SubmissionThumbnail: React.FC<Props> = props => {
                 <div className="max-w-md min-w-min w-2/4 bg-gray-200 m-auto">
                     <img src={submission.mainSubmission.imageUrl} className="max-w-full rounded-lg"></img>
                 </div>
-                <div className="max-w-md min-w-min w-2/4">
+                <div className="max-w-md min-w-min flex justify-between py-2">
                     <div className="text-[#385FB8] font-bold md:text-xl lg:text-2xl xl:text-2xl group-hover:text-white">{submission.title}</div>
+                    <div className="text-[#385FB8] md:text-lg group-hover:text-white bg-[#ffffff] rounded-xl p-1">APPROVED</div>
                     {/* <div className="font-normal">{contentDriveUrl}</div> */}
                 </div>
                 <div className="max-w-md min-w-min w-2/4 group-hover:text-white">
