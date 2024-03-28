@@ -118,10 +118,13 @@ const onSubmit = async () => {
         .then(responses => {
             // Update main submission with drive info
             if (responses[0]) {
+                // this line updates the title displayed on the home page
+                updatedSubmission.mainSubmission.title = submission.author + "-" + submission.mainSubmission.title;
                 updatedSubmission.mainSubmission.contentDriveUrl = `https://drive.google.com/file/d/${responses[0].id}`;
                 updatedSubmission.mainSubmission.imageUrl = responses[0].thumbnail;
             }
             // Update additional references with drive info
+            // not working right now -- cannot upload multiple submission with the outdated design
             if (updatedSubmission.additionalReferences) {
                 for (let i = 1; i < responses.length; i++) {
                     updatedSubmission.additionalReferences[i - 1].contentDriveUrl = `https://drive.google.com/file/d/${responses[i].id}`;
