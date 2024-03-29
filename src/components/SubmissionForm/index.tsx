@@ -332,20 +332,7 @@ export default function SubmissionForm() {
         setDescription(event.target.value);
     }
 
-    /* 
-     * Remove optional related photo upload elements when click delete
-    */
-    const removeOptPhoto= () => {
-        const newReferences = optionalReferences
-        newReferences.push({
-            type: PreviewType.AdditionalReference,
-            title: "",
-            description: "",
-            imageUrl: "",
-            contentDriveUrl: "",
-        });
-        setOptionalReferences(newReferences); 
-    }
+  
 
 
     
@@ -502,14 +489,13 @@ export default function SubmissionForm() {
                                     <button className="rounded-lg items-center pt-4 ml-20"
                                     onClick={() => {
                                         console.log("got clicked")
-                                        optionalReferences.splice(index, 1)
-                                        // const newReferences = optionalReferences
-                                        // newReferences.splice(index, 1)
-                                        // setOptionalReferences(newReferences)
+                                        const newReferences = optionalReferences;                           
+                                        newReferences.splice(index, 1);
+                                        setOptionalReferences(newReferences);
+
                                     }}>
                                     {/* TODO: implement this button's functionality */}
-                                        Delete</button> 
-                                    
+                                        Delete</button>     
                                 </div>
 
                                 {/* Submission Boxes */}
@@ -568,13 +554,6 @@ export default function SubmissionForm() {
                     {/* Optional Image button */}
                     <button 
                         onClick={() => {
-                            // const newPrev = {
-                            //     type: PreviewType.AdditionalReference,
-                            //     title: "",
-                            //     description: "",
-                            //     imageUrl: "",
-                            //     contentDriveUrl: "",
-                            // }; 
                             const newReferences = optionalReferences
                             newReferences.push({
                                 type: PreviewType.AdditionalReference,
