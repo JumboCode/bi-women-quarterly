@@ -120,11 +120,11 @@ export default function SubmissionForm() {
     const [title, setTitle] = useState(""); 
     const [description, setDescription] = useState("");
     // Optional box 
-    const [optionalReferences, setOptionalReferences] = useState<Preview[]>([]);   
-    
-    // TODO delete 
-    // const [artist_statement, setStatement] = useState(""); 
-    // const [editor_note, setEditorNote] = useState("");  
+    const [optionalReferences, setOptionalReferences] = useState<Preview[]>([]); 
+    // To decide whether to render   
+    const [showFile, setShowFile] = useState(false);
+    // storing string of file name
+    const [fileName, setFileName] = useState<string[]>([]); 
 
     // Destructure common state
     const {
@@ -178,29 +178,6 @@ export default function SubmissionForm() {
             return [];
         }
     };
-
-    /**
-     * Adds the optional image and description when user presses button 
-     * @author So Hyun Kim
-     * @author Avery Hanna
-     */
-    // const onAddButtonClick = event => {
-    //     setOptionalBox(optionalBox.concat(<optional_image key={optionalBox.length}/>)); 
-    // }
-
-    // const handleModalSubmit = (event : any) => {
-    //     handleNewPreview({
-    //         type,
-    //         title,
-    //         description,
-    //         imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
-    //         contentDriveUrl: "",
-    //     })
-    //     event.preventDefault();
-    //     console.log('type: ' + type);
-    //     console.log("title: " + title);
-    //     console.log("description: " + description);
-    // }
 
     /**
      * Prints the title, issue, and type of the publication to the console
@@ -274,6 +251,31 @@ export default function SubmissionForm() {
     };
 
     /**
+     * Adds the file name to the array of file names and changes the booleans
+     * to display the modal and files
+     * @author Alana Sendlakowski, Vanessa Rose, Shreyas Ravi
+     * @param event the event that has been changed
+     */
+     const handleLocalFileSubmit = async (event: any) => {
+        event.preventDefault();
+
+        fileName.push(event.target.files[0].name);
+
+        setShowFile(true);
+
+        let formData = new FormData();
+        formData.append(event.target.files[0].name, event.target.files[0]);
+
+        // posts user response to server to be fetched in index.tsx
+        await fetch("http://localhost:3001/update", {
+            method: "POST",
+            body: formData
+        })
+            .then(res => res.json())
+            .catch(err => console.error(err));
+    };
+
+    /**
      * Handles the change of elements in the form by updating useState variable
      * @author Austen Money
      * @param event the event that has been changed (when a new file is ubloaded
@@ -308,18 +310,6 @@ export default function SubmissionForm() {
         setTitle(event.target.value);
     }
 
-
-    // const handleOptionalRefChange = () => {
-    //     optionalReferences.map((reference) => {
-    //         return (
-    //             <div>
-    //                 Title: {reference.title}
-    //                 Description: {reference.description}
-    //                 {/* ...(fill in actual formatted tsx stuff here) */}
-    //             </div>
-    //         );
-    //     )
-    // }}
 
 
     /**
@@ -434,6 +424,9 @@ export default function SubmissionForm() {
                 {/* Submission Boxes */}
                 <div className="flex flex-cols-2 gap-4">
                     {/* Submission Box 1 */}
+                    {showFile? (
+                        <div> HELLO? </div> 
+                    ) : 
                     <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">
                         <div className="break-normal">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3b60ba" className="mx-auto flex h-20 w-20 items-center justify-center">
@@ -445,22 +438,36 @@ export default function SubmissionForm() {
                         <h1 className="flex grow text-center justify-center text-m pb-1 pt-1">or</h1>
                         
                         <div className="flex grid grid-cols-2 gap-4 pt-[20px]"> 
-                        <div className="flex grow text-justify justify-center text-[#3b60ba]">
-                                <LocalFile/>
+                        <div className="flex grow text-justify justify-center text-[#3b60ba]">       
+                            <form>
+                                <div>
+                                    <label type="submit" className="resize inline-block h-[30px] w-[115px] pt-[3px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]">
+                                        <input
+                                            type="file"
+                                            name="files"
+                                            id="inputFile"
+                                            className="hidden"
+                                            onChange={handleLocalFileSubmit}
+                                        />{" "}
+                                        Local File
+                                    </label>
+                                </div>
+                            </form>                                
                         </div>
+                        
                         {/* "absolute right-[120px] mt-[100px] rounded-lg bg-white  m-6 h-[40px] w-[200px]  items-center shadow-lg"> */}
                         {/*"inline-block h-[30px] w-[115px] pt-[3px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]" */}
                         {/* <button  type="submit" className="flex grow justify-center text-justify h-[30px] w-[115px] pt-[3px] rounded-sm outline outline-[#5072c0] text-[#3b60ba] outline-offset-[3px]">
                             Google Drive
                         </button> */}
-                        <div className="flex  text-justify justify-center text-[#3b60ba]">
-                            <button  type="submit" className="inline-block h-[30px] w-[115px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]">
-                                Google Drive
-                            </button>
-                        </div>
+                            <div className="flex  text-justify justify-center text-[#3b60ba]">
+                                <button  type="submit" className="inline-block h-[30px] w-[115px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]">
+                                    Google Drive
+                                </button>
+                            </div>
                         </div>
                     </div>
-
+                    }
                     {/* Submission Box 2 */}
                     <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                         <div onChange={handleTitleChange}>
