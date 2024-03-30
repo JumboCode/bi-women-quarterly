@@ -341,7 +341,6 @@ export default function SubmissionForm() {
         })();
     }, [user]);
 
-
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
@@ -506,10 +505,8 @@ export default function SubmissionForm() {
                                     <button className="rounded-lg items-center pt-4 ml-20"
                                     onClick={() => {
                                         console.log("got clicked")
-                                        const newReferences = optionalReferences;                           
-                                        newReferences.splice(index, 1);
+                                        const newReferences = [...optionalReferences.slice(0, index), ...optionalReferences.slice(index + 1)];
                                         setOptionalReferences(newReferences);
-
                                     }}>
                                     {/* TODO: implement this button's functionality */}
                                         Delete</button>     
