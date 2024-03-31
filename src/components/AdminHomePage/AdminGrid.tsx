@@ -373,9 +373,10 @@ const AdminGrid: React.FC<Props> = (properties) => {
                     // Fixes the CustomNoRowsOverlay text so that it's
                     // unflipped and centered.
                     '& .flip': {
+                        backgroundColor: "rgba(255, 255, 255, 0.3)",
                         transform: 'rotateX(180deg)',
+                        paddingBlock: "45px",
                         margin: 'auto',
-                        width: '50%',
                         textAlign: 'center',
                     }
                 }}
