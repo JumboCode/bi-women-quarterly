@@ -324,7 +324,7 @@ const AdminGrid: React.FC<Props> = (properties) => {
     }, []);
 
     const MyCustomNoRowsOverlay = () => (
-        <p>No stuff here :(</p>
+        <p className="flip">No submissions matched your search/filters.</p>
     );
 
     /*------------------------------------------------------------------------*/
@@ -369,9 +369,13 @@ const AdminGrid: React.FC<Props> = (properties) => {
                     },
                     '& .MuiDataGrid-virtualScrollerContent': {
                         transform: 'rotateX(180deg)',
-                        // p: "100px"
-                        // paddingBlock: "100px"
                     },
+                    '& .flip': {
+                        transform: 'rotateX(180deg)',
+                        margin: 'auto',
+                        width: '50%',
+                        textAlign: 'center',
+                    }
                 }}
             />
         </Box>
