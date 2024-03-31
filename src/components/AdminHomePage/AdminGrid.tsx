@@ -323,7 +323,7 @@ const AdminGrid: React.FC<Props> = (properties) => {
         })();
     }, []);
 
-    const MyCustomNoRowsOverlay = () => (
+    const CustomNoRowsOverlay = () => (
         <p className="flip">No submissions matched your search/filters.</p>
     );
 
@@ -353,7 +353,7 @@ const AdminGrid: React.FC<Props> = (properties) => {
                 getRowId={(row: any) => `${row.authorName}|${row.title}|${row.date}`}
                 slots={{
                     toolbar: GridToolbar,
-                    noResultsOverlay: MyCustomNoRowsOverlay,
+                    noResultsOverlay: CustomNoRowsOverlay,
                 }}
                 slotProps={{ toolbar: { showQuickFilter: true, quickFilterProps: { debounceMs: 500 } } }}
                 className="mx-20 mt-0 border-none"
@@ -370,6 +370,8 @@ const AdminGrid: React.FC<Props> = (properties) => {
                     '& .MuiDataGrid-virtualScrollerContent': {
                         transform: 'rotateX(180deg)',
                     },
+                    // Fixes the CustomNoRowsOverlay text so that it's
+                    // unflipped and centered.
                     '& .flip': {
                         transform: 'rotateX(180deg)',
                         margin: 'auto',
