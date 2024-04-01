@@ -27,7 +27,7 @@ const ShowSubmissionThumbnails: React.FC<Props> = props => {
     /*----------------------------------------*/
     return (
         <div className="mx-auto">
-            <div className="grid grid-cols-4 mx-20 my-20">
+            <div className="grid grid-cols-3 mx-20 my-20">
                 {submissions.map(submission => {
                     return (
                         <SubmissionThumbnail
