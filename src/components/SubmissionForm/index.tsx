@@ -124,7 +124,9 @@ export default function SubmissionForm() {
     // To decide whether to render   
     const [showFile, setShowFile] = useState(false);
     // storing string of file name
-    const [fileName, setFileName] = useState<string[]>([]); 
+    const [fileArray, setFileArray] = useState<FormData[]>([]); 
+    // storing url of file TODO: use this to store submission locally
+    const [file, setFile] = useState<File | null>();
 
     // Destructure common state
     const {
@@ -141,7 +143,6 @@ export default function SubmissionForm() {
             issue: "",
             medium: Mediums.None,
             status: Statuses.Pending,
-            // MAR15: Initialize the artist statement and editor note TODO temp comment
             artist_statement: "",
             editor_note: "",
             mainSubmission: {
@@ -185,7 +186,7 @@ export default function SubmissionForm() {
      * @author Alana Sendlakowski, Vanessa Rose, Shreyas Ravi
      * @param event the event that has been changed
      */
-    const handleSubmit = async () => {
+    const handleSubmit = async (event: any) => {
         handleNewPreview({
             type,
             title,
@@ -197,6 +198,15 @@ export default function SubmissionForm() {
         
         submission.title = submission.mainSubmission.title;
 
+        // posts files that have been selectted to server
+        await fetch("http://localhost:3001/update", {
+            method: "POST",
+            body: JSON.stringify(fileArray)
+        })
+            .then(res => res.json())
+            .catch(err => console.error(err));
+        
+        
         // upload submission to google drive
         await fetch("http://localhost:3001/upload")
             .then(res => res.json())
@@ -250,30 +260,6 @@ export default function SubmissionForm() {
             });
     };
 
-    /**
-     * Adds the file name to the array of file names and changes the booleans
-     * to display the modal and files
-     * @author Alana Sendlakowski, Vanessa Rose, Shreyas Ravi
-     * @param event the event that has been changed
-     */
-     const handleLocalFileSubmit = async (event: any) => {
-        event.preventDefault();
-
-        fileName.push(event.target.files[0].name);
-
-        setShowFile(true);
-
-        let formData = new FormData();
-        formData.append(event.target.files[0].name, event.target.files[0]);
-
-        // posts user response to server to be fetched in index.tsx
-        await fetch("http://localhost:3001/update", {
-            method: "POST",
-            body: formData
-        })
-            .then(res => res.json())
-            .catch(err => console.error(err));
-    };
 
     /**
      * Handles the change of elements in the form by updating useState variable
@@ -322,10 +308,16 @@ export default function SubmissionForm() {
         setDescription(event.target.value);
     }
 
-  
+    const handleFileChange = (event : any) => {
+        let formData = new FormData();
+        formData.append(event.target.files[0].name, event.target.files[0]);
+        fileArray.push(formData);
+        // const newFileArray = fileArray;
+        // newFileArray.push(formData)
+        // setFileArray(newFileArray);
+        setShowFile(true);
+    }
 
-
-    
 
     /*------------------------------------------------------------------------*/
     /* ------------------------- Lifecycle Functions ------------------------ */
@@ -428,6 +420,8 @@ export default function SubmissionForm() {
                             <div className="flex  text-justify justify-end text-[#3b60ba]"> 
                                 <button className="inline-block h-[30px] w-[115px] rounded-sm  text-center  outline outline-[#5072c0] outline-offset-[3px]"
                                 onClick={() => {
+                                    setFile(null);
+                                    setShowFile(false);
                                     console.log("got clicked");                                 }}>
                                 Delete</button>
                             </div>   
@@ -456,19 +450,13 @@ export default function SubmissionForm() {
                                             name="files"
                                             id="inputFile"
                                             className="hidden"
-                                            onChange={handleLocalFileSubmit}
+                                            onChange={handleFileChange}
                                         />{" "}
                                         Local File
                                     </label>
                                 </div>
                             </form>                                
                         </div>
-                        
-                        {/* "absolute right-[120px] mt-[100px] rounded-lg bg-white  m-6 h-[40px] w-[200px]  items-center shadow-lg"> */}
-                        {/*"inline-block h-[30px] w-[115px] pt-[3px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]" */}
-                        {/* <button  type="submit" className="flex grow justify-center text-justify h-[30px] w-[115px] pt-[3px] rounded-sm outline outline-[#5072c0] text-[#3b60ba] outline-offset-[3px]">
-                            Google Drive
-                        </button> */}
                             <div className="flex  text-justify justify-center text-[#3b60ba]">
                                 <button  type="submit" className="inline-block h-[30px] w-[115px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]">
                                     Google Drive
@@ -482,11 +470,6 @@ export default function SubmissionForm() {
                         <div onChange={handleTitleChange}>
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-1 ">Title*</h3>
                             <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Title of your piece" required />
-                            {/* <div className="pt-2 pb-8" onChange={handleTitleChange}>
-                                <label className="flex items-start justify-between py-2 px-5 rounded-t text-black font-bold">Title of Piece *</label>
-                                <input className="appearance-none ml-4 bg-transparent border-none w-full text-[#676c75] mr-3 px-2 leading-tight focus:outline-none" type="text" placeholder="title of piece"/>
-                                <hr className="h-px mx-6 my-1 border-[#676c75] border-[1px]"/>
-                            </div> */}
                             <div onChange={handleDescriptionChange}>
                                 <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Description</h3>
                                 <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Describe your piece" required />
@@ -527,13 +510,21 @@ export default function SubmissionForm() {
                                         
                                         <div className="flex grid grid-cols-2 gap-4 pt-[20px]"> 
                                         <div className="flex grow text-justify justify-center text-[#3b60ba]">
-                                                <LocalFile/>
-                                        </div>
-                                        {/* "absolute right-[120px] mt-[100px] rounded-lg bg-white  m-6 h-[40px] w-[200px]  items-center shadow-lg"> */}
-                                        {/*"inline-block h-[30px] w-[115px] pt-[3px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]" */}
-                                        {/* <button  type="submit" className="flex grow justify-center text-justify h-[30px] w-[115px] pt-[3px] rounded-sm outline outline-[#5072c0] text-[#3b60ba] outline-offset-[3px]">
-                                            Google Drive
-                                        </button> */}
+                                            <form>
+                                                <div>
+                                                    <label type="submit" className="resize inline-block h-[30px] w-[115px] pt-[3px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]">
+                                                        <input
+                                                            type="file"
+                                                            name="files"
+                                                            id="inputFile"
+                                                            className="hidden"
+                                                            onChange={handleFileChange}
+                                                        />{" "}
+                                                        Local File
+                                                    </label>
+                                                </div>
+                                            </form>
+                                       </div>
                                         <div className="flex  text-justify justify-center text-[#3b60ba]">
                                             <button  type="submit" className="inline-block h-[30px] w-[115px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]">
                                                 Google Drive
@@ -547,11 +538,6 @@ export default function SubmissionForm() {
                                         <div onChange={handleTitleChange}>
                                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-1 ">Title*</h3>
                                             <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Title of your piece" required />
-                                            {/* <div className="pt-2 pb-8" onChange={handleTitleChange}>
-                                                <label className="flex items-start justify-between py-2 px-5 rounded-t text-black font-bold">Title of Piece *</label>
-                                                <input className="appearance-none ml-4 bg-transparent border-none w-full text-[#676c75] mr-3 px-2 leading-tight focus:outline-none" type="text" placeholder="title of piece"/>
-                                                <hr className="h-px mx-6 my-1 border-[#676c75] border-[1px]"/>
-                                            </div> */}
                                             <div onChange={handleDescriptionChange}>
                                                 <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Description</h3>
                                                 <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Describe your piece" required />
