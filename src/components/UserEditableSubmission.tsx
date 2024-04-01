@@ -17,15 +17,9 @@ type Props = {
    */
   
 const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission }) => {
-  
-  /*------------------------------------------------------------------------*/
-  /* -------------------------------- States ------------------------------ */
-  /*------------------------------------------------------------------------*/
-
   const [submission, setSubmission] = useState<Submission>(initialSubmission);
-
-
   const [editOn, setEditOn] = useState<boolean>(false);
+
 
 
   /* ------------- Actions ------------ */
@@ -115,12 +109,14 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
   /*----------------------------------------*/
   const body = editOn ? (
     <div className="submission-container flex flex-col h-screen" style={{backgroundImage: 'linear-gradient(to bottom right, #FFD3CB, #E7A5FF, #B3C9FF)'}}>
+      
       <form onSubmit={handleEdit} className="flex flex-row justify-start mb-4">
         <button type="submit" className="text-white px-4 py-2 mb-4 inline-block" style={{ color: '#395EB9', fontSize: '24px' }}>
           &lt;- Back
         </button>
       </form>
       <div className="title-date flex items-center justify-between mb-4">
+      <div className="edit-submission-title text-3xl ml-10 mb-4" style={{ fontFamily: 'Open Sans', fontSize: '32.73px', fontWeight: 700, lineHeight: '44.57px', textAlign: 'left', color: '#395EB9'}}>Edit Submission</div>
         <div className="flex items-center">
           <form>
             <div className="issue-type text font-bold">
@@ -139,9 +135,9 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             </div>
           </form>
         </div>
-        <div className="submission-date text-white pr-10">
+        {/* <div className="submission-date text-white pr-10">
           Submitted: {submission.date}
-        </div>
+        </div> */}
       </div>
       
       <div className="flex flex-row pl-10">
@@ -162,8 +158,8 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             <span style={{ fontSize: "14px" }}  contentEditable="true">{submission.mainSubmission.description}</span>
           </div>
         </div>
- 
       </div>
+      
       <div className="artist-statement mt-4 pl-10">
         <div className="font-bold">Artist Statement</div>
         <div>
@@ -175,19 +171,20 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
           nemo quae veniam rem dolore sequi aliquam eius even.
         </div>
       </div>
-      <form onSubmit={handleSave} className="flex flex-row justify-between mt-10">
-        <button type="button" className="mr-auto pl-10 rounded shadow">
+      
+      <div className="absolute bottom-0 left-0 w-full flex justify-between">
+        <button type="button" className="mr-2 px-10 rounded shadow "style={{ color: '#395EB9',  boxShadow: '0px 0px 5px 0px #00000040'}}>
           Delete Submission
         </button>
-        <div className="flex flex-row pr-10">
-          <button type="button" onClick={handleEdit} className="mr-2 rounded shadow p-[7%]">
-            Edit
+        <form onSubmit={handleSave} className="bg-pink p-3 flex items-center ">
+          <button type="button" onClick={handleEdit} className="mr-2 rounded shadow" style={{ color: '#395EB9'}}>
+            Save & Continue Later
           </button>
-          <button type="submit" className ="rounded shadow bg-pink-500 text-white size-100 p-[7%]">
-            Save
+          <button type="submit" className="rounded shadow text-white" style={{ background: '#FF4395',  boxShadow: '0px 0px 5px 0px #00000040'}}>
+            Submit
           </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   ) : (
     <div className="submission-container flex flex-col h-screen" style={{backgroundImage: 'linear-gradient(to bottom right, #FFD3CB, #E7A5FF, #B3C9FF)'}}>
@@ -228,7 +225,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
           ratione ipsum, illo voluptatem. Vel pariatur adipisci quidem dolorum, 
           exercitationem dicta. Vero, officia? Lorem, ipsum dolor sit amet consectetur 
           adipisicing elit. Tenetur nobis temporibus iusto odio vitae amet ex, 
-          nemo quae veniam rem dolore sequi aliquam eius eveniet optio non totam voluptas et.
+          nemo quae veniam rem dolore sequi aliquam eius eveniet optio non totam voluptas
         </div>
       </div>
       <form onSubmit={handleSave} className="flex flex-row justify-between mt-10">
