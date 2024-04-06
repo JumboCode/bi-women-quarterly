@@ -488,7 +488,7 @@ const ProfileReview: React.FC<{}> = () => {
                     Review Profile
                 </h1>
                 {/* Header portion */}
-                <div className="flex flex-row items-center gap-8">
+                <div className="flex items-center gap-8">
                     <img className="rounded-full bg-gray-500 w-24 h-24"
                         src={userInfo!.profilePicture as string}
                         alt="Your profile picture" onError={(e) => {
@@ -498,7 +498,8 @@ const ProfileReview: React.FC<{}> = () => {
                     <div className={"text-center h-10 leading-10 h-10"
                         + " rounded-md outline outline-primary-blue outline-1"
                         + " cursor-pointer alpha-gradient-background"
-                        + " shadow shadow-md shadow-blue hover:shadow-lg"}
+                        + " shadow shadow-md shadow-blue hover:shadow-lg"
+                        + "justify-end border border-black-900"}
                         onClick={switchToEdit}>
                         <p className="px-4 text-primary-blue">
                             <strong>🖉 Edit</strong>
@@ -507,9 +508,9 @@ const ProfileReview: React.FC<{}> = () => {
                 </div>
 
                 {/* Biographical info */}
-                <div className="border border-solid border-slate-400 \
-                rounded-xl mb-5 p-5 alpha-gradient-background \
-                shadow shadow-lg shadow-blue">
+                <div className={"border border-solid brder-white"
+                    + " rounded-xl mb-5 p-5 alpha-gradient-background"
+                    + " shadow shadow-lg shadow-blue"} >
                     <div>
                         <label className="font-bold text-primary-blue">Email</label>
                         <div className="py-4">{userInfo!.primaryEmailAddress}</div>
@@ -576,7 +577,7 @@ const ProfileReview: React.FC<{}> = () => {
                 </div>
 
                 {/* Social media */}
-                <div className="border border-solid border-slate-400 \
+                <div className="border border-solid border-white \
                 rounded-xl p-5 alpha-gradient-background \
                 shadow shadow-lg shadow-blue">
                     <label className="font-bold text-primary-blue">Socials</label>
@@ -603,7 +604,7 @@ const ProfileReview: React.FC<{}> = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
         );
     }
 
@@ -616,21 +617,34 @@ const ProfileReview: React.FC<{}> = () => {
                     Edit Profile
                 </h1>
                 {/* Header portion */}
-                <div className="flex flex-col-4 items-center gap-5 pb-8 gap-x-5">
+                <div className="flex flex-col-4 items-center gap-5">
                     <img className="rounded-full bg-gray-500 w-24 h-24" src={userInfo!.profilePicture as string} alt="Your profile picture" onError={(e) => {
                         (e.target as HTMLImageElement).onerror = null;
                         (e.target as HTMLImageElement).src = "defaultpfp.png";       // Add src link to default img
                     }} />
 
-                    <input type="file" accept="image/*" ref={fileInputRef} onChange={uploadPicture} />
+                    <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        onChange={uploadPicture}
+                        className={"file:bg-transparent file:text-primary-blue"
+                            + " file:font-bold file:border-0 rounded-md"
+                            + " border border-primary-blue py-2 px-4"
+                        }
+                    />
                     {/* <button type="button" onClick={() => fileInputRef.current?.click()} className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded h-10">Upload Photo</button> */}
-                    <button type="button" onClick={deletePicture} className="bg-transparent hover:bg-gray-400 text-gray-500 font-bold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded h-10">Delete Photo</button>
-                    <button type="submit" onClick={updateClerk} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-10">✓ Done</button>
+                    <button
+                        type="button"
+                        onClick={deletePicture}
+                        className={"bg-transparent border border-primary-blue"
+                            + " text-primary-blue font-bold py-2 px-4"
+                            + " rounded-md cursor-pointer"}>Delete</button>
                 </div>
 
                 {/* Biographical info */}
-                <div className="border border-solid border-slate-400 \
-                    rounded-xl mb-5 p-5">
+                <div className="border border-solid border-white \
+                    alpha-gradient-background rounded-xl mb-5 p-5">
                     <label className="font-bold text-primary-blue" htmlFor="email">Email*</label><br />
                     <input
                         className={"border-b my-4 w-80 bg-transparent"
@@ -711,7 +725,7 @@ const ProfileReview: React.FC<{}> = () => {
                         <div>
                             <label className="font-bold text-primary-blue" htmlFor="birthday">Birthday</label><br />
                             <input
-                                className="border-b-2 my-4 w-48"
+                                className="border-b-2 my-4 w-48 border-b-2 border-primary-blue bg-transparent"
                                 type="date"
                                 id="birthday"
                                 defaultValue="01/01/1999"
@@ -721,7 +735,7 @@ const ProfileReview: React.FC<{}> = () => {
 
                         <div>
                             <label className="font-bold text-primary-blue" htmlFor="raceEthnicity">Race/Ethnicity</label><br />
-                            <select className="my-4 bg-gray-300 rounded w-48"
+                            <select className="my-4 border-b-2 border-primary-blue rounded w-48 bg-transparent"
                                 form="profileEdit"
                                 name="profileEdit"
                                 id="raceEthnicity"
@@ -740,7 +754,8 @@ const ProfileReview: React.FC<{}> = () => {
 
                         <div>
                             <label className="font-bold text-primary-blue" htmlFor="gender">Gender</label><br />
-                            <select className="my-4 bg-gray-300 rounded w-48"
+                            <select
+                                className="my-4 border-b-2 border-primary-blue rounded w-48 bg-transparent"
                                 form="profileEdit"
                                 name="profileEdit"
                                 id="gender"
@@ -762,9 +777,9 @@ const ProfileReview: React.FC<{}> = () => {
                                     value={country!}
                                     onChange={selectCountry}
                                     priorityOptions={["US"]}
-                                    classes='w-48'
+                                    classes='w-48 bg-transparent'
                                 />
-                                <div className="border-b-2 border-gray-500 w-48"></div>
+                                <div className="border-b-2 border-primary-blue w-48"></div>
                             </div>
                         </div>
 
@@ -775,9 +790,9 @@ const ProfileReview: React.FC<{}> = () => {
                                     country={country!}
                                     value={stateProvince!}
                                     onChange={selectStateProvince}
-                                    classes='w-48'
+                                    classes='w-48 bg-transparent'
                                 />
-                                <div className="border-b-2 border-gray-500 w-48"></div>
+                                <div className="border-b-2 border-primary-blue w-48"></div>
                             </div>
                         </div>
 
@@ -798,7 +813,8 @@ const ProfileReview: React.FC<{}> = () => {
                 </div>
 
                 {/* Social media */}
-                <div className="border border-solid border-slate-400 rounded-xl p-5">
+                <div className="border border-solid border-white rounded-xl p-5 \ 
+                alpha-gradient-background">
                     <label className="font-bold text-primary-blue">Socials</label>
 
                     <div className="grid lg:grid-cols-2 grid-cols-1">
@@ -827,6 +843,12 @@ const ProfileReview: React.FC<{}> = () => {
                         </div>
                     </div>
 
+                </div>
+                <div className="flex justify-end">
+                    <button
+                        type="submit"
+                        onClick={updateClerk}
+                        className="bg-[#FF4395] shadow shadow-md shadow-blue hover:shadow-lg text-white font-bold py-2 px-4 rounded h-10">Save</button>
                 </div>
             </form>
         );

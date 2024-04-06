@@ -13,6 +13,8 @@ body {
 
 .alpha-gradient-background {
     background-image: linear-gradient(to bottom right, #FFFFFF60, #FFFFFF00);
+    /* background: rgba(255, 255, 255, 0.378); */
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
 }
 
 .HomePage-submit-button {
