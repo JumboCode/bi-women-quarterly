@@ -28,11 +28,11 @@ const ShowSubmissionThumbnails: React.FC<Props> = props => {
     return (
         <div className="mx-auto">
             <div className="grid grid-cols-4 m-4">
-                {previews.map(preview => {
+                {submissions.map(submission => {
                     return (
                         <SubmissionThumbnail
-                            key={`${preview.title}|${preview.imageUrl}|${preview.contentDriveUrl}`}
-                            preview={preview}
+                            key={`${submission.title}|${submission.mainSubmission.imageUrl}|${submission.mainSubmission.contentDriveUrl}`}
+                            submission={submission}
                         ></SubmissionThumbnail>
                     );
                 })}
