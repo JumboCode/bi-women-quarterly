@@ -28,11 +28,31 @@ const storage = multer.diskStorage({
             `${file.originalname.split(".")[0]}-${date}.${extension}`
         );
     }
+    // hihi:
 });
 
 const upload = multer({ storage: storage });
 
 app.use(express.static("public"));
+
+app.get("/thumbnail", async (req, res) => {
+    const auth = new google.auth.GoogleAuth({
+        keyFile: "src/backend/key.json",
+        scopes: ["https://www.googleapis.com/auth/drive"]
+    });
+
+    const drive = google.drive({
+        version: "v3",
+        auth
+    });
+
+    const response = await drive.files.get({
+        fileId: req.body,
+        fields: "thumbnailLink"
+    });
+
+    return response.result.thumbnailLink;
+});
 
 app.get("/upload", async (req, res) => {
     try {
@@ -50,6 +70,8 @@ app.get("/upload", async (req, res) => {
 
         while (uploads.length > 0) {
             const file = uploads.shift();
+
+            console.log(file);
             await drive.files
                 .create({
                     requestBody: {
@@ -64,6 +86,8 @@ app.get("/upload", async (req, res) => {
                     }
                 })
                 .then(response => {
+                    console.log(response);
+
                     fs.unlink(file.path, err => {
                         if (err) {
                             console.error(err);
@@ -73,10 +97,35 @@ app.get("/upload", async (req, res) => {
                         }
                     });
 
+                    const permissions = {
+                        type: "anyone",
+                        role: "writer"
+                    };
+                    drive.permissions.create({
+                        resource: permissions,
+                        fileId: response.data.id,
+                        fields: "id"
+                    });
+
                     responses.push({
                         name: response.data.name,
-                        id: response.data.id
+                        id: response.data.id,
+                        thumbnail:
+                            "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png"
                     });
+                });
+
+            await drive.files
+                .get({
+                    fileId: responses[responses.length - 1].id,
+                    fields: "thumbnailLink"
+                })
+                .then(res => {
+                    // Checks if thumbnail link is not undefined, means it's an image that has a thumbnail
+                    if (res.data.thumbnailLink != undefined) {
+                        responses[responses.length - 1].thumbnail =
+                            res.data.thumbnailLink;
+                    }
                 });
         }
         res.json({ body: responses });

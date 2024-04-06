@@ -6,6 +6,9 @@ body {
     background-color: rgb(237, 239, 244);
     margin: 0;
 }
+.gradient-background {
+    background-image: linear-gradient(to bottom right, #FFD3CB, #E7A5FF, #B3C9FF);
+}
 
 .HomePage-submit-button {
     padding-left: 5%;
@@ -15,9 +18,33 @@ body {
     background-color: rgb(255, 63, 169);
     border-radius: 0.25rem;
     color: white;
+    /* font-weight: bold; */
 }
 
 .HomePage-top-bar {
-    height: 7rem;
-    background-color: rgb(237, 239, 244);
+    display: inline-block /* hugs content */
+    /* height: 7rem; */
+    /* background-color: rgb(237, 239, 244); */
+}
+
+.submission_type {
+    display:flex;
+}
+
+.submission_type_mobile {
+    display:none;
+}
+
+@media (max-width:750px) {
+    .submission_type {
+        display:none;
+    }
+    .submission_type.is-open {
+        display:block;
+        background-color: aquamarine;
+    }
+
+    .submission_type_mobile {
+        display:block;
+    }
 }

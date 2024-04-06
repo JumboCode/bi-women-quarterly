@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
-import LocalFile from "./LocalFile"
-import Preview from '@/types/Preview';
-import PreviewType from '@/types/PreviewType';
+import LocalFile from "./LocalFile";
+import Preview from "@/types/Preview";
+import PreviewType from "@/types/PreviewType";
 
 // Props definition
 type Props = {

@@ -45,13 +45,17 @@ const SubmissionThumbnail: React.FC<Props> = props => {
         return date.toLocaleDateString('en-US', options);
     }
 
+    const { imageUrl, title, contentDriveUrl } = preview;
 
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
     return (
         <div>
-            <div onClick={() => {console.log('Button clicked!')}} 
+            <div onClick={(e) => {
+                e.preventDefault();
+                window.location.href=contentDriveUrl;
+            }}
             className="group block flex-col items-start bg-[#ffffff3c] hover:bg-[#385FB8] cursor-pointer m-2 p-2.5 transition-colors rounded-lg hover:text-[#ffffff]">
                 <div className="max-w-md min-w-min w-2/4 bg-gray-200 m-auto">
                     <img src={submission.mainSubmission.imageUrl} className="max-w-full rounded-lg"></img>
@@ -74,7 +78,7 @@ const SubmissionThumbnail: React.FC<Props> = props => {
                 </div> 
             </div>
             <br />
-        </div>
+        </button>
     );
 };
 
