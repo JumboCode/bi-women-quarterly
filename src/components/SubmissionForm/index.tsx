@@ -416,18 +416,20 @@ export default function SubmissionForm() {
                 <div className="flex flex-cols-2 gap-4">
                     {/* Submission Box 1 */}
                     {showFile? (
-                        <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">                     
+                        // <div style = {{'--image-url': 'url(${submission.mainSubmission.imageUrl})'}} className=" resize p-6 h-[250px] w-[550px] bg-[image:var(--image-url)] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">   
+                        <div style={{backgroundImage: 'url(${submission.mainSubmission.imageUrl})'}} className=" resize p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">                     
+                            {/* `url(${submission.imgsrc})` <img className="w-full" src={submission.mainSubmission.imageUrl} width={150} height={150} />  */}
                             <div className="flex  text-justify justify-end text-[#3b60ba]"> 
-                                <button className="inline-block h-[30px] w-[115px] rounded-sm  text-center  outline outline-[#5072c0] outline-offset-[3px]"
+                                <button 
                                 onClick={() => {
                                     setFile(null);
                                     setShowFile(false);
                                     console.log("got clicked");                                 }}>
-                                Delete</button>
-                            </div>   
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3b60ba" className="mx-auto flex h-20 w-20 items-center justify-center">
-                                <path fillRule="evenodd" d="M10.5 3.75a6 6 0 00-5.98 6.496A5.25 5.25 0 006.75 20.25H18a4.5 4.5 0 002.206-8.423 3.75 3.75 0 00-4.133-4.303A6.001 6.001 0 0010.5 3.75zm2.03 5.47a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72v4.94a.75.75 0 001.5 0v-4.94l1.72 1.72a.75.75 0 101.06-1.06l-3-3z" clipRule="evenodd" />
-                            </svg>
+                                    <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
+                                    </svg>
+                                    </button>
+                            </div> 
                         </div> 
                     ) : 
                     <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">
@@ -483,16 +485,21 @@ export default function SubmissionForm() {
                     optionalReferences.map((reference, index) => {
                         return (
                             <div>
-                                <div>
+                                <div className="grid grid-cols-2 gap-4" >
                                     <h1 className="text-1xl font-bold pb-4 mt-3 pt-8 justify=">Optional Related Photo</h1>
-                                    <button className="rounded-lg items-center pt-4 ml-20"
+                                    {/* <button className="inline-block h-[30px] w-[115px] rounded-sm  text-center  outline outline-[#5072c0] outline-offset-[3px]" */}
+                                    <div className="flex md:flex md:flex-grow flex-row justify-end space-x-1 px-[20px] py-[40px]">
+                                    <button className="absolute right-[80px] flex inline-block bg-[#FFFFFF] h-[30px] w-[115px] rounded-sm  text-center  outline outline-[#5072c0] outline-offset-[3px]"
+                                            // className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
                                     onClick={() => {
                                         console.log("got clicked")
                                         const newReferences = [...optionalReferences.slice(0, index), ...optionalReferences.slice(index + 1)];
                                         setOptionalReferences(newReferences);
-                                    }}>
-                                    {/* TODO: implement this button's functionality */}
-                                        Delete</button>     
+                                        }}>
+                                        <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                            <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
+                                        </svg> Delete</button>    
+                                    </div> 
                                 </div>
 
                                 {/* Submission Boxes */}
@@ -566,7 +573,7 @@ export default function SubmissionForm() {
                             }}
 
                         className="rounded-lg items-center pt-4 ml-20">
-                        <Link href="/submit"> + Additional Photos</Link>
+                        <Link href="/submit">+ Additional Photos</Link>
                     </button>
                 </div>
                 {/* Artist Statement */}
