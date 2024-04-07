@@ -45,7 +45,10 @@ body {
     padding: 8px 16px 8px 16px;
     border-radius: 10px;
     color: #395EB9;
-    font-size: 24px;
+    font-size: 20px;
+    display: inline-flex;
+    align-items: center;
+    height: 33px;
     font-weight: 600
 }
 
@@ -55,7 +58,10 @@ body {
     background: #FF4395;
     border: 1px solid #FF4395;
     box-shadow: 0px 0px 10px 0px #00000040;
-    font-size: 24px;
+    font-size: 20px;
     font-weight:  600;
+    height: 33px;
+    display: inline-flex;
+    align-items: center;
     color: #FFFFFF;
 }

@@ -3,6 +3,11 @@ import React, { useState, ChangeEvent } from 'react';
 import Submission from '@/types/Submission';
 import PreviewType from '@/types/PreviewType';
 import Issues from '@/types/Issues';
+// Import FontAwesome
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLink } from '@fortawesome/free-solid-svg-icons';
+
+
 
 // import '.src/styles/ViewSub.css'; 
 type Props = {
@@ -111,12 +116,21 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
       <div className="flex flex-row h-screen UserEdit-container m-[0px] justify-around overflow-y-scroll" style={{backgroundImage: 'linear-gradient(to bottom right, #FFD3CB, #E7A5FF, #B3C9FF)'}}>
         <div className="w-[70%] mt-[5%]">
           <form onSubmit={handleEdit} className="flex flex-row justify-start mb-4">
-            <button type="submit" className="text-white px-4 py-2 mb-4 inline-block fixed top-0 left-0" style={{ color: '#395EB9', fontSize: '24px' }}>
+            <button type="submit" className="text-white px-4 py-2 mb-4 inline-block absolute top-0 left-0" style={{ color: '#395EB9', fontSize: '24px' }}>
               &lt;- Back
             </button>
           </form>
           <div className="title-date flex items-center justify-between mb-4">
           <div className="edit-submission-title text-3xl mb-4" style={{fontSize: '32.73px', fontWeight: 700, lineHeight: '44.57px', textAlign: 'left', color: '#395EB9'}}>Edit Submission</div>
+          <button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            window.location.href = cellValues.row.mainSubmission.contentDriveUrl;
+                        }}
+                        style={linkStyle}
+                    >
+                        <FontAwesomeIcon icon={faLink} />
+                    </button>
             <div className="flex items-center">
               <form>
                 <div className="issue-type text font-bold">
@@ -134,6 +148,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
                   </select>
                 </div>
               </form>
+
             </div>
           {/* <div className="submission-date text-white pr-10">
             Submitted: {submission.date}
@@ -151,12 +166,12 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             <div className="title text-xl border-b border-blue-500 p-[5%] text-left"> 
               <b style={{ color: "#395EB9" }}>Title*</b>
               <br></br>
-              <span style={{ fontSize: "14px" }}  contentEditable="true">{submission.title}</span>
+              <span style={{ fontSize: "14px" }} >{submission.title}</span>
             </div>
             <div className="image-description text-xl text-black p-[5%] text-left">
               <b style={{ color: "#395EB9" }}>Description</b>
               <br></br>
-              <span style={{ fontSize: "14px" }}  contentEditable="true">{submission.mainSubmission.description}</span>
+              <span style={{ fontSize: "14px" }} >{submission.mainSubmission.description}</span>
             </div>
           </div>
         </div>
@@ -222,12 +237,12 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             <div className="title text-xl p-[5%] text-left"> 
               <b style={{ color: "#395EB9" }}>Title*</b>
               <br></br>
-              <span style={{ fontSize: "14px" }}  contentEditable="true">{submission.title}</span>
+              <span style={{ fontSize: "14px" }}  >{submission.title}</span>
             </div>
             <div className="image-description text-xl text-black p-[5%] text-left">
               <b style={{ color: "#395EB9" }}>Description</b>
               <br></br>
-              <span style={{ fontSize: "14px" }}  contentEditable="true">{submission.mainSubmission.description}</span>
+              <span style={{ fontSize: "14px" }}  >{submission.mainSubmission.description}</span>
             </div>
           </div>
         </div>

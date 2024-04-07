@@ -12,6 +12,9 @@
     },
     "dependencies": {
         "@clerk/nextjs": "^4.27.2",
+        "@fortawesome/free-brands-svg-icons": "^6.5.2",
+        "@fortawesome/free-solid-svg-icons": "^6.5.2",
+        "@fortawesome/react-fontawesome": "^0.2.0",
         "@google-cloud/local-auth": "^2.1.0",
         "child_process": "^1.0.2",
         "cors": "^2.8.5",
