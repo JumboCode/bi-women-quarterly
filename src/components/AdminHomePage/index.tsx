@@ -15,7 +15,7 @@ import AdminGrid from "@/components/AdminHomePage/AdminGrid";
 
 // Import next
 import Link from 'next/link';
-import { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { TailSpin } from 'react-loader-spinner';
 
 /*------------------------------------------------------------------------*/
@@ -117,6 +117,9 @@ export default function AdminHomePage() {
         isLoading 
     } = state;
 
+    // Initialize state
+    const [showModal, setShowModal] = React.useState(false);
+
     /*------------------------------------------------------------------------*/
     /* ------------------------------ Functions ----------------------------- */
     /*------------------------------------------------------------------------*/
@@ -178,6 +181,202 @@ export default function AdminHomePage() {
     }, []);
 
 
+    function deleteIssue(event: any) {
+        console.log(event);
+    }
+    
+    function addNewIssue() {
+        console.log("in addNewIssue");
+    }
+
+
+
+
+
+
+    function IssueModal() {
+        /*------------------------------------------------------------------------*/
+        /* -------------------------------- Setup ------------------------------- */
+        /*------------------------------------------------------------------------*/
+
+        /* -------------- State ------------- */
+
+        // Initialize states
+        // const [issues, setIssues] = useState("");
+        const [issues, setIssues] = React.useState<string[]>([]);
+        // const [stars, setStars] = React.useState<[string : boolean]>();
+        const [stars, setStars] = React.useState<[string, boolean][]>([]);
+
+
+        /**
+         * Prints the title, issue, and type of the publication to the console
+         * when the form is submitted
+         * @author Alana Sendlakowski, Vanessa Rose
+         * @param event the event that has been changed
+         */
+        const handleModalSubmit = (event: any) => {
+            setShowModal(false);
+        };
+
+        /**
+         * Handles the change of elements in the form by updating useState variable
+         * @author Alana Sendlakowski, Vanessa Rose
+         * @param event the event that has been changed
+         * @returns new states of all the elements in the form
+         */
+        const handleIssueChange = (event: any) => {
+            issues.push(event.target.value);
+        };
+
+        
+
+        function starIssue(event: any) {
+            console.log("EVENT: " + event);
+            var index = stars.findIndex(([string]) => string === event);
+            var [fst, snd] = stars[index];
+            console.log(stars[index]);
+            stars[index] = [fst, !snd];
+            console.log(stars[index]);
+        }
+
+
+
+        function findStar(event: any): boolean {
+            const pair = stars.find(([string]) => string === event);
+
+            if (pair) {
+                const [, snd] = pair; // Destructure the pair to get the second element (boolean value)
+                return snd;
+            } else {
+                return false;
+            }
+        }
+
+        /**
+         * Fetches the issue themes from the database and sets the issues state
+         * @author Austen Money
+         * @author Walid Nejmi
+         * @param event the event that has been changed
+         */
+        const fetchIssueThemes = async () => {
+            try {
+                await fetch("../api/issues/get", { method: "GET" })
+                    .then(response => response.json())
+                    .then(res => res.data.map((issue: any) => issue.title))
+                    .then(titles => {
+                        setIssues(titles);
+                    });
+            } catch (error) {
+                console.error("Error fetching issue themes: ", error);
+                return [];
+            }
+            
+            issues.forEach(iss => {
+                stars.push([iss, false]);
+            });
+        };
+    
+        useEffect(() => {
+                (async () => {
+                    await fetchIssueThemes();
+                })();
+        });
+
+
+        /*-----------------------------------------*/
+        /* --------------- Modal UI -------------- */
+        /*-----------------------------------------*/
+
+        return (
+            <>
+                {showModal ? (
+                    <>
+                    <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                            <div className="pt-[10px] w-1/2 border-0 rounded-md shadow-lg relative flex flex-col bg-[#dcadff] outline-none focus:outline-none">
+                                <div className="absolute absolute right-[10px]">
+                                    <button onClick={() => setShowModal(false)}>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth="2"
+                                            stroke="#385eb9"
+                                            className="w-7 h-7"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M6 18L18 6M6 6l12 12"
+                                            />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div>
+                                    <div>
+                                        <div className="mb-[10px] flex items-center justify-center text-xl text-primary-blue font-bold">
+                                            Update Issues
+                                        </div>
+
+                                        <div className="p-[10px]">
+                                            
+                                            <div>
+                                                {issues.map(issue => (
+                                                    <div className="flex">
+                                                        <div onClick={() => deleteIssue(issue)} className="inline-block flex items-center justify-center pl-[10px]">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#385eb9" className="w-6 h-6">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                                            </svg>
+                                                        </div>
+
+                                                        <div key={issue} className="inline-block shadow-lg flex inline-block align-middle pl-[10px] w-full h-[45px] rounded-md shadow-inner items-center m-[10px] text-primary-blue text-xl  bg-[#e3cafc]">
+                                                            {issue}
+                                                        </div>
+
+                                                        {findStar(issue) ? (
+                                                            <div onClick={() => starIssue(issue)} className="inline-block flex items-center justify-center pr-[10px]">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="#385eb9" viewBox="0 0 24 24" stroke-width="1.5" stroke="#385eb9" className="w-6 h-6">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                                                                </svg>
+                                                            </div>
+                                                            ) : 
+                                                                <div onClick={() => starIssue(issue)} className="inline-block flex items-center justify-center pr-[10px]">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#385eb9" className="w-6 h-6">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                                                                    </svg>
+                                                                </div>
+                                                            }
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            <div onClick={() => addNewIssue()} className="mt-[40px] mb-[30px] ml-[10px] mr-[10px] border-dashed border-2 border-[#958cae] flex inline-block align-middle justify-center h-[45px] rounded-md items-center border-[#5a5a5b] text-[#5a5a5b] text-m">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                                </svg>
+
+                                                <div className="pl-[10px]">
+                                                    add new issue 
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+                    </>
+                ) : null}
+            </>
+        );
+    }
+
+
+
+
+
+
     /*------------------------------------------------------------------------*/
     /* ------------------------------ Rendering ----------------------------- */
     /*------------------------------------------------------------------------*/
@@ -189,8 +388,18 @@ export default function AdminHomePage() {
                     <div className="ms-4 flex text-2xl lg:text-3xl xl:text-4xl font-bold text-primary-blue">
                         Submissions
                     </div>
+                    <div>
+                        {" "}
+                        {showModal ? (
+                            <IssueModal/>
+                        ) : null}{" "}
+                    </div>
                     <li className="flex items-center space-x-4">
-                        <button className="HomePage-submit-button lg:text-lg xl:text-xl shadow-md">
+                        <button className="HomePage-submit-button lg:text-lg shadow-md">
+                            <div onClick={() => setShowModal(true)}>Update Issues</div>
+                            
+                        </button>
+                        <button className="HomePage-submit-button lg:text-lg shadow-md">
                             <Link href="/submit">Submit Work</Link>
                         </button>
                         <div className="ml-4">
