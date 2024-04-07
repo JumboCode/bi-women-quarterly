@@ -417,7 +417,7 @@ export default function SubmissionForm() {
                     {/* Submission Box 1 */}
                     {showFile? (
                         // <div style = {{'--image-url': 'url(${submission.mainSubmission.imageUrl})'}} className=" resize p-6 h-[250px] w-[550px] bg-[image:var(--image-url)] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">   
-                        <div style={{backgroundImage: `url(${submission.mainSubmission.imageUrl})`}} className=" resize p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">                     
+                        <div className=" resize p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">                     
                             {/* `url(${submission.imgsrc})` <img className="w-full" src={submission.mainSubmission.imageUrl} width={150} height={150} />  */}
                             <div className="flex  text-justify justify-end text-[#3b60ba]"> 
                                 <button 
@@ -430,6 +430,9 @@ export default function SubmissionForm() {
                                     </svg>
                                     </button>
                             </div> 
+                            <div className="flex items-center justify-center ">
+                                <img className="h-[150px]" src="https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png"></img>
+                            </div>
                         </div> 
                     ) : 
                     <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">
