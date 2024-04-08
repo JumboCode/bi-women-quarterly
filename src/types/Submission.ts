@@ -22,9 +22,9 @@
 // Import types
 import Preview from "./Preview";
 import Mediums from "./Mediums";
-import Statuses from './Statuses';
+import Statuses from "./Statuses";
 
-type  Submission = {
+type Submission = {
     // Submission metadata
     id: string; // "author|title|date"
     author: string;

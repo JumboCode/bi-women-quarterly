@@ -13,7 +13,13 @@
     "dependencies": {
         "@clerk/clerk-js": "^4.70.0",
         "@clerk/nextjs": "^4.29.5",
+        "@emotion/styled": "^11.11.0",
+        "@fortawesome/free-solid-svg-icons": "^6.5.1",
+        "@fortawesome/react-fontawesome": "github:fortawesome/react-fontawesome",
         "@google-cloud/local-auth": "^3.0.1",
+        "@mui/material": "^5.15.12",
+        "@mui/system": "^5.15.12",
+        "@mui/x-data-grid": "^6.19.5",
         "child_process": "^1.0.2",
         "cors": "^2.8.5",
         "express": "^4.18.2",
@@ -24,14 +30,16 @@
         "next": "14.1.0",
         "ngrok": "^5.0.0-beta.2",
         "nodemon": "^3.0.3",
-        "prettier": "^3.2.4",
         "react": "^18",
+        "react-country-region-selector": "^3.6.1",
         "react-dom": "^18",
         "react-loader-spinner": "^6.1.6",
         "svix": "^1.16.0",
         "tsx": "^4.7.0"
     },
     "devDependencies": {
+        "@testing-library/react": "^14.1.2",
+        "@types/jest": "^29.5.11",
         "@types/node": "^20",
         "@types/react": "^18",
         "@types/react-dom": "^18",
@@ -39,6 +47,8 @@
         "eslint": "^8",
         "eslint-config-next": "14.1.0",
         "postcss": "^8",
+        "prettier": "^3.2.5",
+        "prettier-plugin-tailwindcss": "^0.5.12",
         "tailwindcss": "^3.4.1",
         "typescript": "^5"
     }
