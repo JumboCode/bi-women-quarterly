@@ -11,10 +11,19 @@ body {
     background-image: linear-gradient(to bottom right, #FFD3CB, #E7A5FF, #B3C9FF);
 }
 
-.alpha-gradient-background {
-    background-image: linear-gradient(to bottom right, #FFFFFF60, #FFFFFF00);
+@layer utilities {
+    .alpha-gradient-background-hover:hover {
+        background-image: linear-gradient(to bottom right, #FFFFFF60, #FFFFFF00);
+    }
+}
+
+.inset-highlight {
     /* background: rgba(255, 255, 255, 0.378); */
     border: 1.5px solid rgba(255, 255, 255, 0.3);
+}
+
+.alpha-gradient-background {
+    background-image: linear-gradient(to bottom right, #FFFFFF60, #FFFFFF00);
 }
 
 .HomePage-submit-button {
@@ -22,7 +31,7 @@ body {
     padding-right: 5%;
     width: 10rem;
     height: 2rem;
-    background-color: rgb(255, 63, 169);
+    background-color: rgb(255, 67, 149);
     border-radius: 0.25rem;
     color: white;
     /* font-weight: bold; */

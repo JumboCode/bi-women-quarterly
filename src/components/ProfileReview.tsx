@@ -497,9 +497,9 @@ const ProfileReview: React.FC<{}> = () => {
                         }} />
                     <div className={"text-center h-10 leading-10 h-10"
                         + " rounded-md outline outline-primary-blue outline-1"
-                        + " cursor-pointer alpha-gradient-background"
-                        + " shadow shadow-md shadow-blue hover:shadow-lg"
-                        + "justify-end border border-black-900"}
+                        + " cursor-pointer alpha-gradient-background-hover"
+                        + " shadow shadow-md shadow-blue justify-end"
+                        + " inset-highlight"}
                         onClick={switchToEdit}>
                         <p className="px-4 text-primary-blue">
                             <strong>🖉 Edit</strong>
@@ -631,6 +631,7 @@ const ProfileReview: React.FC<{}> = () => {
                         className={"file:bg-transparent file:text-primary-blue"
                             + " file:font-bold file:border-0 rounded-md"
                             + " border border-primary-blue py-2 px-4"
+                            + " alpha-gradient-background-hover cursor-pointer"
                         }
                     />
                     {/* <button type="button" onClick={() => fileInputRef.current?.click()} className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded h-10">Upload Photo</button> */}
@@ -639,15 +640,19 @@ const ProfileReview: React.FC<{}> = () => {
                         onClick={deletePicture}
                         className={"bg-transparent border border-primary-blue"
                             + " text-primary-blue font-bold py-2 px-4"
-                            + " rounded-md cursor-pointer"}>Delete</button>
+                            + " rounded-md cursor-pointer"
+                            + " alpha-gradient-background-hover"}>
+                        Delete
+                    </button>
                 </div>
 
                 {/* Biographical info */}
-                <div className="border border-solid border-white \
-                    alpha-gradient-background rounded-xl mb-5 p-5">
+                <div className={"border border-solid brder-white"
+                    + " rounded-xl mb-5 p-5 alpha-gradient-background"
+                    + " shadow shadow-lg shadow-blue"}>
                     <label className="font-bold text-primary-blue" htmlFor="email">Email*</label><br />
                     <input
-                        className={"border-b my-4 w-80 bg-transparent"
+                        className={"border-b my-4 w-5/6 xl:w-4/6 bg-transparent"
                             + " border-primary-blue"}
                         placeholder={PLACEHOLDERS.primaryEmailAddress}
                         type="text"
@@ -657,11 +662,11 @@ const ProfileReview: React.FC<{}> = () => {
                         required
                     />
                     <br />
-                    <div className="grid xl:grid-cols-2 lg:pr-96 grid-cols-1">
+                    <div className="grid xl:grid-cols-2 xl:pr-96 grid-cols-1">
                         <div>
                             <label className="font-bold text-primary-blue" htmlFor="fname">First Name</label><br />
                             <input
-                                className={"border-b my-4 w-80 bg-transparent"
+                                className={"border-b my-4 w-5/6 xl:w-80 bg-transparent"
                                     + " border-primary-blue"}
                                 placeholder={PLACEHOLDERS.firstName}
                                 type="text"
@@ -674,7 +679,7 @@ const ProfileReview: React.FC<{}> = () => {
                         <div>
                             <label className="font-bold text-primary-blue" htmlFor="lname">Last Name</label><br />
                             <input
-                                className={"border-b my-4 w-80 bg-transparent"
+                                className={"border-b my-4 w-5/6 xl:w-80 bg-transparent"
                                     + " border-primary-blue"}
                                 placeholder={PLACEHOLDERS.lastName}
                                 type="text"
@@ -685,11 +690,11 @@ const ProfileReview: React.FC<{}> = () => {
                         </div>
                     </div>
 
-                    <div className="grid xl:grid-cols-2 lg:pr-96 grid-cols-1">
+                    <div className="grid xl:grid-cols-2 xl:pr-96 grid-cols-1">
                         <div>
                             <label className="font-bold text-primary-blue" htmlFor="aname">Author Name*</label><br />
                             <input
-                                className={"border-b my-4 w-80 bg-transparent"
+                                className={"border-b my-4 w-5/6 xl:w-80 bg-transparent"
                                     + " border-primary-blue"}
                                 placeholder={PLACEHOLDERS.authorName}
                                 defaultValue={userInfo!.authorName}
@@ -702,7 +707,7 @@ const ProfileReview: React.FC<{}> = () => {
                         <div>
                             <label className="font-bold text-primary-blue" htmlFor="pronouns">Pronouns</label><br />
                             <input
-                                className={"border-b my-4 w-80 bg-transparent"
+                                className={"border-b my-4 w-5/6 xl:w-80 bg-transparent"
                                     + " border-primary-blue"}
                                 placeholder={PLACEHOLDERS.pronouns}
                                 defaultValue={userInfo!.pronouns}
@@ -712,20 +717,24 @@ const ProfileReview: React.FC<{}> = () => {
                         </div>
                     </div>
 
-                    <div className="lg:pr-96">
+                    <div className="xl:pr-96">
                         <label className="font-bold text-primary-blue"
                             htmlFor="bio">Bio*</label><br />
                         <textarea className={"border-b my-4 w-full bg-transparent"
                             + " border-primary-blue pl-2 rounded"}
                             id="bio" name="profileEdit" rows={4} cols={50}
-                            placeholder="Tell us about yourself!" defaultValue={userInfo.bio} onChange={(e) => handleChange('bio', e.target.value)} required />
+                            placeholder="Tell us about yourself!"
+                            defaultValue={userInfo.bio}
+                            onChange={(e) => handleChange('bio', e.target.value)} required />
                     </div>
 
-                    <div className="grid md:grid-cols-3 grid-cols-2 xl:pr-96">
+                    <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 xl:pr-96">
                         <div>
-                            <label className="font-bold text-primary-blue" htmlFor="birthday">Birthday</label><br />
+                            <label className="font-bold text-primary-blue"
+                                htmlFor="birthday">Birthday</label><br />
                             <input
-                                className="border-b-2 my-4 w-48 border-b-2 border-primary-blue bg-transparent"
+                                className={"border-b-2 my-4 w-48 border-b-2" +
+                                    " border-primary-blue bg-transparent cursor-pointer"}
                                 type="date"
                                 id="birthday"
                                 defaultValue="01/01/1999"
@@ -734,8 +743,10 @@ const ProfileReview: React.FC<{}> = () => {
                         </div>
 
                         <div>
-                            <label className="font-bold text-primary-blue" htmlFor="raceEthnicity">Race/Ethnicity</label><br />
-                            <select className="my-4 border-b-2 border-primary-blue rounded w-48 bg-transparent"
+                            <label className="font-bold text-primary-blue"
+                                htmlFor="raceEthnicity">Race/Ethnicity</label><br />
+                            <select className={"my-4 border-b-2 border-primary-blue"
+                                + " rounded w-48 bg-transparent cursor-pointer"}
                                 form="profileEdit"
                                 name="profileEdit"
                                 id="raceEthnicity"
@@ -755,7 +766,8 @@ const ProfileReview: React.FC<{}> = () => {
                         <div>
                             <label className="font-bold text-primary-blue" htmlFor="gender">Gender</label><br />
                             <select
-                                className="my-4 border-b-2 border-primary-blue rounded w-48 bg-transparent"
+                                className={"my-4 border-b-2 border-primary-blue" +
+                                    " rounded w-48 bg-transparent cursor-pointer"}
                                 form="profileEdit"
                                 name="profileEdit"
                                 id="gender"
@@ -777,7 +789,7 @@ const ProfileReview: React.FC<{}> = () => {
                                     value={country!}
                                     onChange={selectCountry}
                                     priorityOptions={["US"]}
-                                    classes='w-48 bg-transparent'
+                                    classes='w-48 bg-transparent cursor-pointer'
                                 />
                                 <div className="border-b-2 border-primary-blue w-48"></div>
                             </div>
@@ -790,7 +802,7 @@ const ProfileReview: React.FC<{}> = () => {
                                     country={country!}
                                     value={stateProvince!}
                                     onChange={selectStateProvince}
-                                    classes='w-48 bg-transparent'
+                                    classes='w-48 bg-transparent cursor-pointer'
                                 />
                                 <div className="border-b-2 border-primary-blue w-48"></div>
                             </div>
@@ -813,34 +825,24 @@ const ProfileReview: React.FC<{}> = () => {
                 </div>
 
                 {/* Social media */}
-                <div className="border border-solid border-white rounded-xl p-5 \ 
-                alpha-gradient-background">
+                <div className={"border border-solid brder-white"
+                    + " rounded-xl mb-5 p-5 alpha-gradient-background"
+                    + " shadow shadow-lg shadow-blue"}>
                     <label className="font-bold text-primary-blue">Socials</label>
 
-                    <div className="grid lg:grid-cols-2 grid-cols-1">
-                        <div>
-                            <label className="font-bold text-primary-blue pr-4" htmlFor="linkedin">LinkedIn</label>
-                            <input placeholder={PLACEHOLDERS.socialMedias.LinkedIn} className={"border-b my-4 w-80 bg-transparent"
-                                + " border-primary-blue"} type="text" id="linkedin" defaultValue={userInfo?.socialMedias.LinkedIn} onChange={(e) => updateSocialMedia('LinkedIn', e.target.value)} />
-                        </div>
-
-                        <div>
-                            <label className="font-bold text-primary-blue pr-4" htmlFor="instagram">Instagram</label>
-                            <input placeholder={PLACEHOLDERS.socialMedias.Instagram} className={"border-b my-4 w-80 bg-transparent"
-                                + " border-primary-blue"} type="text" id="instagram" defaultValue={userInfo?.socialMedias.Instagram} onChange={(e) => updateSocialMedia('Instagram', e.target.value)} />
-                        </div>
-
-                        <div>
-                            <label className="font-bold text-primary-blue pr-4" htmlFor="xTwitter">X/Twitter</label>
-                            <input placeholder={PLACEHOLDERS.socialMedias.X} className={"border-b my-4 w-80 bg-transparent"
-                                + " border-primary-blue"} type="text" id="xTwitter" defaultValue={userInfo?.socialMedias.X} onChange={(e) => updateSocialMedia('X', e.target.value)} />
-                        </div>
-
-                        <div>
-                            <label className="font-bold text-primary-blue pr-4" htmlFor="facebook">Facebook</label>
-                            <input placeholder={PLACEHOLDERS.socialMedias.Facebook} className={"border-b my-4 w-80 bg-transparent"
-                                + " border-primary-blue"} type="text" id="facebook" defaultValue={userInfo?.socialMedias.Facebook} onChange={(e) => updateSocialMedia('Facebook', e.target.value)} />
-                        </div>
+                    <div className="grid lg:grid-cols-10 items-baseline">
+                        <label className="font-bold text-primary-blue pr-4" htmlFor="linkedin">LinkedIn</label>
+                        <input placeholder={PLACEHOLDERS.socialMedias.LinkedIn} className={"border-b my-4 w-5/6 lg:w-80 bg-transparent col-span-4"
+                            + " border-primary-blue"} type="text" id="linkedin" defaultValue={userInfo?.socialMedias.LinkedIn} onChange={(e) => updateSocialMedia('LinkedIn', e.target.value)} />
+                        <label className="font-bold text-primary-blue pr-4" htmlFor="instagram">Instagram</label>
+                        <input placeholder={PLACEHOLDERS.socialMedias.Instagram} className={"border-b my-4 w-5/6 lg:w-80 bg-transparent col-span-4"
+                            + " border-primary-blue"} type="text" id="instagram" defaultValue={userInfo?.socialMedias.Instagram} onChange={(e) => updateSocialMedia('Instagram', e.target.value)} />
+                        <label className="font-bold text-primary-blue pr-4" htmlFor="xTwitter">X/Twitter</label>
+                        <input placeholder={PLACEHOLDERS.socialMedias.X} className={"border-b my-4 w-5/6 lg:w-80 bg-transparent col-span-4"
+                            + " border-primary-blue"} type="text" id="xTwitter" defaultValue={userInfo?.socialMedias.X} onChange={(e) => updateSocialMedia('X', e.target.value)} />
+                        <label className="font-bold text-primary-blue pr-4" htmlFor="facebook">Facebook</label>
+                        <input placeholder={PLACEHOLDERS.socialMedias.Facebook} className={"border-b my-4 w-5/6 lg:w-80 bg-transparent col-span-4"
+                            + " border-primary-blue"} type="text" id="facebook" defaultValue={userInfo?.socialMedias.Facebook} onChange={(e) => updateSocialMedia('Facebook', e.target.value)} />
                     </div>
 
                 </div>
@@ -848,7 +850,10 @@ const ProfileReview: React.FC<{}> = () => {
                     <button
                         type="submit"
                         onClick={updateClerk}
-                        className="bg-[#FF4395] shadow shadow-md shadow-blue hover:shadow-lg text-white font-bold py-2 px-4 rounded h-10">Save</button>
+                        className={"bg-[#FF4395] shadow shadow-md shadow-blue"
+                            + " hover:shadow-lg text-white font-bold py-2 px-4"
+                            + " rounded h-10 hover:bg-[#f04090]"}
+                    >Save</button>
                 </div>
             </form>
         );
@@ -859,7 +864,7 @@ const ProfileReview: React.FC<{}> = () => {
     /*----------------------------------------*/
 
     return (
-        <div>
+        <div className="w-screen">
             {body}
         </div>
     );
