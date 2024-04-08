@@ -19,7 +19,6 @@ import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 
 // Import components
-import LocalFile from '@/components/SubmissionForm/LocalFile';
 import Preview from '@/types/Preview';
 import Statuses from '@/types/Statuses';
 
@@ -67,7 +66,7 @@ const reducer = (state: State, action: Action): State => {
         case ActionType.SwitchView: {
         return {
             ...state, //return state as is except what's underneath
-            //TODO: this should switch from the SubmissionGuideline option for view
+            // switch from the SubmissionGuideline option for view
             // to NewSubmission
             view: action.newView,
         };
@@ -82,18 +81,13 @@ const reducer = (state: State, action: Action): State => {
 /* ---------- Additional UI -------------- */
 /*----------------------------------------*/
 
-// HTML for optional additional image upload. Renders when "add additional photos" clicked
-// const optional_image = () => {
-//     return <div> 
-//         TEST THE BUTTON 
-//     </div>; 
-// }
 
 // Store Preview of optional reference added and bool of whether to display
 // image icon (becomes true after uploading). Used for optionalReferences array.
 type optReference = {
     ref: Preview;
     showImg: Boolean;
+    filename: string;
 }
 
 /*------------------------------------------------------------------------*/
@@ -131,9 +125,9 @@ export default function SubmissionForm() {
     // To decide whether to render   
     const [showFile, setShowFile] = useState(false);
     // storing string of file name
-    const [fileArray, setFileArray] = useState<FormData[]>([]); 
-    // storing url of file TODO: use this to store submission locally
-    const [file, setFile] = useState<File | null>();
+    const [fileArray, setFileArray] = useState<FormData[]>([]);  
+    // storing url of main submission file use this to store submission locally
+    const [file, setFile] = useState<File | null>(); 
 
     // Destructure common state
     const {
@@ -304,7 +298,6 @@ export default function SubmissionForm() {
     }
 
 
-
     /**
      * Handles the change of elements in the form by updating useState variable
      * @author Alana Sendlakowski, Vanessa Rose
@@ -315,9 +308,16 @@ export default function SubmissionForm() {
         setDescription(event.target.value);
     }
 
+    /**
+     * Update fileArray with new uploaded file. Adjusts display settings
+     * @author Avery Hanna, So Hyun Kim
+     * @param index the index of the optional reference who's file we should remove
+     * @returns updates fileArray
+     */
     const handleFileChange = (index : number, event : any) => {
         let formData = new FormData();
         formData.append(event.target.files[0].name, event.target.files[0]);
+        console.log(event.target.files[0].name)
 
         const newFileArray = fileArray;
         newFileArray.push(formData)
@@ -330,15 +330,37 @@ export default function SubmissionForm() {
             console.log("Updating showImg bool for optional reference at ", index)
             const newOptionalRefs = [...optionalReferences.slice(0, optionalReferences.length)] //Note: this is to force rerender
             newOptionalRefs[index].showImg = true; 
+            newOptionalRefs[index].filename = event.target.files[0].name;
             setOptionalReferences(newOptionalRefs);
         }
     }
 
-    // Remove a formdata object corresponding to the file getting removed. Used 
-    // when delete an uploaded file
-    // const removeFile = (index : number, event : any) => {
-    //     formData
-    // }
+
+    /**
+     * Remove a formdata object corresponding to the file getting removed. Used 
+     * when delete an uploaded file
+     * @author Avery Hanna
+     * @param index the index of the optional reference who's file we should remove
+     * @returns updates fileArray
+     */
+    const removeFile = (index : number) => {
+        const nameToDelete = optionalReferences[index].filename
+        
+        // for every index in fileArray, check key until find match
+        var fileArrayInd = 0;
+        while ((!fileArray[fileArrayInd].has(nameToDelete)) && (fileArrayInd < fileArray.length)) {
+            fileArrayInd++ 
+        }
+
+        var newFileArray = fileArray;
+        // if found valid index with that key, delete that element from array
+        // Note: should always find key
+        if (fileArrayInd < fileArray.length) {
+            newFileArray.splice(fileArrayInd)
+        }
+
+        setFileArray(newFileArray)
+    }
 
 
     /*------------------------------------------------------------------------*/
@@ -534,7 +556,7 @@ export default function SubmissionForm() {
                                         <div className="flex  text-justify justify-end text-[#3b60ba]"> 
                                             <button 
                                             onClick={() => {
-                                                setFile(null); //TODO update setfile array instead
+                                                removeFile(index); 
                                                 
                                                 // Change bool to display upload options again
                                                 const newOptionalRefs = [...optionalReferences.slice(0, optionalReferences.length)] //Note: this is to force rerender
