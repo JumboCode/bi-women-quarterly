@@ -169,9 +169,6 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
               </form>
 
             </div>
-          {/* <div className="submission-date text-white pr-10">
-            Submitted: {submission.date}
-          </div> */}
         </div>
         
         <div className="flex flex-row  w-[100%] justify-between">
@@ -181,6 +178,21 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             className="max-w-[40%] mr-4 rounded-lg"
           />
 
+        <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
+            <div className="title p-[5%] text-left"> 
+              <b style={{ color: "#395EB9" }}>Title*</b>
+              <br></br>
+              <span>{submission.title}</span>
+            </div>
+            <div className="image-description text-black p-[5%] text-left">
+              <b style={{ color: "#395EB9" }}>Description</b>
+              <br></br>
+              <span>{submission.mainSubmission.description}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-row  w-[100%] justify-between mt-[10%]">
           <div className="additional-images">
             {submission.additionalReferences?.map((image, index) => (
               <img
@@ -191,7 +203,19 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
               />
             ))}
           </div>
+
+          <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
+            <div className="title p-[5%] text-left"> 
+              <b style={{ color: "#395EB9" }}>My process</b>
+              <br></br>
+              <span>This photo captures the midway point of my painting, 
+                offering a glimpse into the evolving work as it takes shape on 
+                the canvas.</span>
+            </div>
+          </div>
         </div>
+
+      
     
         
         <div>
@@ -278,6 +302,29 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
               <b style={{ color: "#395EB9" }}>Description</b>
               <br></br>
               <span>{submission.mainSubmission.description}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-row  w-[100%] justify-between mt-[10%]">
+          <div className="additional-images">
+            {submission.additionalReferences?.map((image, index) => (
+              <img
+                key={index}
+                src={image.imageUrl}
+                alt={`Additional Image ${index}`}
+                className="max-w-[40%] mr-4 rounded-lg"
+              />
+            ))}
+          </div>
+
+          <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
+            <div className="title p-[5%] text-left"> 
+              <b style={{ color: "#395EB9" }}>My process</b>
+              <br></br>
+              <span>This photo captures the midway point of my painting, 
+                offering a glimpse into the evolving work as it takes shape on 
+                the canvas.</span>
             </div>
           </div>
         </div>
