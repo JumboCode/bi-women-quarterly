@@ -34,6 +34,11 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
     setSubmission({ ...submission, [key]: value });
   };
 
+  const handleTextAreaChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
+    handleChange(name as keyof Submission, value);
+  };
+
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const img = URL.createObjectURL(e.target.files[0]);
@@ -108,6 +113,17 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
     fontFamily: 'Open Sans, sans-serif', 
   };
 
+  const additionalImages = submission.additionalReferences 
+  ? submission.additionalReferences.map((reference, index) => (
+      <img
+        key={index}
+        src={reference.imageUrl}
+        alt={`Submission ${index}`}
+        className="max-w-[40%] mr-4 rounded-lg"
+      />
+    ))
+  : null;
+
   
   /*----------------------------------------*/
   /* --------------- Main UI -------------- */
@@ -164,17 +180,16 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             alt="Submission"
             className="max-w-[40%] mr-4 rounded-lg"
           />
-          
-          <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%] ">
-            <div className="title border-b border-blue-500 p-[5%] text-left"> 
-              <b style={{ color: "#395EB9" }}>Title*</b>
-              {/* <textarea value={submission.title} onChange={this.handleChange("title", )}></textarea> */}
-            </div>
-            <div className="image-description  text-black p-[5%] text-left">
-              <b style={{ color: "#395EB9" }}>Description</b>
-              <br></br>
-              <input type="text" value={submission.mainSubmission.description}></input>
-            </div>
+
+          <div className="additional-images">
+            {submission.additionalReferences?.map((image, index) => (
+              <img
+                key={index}
+                src={image.imageUrl}
+                alt={`Additional Image ${index}`}
+                className="max-w-[40%] mr-4 rounded-lg"
+              />
+            ))}
           </div>
         </div>
     
