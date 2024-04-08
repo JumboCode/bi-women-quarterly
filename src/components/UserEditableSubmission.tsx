@@ -6,6 +6,7 @@ import Issues from '@/types/Issues';
 // Import FontAwesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -28,7 +29,6 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
 
 
   /* ------------- Actions ------------ */
-
 
   const handleChange = (key: keyof Submission, value: string) => {
     setSubmission({ ...submission, [key]: value });
@@ -117,20 +117,23 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
         <div className="w-[70%] mt-[5%]">
           <form onSubmit={handleEdit} className="flex flex-row justify-start mb-4">
             <button type="submit" className="text-white px-4 py-2 mb-4 inline-block absolute top-0 left-0" style={{ color: '#395EB9', fontSize: '24px' }}>
-              &lt;- Back
+            <FontAwesomeIcon icon={faArrowLeft} /> Back
             </button>
           </form>
           <div className="title-date flex items-center justify-between mb-4">
-          <div className="edit-submission-title text-3xl mb-4" style={{fontSize: '32.73px', fontWeight: 700, lineHeight: '44.57px', textAlign: 'left', color: '#395EB9'}}>Edit Submission</div>
-          <button
-                        onClick={(e) => {
-                            e.preventDefault();
-                            window.location.href = cellValues.row.mainSubmission.contentDriveUrl;
-                        }}
-                        style={linkStyle}
-                    >
-                        <FontAwesomeIcon icon={faLink} />
-                    </button>
+            <div className="flex flex-row">
+              <div className="edit-submission-title text-3xl mb-4" style={{fontSize: '32.73px', fontWeight: 700, lineHeight: '44.57px', textAlign: 'left', color: '#395EB9'}}>
+                Edit Submission
+              </div>
+              <button className="ml-[50px] UserEdit-bottombutton" 
+              style={{ backgroundColor: '#FFFFFF80' }} 
+                    onClick={(e) => {
+                        e.preventDefault();
+                        window.location.href = submission.mainSubmission.contentDriveUrl;
+                    }}>
+                    <FontAwesomeIcon icon={faLink} /> &nbsp; Google Drive
+              </button>
+            </div>
             <div className="flex items-center">
               <form>
                 <div className="issue-type text font-bold">
@@ -162,29 +165,39 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             className="max-w-[40%] mr-4 rounded-lg"
           />
           
-          <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
-            <div className="title text-xl border-b border-blue-500 p-[5%] text-left"> 
+          <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%] ">
+            <div className="title border-b border-blue-500 p-[5%] text-left"> 
               <b style={{ color: "#395EB9" }}>Title*</b>
-              <br></br>
-              <span style={{ fontSize: "14px" }} >{submission.title}</span>
+              {/* <textarea value={submission.title} onChange={this.handleChange("title", )}></textarea> */}
             </div>
-            <div className="image-description text-xl text-black p-[5%] text-left">
+            <div className="image-description  text-black p-[5%] text-left">
               <b style={{ color: "#395EB9" }}>Description</b>
               <br></br>
-              <span style={{ fontSize: "14px" }} >{submission.mainSubmission.description}</span>
+              <input type="text" value={submission.mainSubmission.description}></input>
             </div>
           </div>
         </div>
+    
         
-        <div className="artist-statement mt-4 pl-10">
-          <div className="font-bold">Artist Statement</div>
-          <div>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
+        <div>
+          <div className="font-bold UserEdit-header">Artist Statement</div>
+          <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
+          <textarea className="UserEdit-inputbox" 
+            value="Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
             Quasi sint pariatur, praesentium, accusantium hic ut enim repellendus 
             ratione ipsum, illo voluptatem. Vel pariatur adipisci quidem dolorum, 
             exercitationem dicta. Vero, officia? Lorem, ipsum dolor sit amet consectetur 
             adipisicing elit. Tenetur nobis temporibus iusto odio vitae amet ex, 
-            nemo quae veniam rem dolore sequi aliquam eius even.
+            nemo quae veniam rem dolore sequi aliquam eius even.">
+           </textarea>
+          </div>
+        </div>
+        <div>
+          <div className="font-bold UserEdit-header">Note to editor</div>
+          <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
+          <textarea className="UserEdit-inputbox" 
+            value="Note to editor: Lorem ipsum dolor sit amet consectetur, adipisicing elit.">
+           </textarea>
           </div>
         </div>
         
@@ -203,15 +216,22 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
   ) : (
     <div className="flex flex-row h-screen UserEdit-container m-[0px] justify-around overflow-y-scroll" style={{backgroundImage: 'linear-gradient(to bottom right, #FFD3CB, #E7A5FF, #B3C9FF)'}}>
       <div className="mt-[5%] w-[70%] ">
-        
+          <button className="text-white px-4 py-2 mb-4 inline-block absolute top-0 left-0" style={{ color: '#395EB9', fontSize: '24px' }}>
+          <FontAwesomeIcon icon={faArrowLeft} /> Back
+          </button>
         <div className="title-date flex items-center justify-between mb-4 ">
           <div className="flex">
             <div className="edit-submission-title text-3xl mb-4" style={{fontSize: '32.73px', fontWeight: 700, lineHeight: '44.57px', textAlign: 'left', color: '#395EB9'}}>
               View Submission
             </div>
-            <button className="ml-[50px]">
-                Google Drive
-            </button>
+            <button className="ml-[50px] UserEdit-bottombutton"
+            style={{ backgroundColor: '#FFFFFF80' }} 
+                    onClick={(e) => {
+                        e.preventDefault();
+                        window.location.href = submission.mainSubmission.contentDriveUrl;
+                    }}>
+                    <FontAwesomeIcon icon={faLink} /> &nbsp; Google Drive
+              </button>
           </div>
             
           <div className="flex items-center">
@@ -234,20 +254,20 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
           />
           
           <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
-            <div className="title text-xl p-[5%] text-left"> 
+            <div className="title p-[5%] text-left"> 
               <b style={{ color: "#395EB9" }}>Title*</b>
               <br></br>
-              <span style={{ fontSize: "14px" }}  >{submission.title}</span>
+              <span>{submission.title}</span>
             </div>
-            <div className="image-description text-xl text-black p-[5%] text-left">
+            <div className="image-description text-black p-[5%] text-left">
               <b style={{ color: "#395EB9" }}>Description</b>
               <br></br>
-              <span style={{ fontSize: "14px" }}  >{submission.mainSubmission.description}</span>
+              <span>{submission.mainSubmission.description}</span>
             </div>
           </div>
         </div>
         
-        <div className="mt-[10%] ">
+        <div className="mt-[10%]">
           <div className="font-bold">Artist Statement</div>
           <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
             Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
@@ -256,6 +276,13 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             exercitationem dicta. Vero, officia? Lorem, ipsum dolor sit amet consectetur 
             adipisicing elit. Tenetur nobis temporibus iusto odio vitae amet ex, 
             nemo quae veniam rem dolore sequi aliquam eius even.
+          </div>
+        </div>
+
+        <div className="mt-[10%]">
+          <div className="font-bold">Note to editor</div>
+          <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
+            Note to editor: Lorem ipsum dolor sit amet consectetur, adipisicing elit.
           </div>
         </div>
         

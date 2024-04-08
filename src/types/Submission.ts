@@ -21,6 +21,7 @@ import Mediums from './Mediums';
 import Issues from './Issues';
 
 type  Submission = {
+    noteToEditor: string | number | readonly string[] | undefined;
     id: string; // "author|title|date"
     author: string;
     title: string;
