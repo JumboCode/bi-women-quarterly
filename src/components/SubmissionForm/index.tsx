@@ -89,6 +89,13 @@ const reducer = (state: State, action: Action): State => {
 //     </div>; 
 // }
 
+// Store Preview of optional reference added and bool of whether to display
+// image icon (becomes true after uploading). Used for optionalReferences array.
+type optReference = {
+    ref: Preview;
+    showImg: Boolean;
+}
+
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
@@ -120,7 +127,7 @@ export default function SubmissionForm() {
     const [title, setTitle] = useState(""); 
     const [description, setDescription] = useState("");
     // Optional box 
-    const [optionalReferences, setOptionalReferences] = useState<Preview[]>([]); 
+    const [optionalReferences, setOptionalReferences] = useState<optReference[]>([]); 
     // To decide whether to render   
     const [showFile, setShowFile] = useState(false);
     // storing string of file name
@@ -308,15 +315,30 @@ export default function SubmissionForm() {
         setDescription(event.target.value);
     }
 
-    const handleFileChange = (event : any) => {
+    const handleFileChange = (index : number, event : any) => {
         let formData = new FormData();
         formData.append(event.target.files[0].name, event.target.files[0]);
-        fileArray.push(formData);
-        // const newFileArray = fileArray;
-        // newFileArray.push(formData)
-        // setFileArray(newFileArray);
-        setShowFile(true);
+
+        const newFileArray = fileArray;
+        newFileArray.push(formData)
+        setFileArray(newFileArray);
+
+        if (index == -1) { // Adding main submission file
+            console.log("Updating showFile bool for main submission")
+            setShowFile(true);
+        } else { // Adding optional reference
+            console.log("Updating showImg bool for optional reference at ", index)
+            const newOptionalRefs = [...optionalReferences.slice(0, optionalReferences.length)] //Note: this is to force rerender
+            newOptionalRefs[index].showImg = true; 
+            setOptionalReferences(newOptionalRefs);
+        }
     }
+
+    // Remove a formdata object corresponding to the file getting removed. Used 
+    // when delete an uploaded file
+    // const removeFile = (index : number, event : any) => {
+    //     formData
+    // }
 
 
     /*------------------------------------------------------------------------*/
@@ -416,15 +438,14 @@ export default function SubmissionForm() {
                 <div className="flex flex-cols-2 gap-4">
                     {/* Submission Box 1 */}
                     {showFile? (
-                        // <div style = {{'--image-url': 'url(${submission.mainSubmission.imageUrl})'}} className=" resize p-6 h-[250px] w-[550px] bg-[image:var(--image-url)] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">   
                         <div className=" resize p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">                     
-                            {/* `url(${submission.imgsrc})` <img className="w-full" src={submission.mainSubmission.imageUrl} width={150} height={150} />  */}
                             <div className="flex  text-justify justify-end text-[#3b60ba]"> 
                                 <button 
                                 onClick={() => {
-                                    setFile(null);
+                                    setFile(null); 
                                     setShowFile(false);
-                                    console.log("got clicked");                                 }}>
+                                    console.log("got clicked");                                 
+                                    }}>
                                     <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                         <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
                                     </svg>
@@ -455,7 +476,7 @@ export default function SubmissionForm() {
                                             name="files"
                                             id="inputFile"
                                             className="hidden"
-                                            onChange={handleFileChange}
+                                            onChange={(e) => handleFileChange(-1, e)}
                                         />{" "}
                                         Local File
                                     </label>
@@ -508,7 +529,30 @@ export default function SubmissionForm() {
                                 {/* Submission Boxes */}
                                 <div className="flex flex-cols-2 gap-4">
                                     {/* Submission Box 1 */}
-                                    <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">
+                                    {reference.showImg? (
+                                        <div className=" resize p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">                     
+                                        <div className="flex  text-justify justify-end text-[#3b60ba]"> 
+                                            <button 
+                                            onClick={() => {
+                                                setFile(null); //TODO update setfile array instead
+                                                
+                                                // Change bool to display upload options again
+                                                const newOptionalRefs = [...optionalReferences.slice(0, optionalReferences.length)] //Note: this is to force rerender
+                                                newOptionalRefs[index].showImg = false; 
+                                                setOptionalReferences(newOptionalRefs);
+
+                                                console.log("got clicked");                                 }}>
+                                                <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
+                                                </svg>
+                                                </button>
+                                        </div> 
+                                        <div className="flex items-center justify-center ">
+                                            <img className="h-[150px]" src="https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png"></img>
+                                        </div>
+                                        </div> 
+                                    ) :
+                                        <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">
                                         <div className="break-normal">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3b60ba" className="mx-auto flex h-20 w-20 items-center justify-center">
                                                 <path fillRule="evenodd" d="M10.5 3.75a6 6 0 00-5.98 6.496A5.25 5.25 0 006.75 20.25H18a4.5 4.5 0 002.206-8.423 3.75 3.75 0 00-4.133-4.303A6.001 6.001 0 0010.5 3.75zm2.03 5.47a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72v4.94a.75.75 0 001.5 0v-4.94l1.72 1.72a.75.75 0 101.06-1.06l-3-3z" clipRule="evenodd" />
@@ -528,13 +572,13 @@ export default function SubmissionForm() {
                                                             name="files"
                                                             id="inputFile"
                                                             className="hidden"
-                                                            onChange={handleFileChange}
+                                                            onChange={(e) => (handleFileChange(index, e))}
                                                         />{" "}
                                                         Local File
                                                     </label>
                                                 </div>
                                             </form>
-                                       </div>
+                                    </div>
                                         <div className="flex  text-justify justify-center text-[#3b60ba]">
                                             <button  type="submit" className="inline-block h-[30px] w-[115px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]">
                                                 Google Drive
@@ -542,6 +586,8 @@ export default function SubmissionForm() {
                                         </div>
                                         </div>
                                     </div>
+                                    }
+                                    
 
                                     {/* Submission Box 2 */}
                                     <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
@@ -565,13 +611,14 @@ export default function SubmissionForm() {
                     <button 
                         onClick={() => {
                             const newReferences = optionalReferences
-                            newReferences.push({
+                            const newPreview = {
                                 type: PreviewType.AdditionalReference,
                                 title: "",
                                 description: "",
                                 imageUrl: "",
                                 contentDriveUrl: "",
-                            });
+                            };
+                            newReferences.push({ref: newPreview, showImg: false});
                             setOptionalReferences(newReferences); 
                             }}
 
