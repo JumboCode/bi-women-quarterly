@@ -632,7 +632,7 @@ const onSubmit = async () => {
                                                 </button>
                                         </div> 
                                         <div className="flex items-center justify-center ">
-                                            <img className="h-[150px]" src="https://commons.wikimedia.org/wiki/File:Picture_icon_BLACK.svg#/media/File:Picture_icon_BLACK.svg"></img>
+                                            <img className="h-[150px]" src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Picture_icon_BLACK.svg"></img>
                                         </div>
                                         </div> 
                                     ) :
