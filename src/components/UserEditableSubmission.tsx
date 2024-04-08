@@ -150,18 +150,28 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
                     <FontAwesomeIcon icon={faLink} /> &nbsp; Google Drive
               </button>
             </div>
-            <div className="flex items-center">
-              <form>
-                <div className="issue-type text font-bold">
+            <div className="flex items-center issue-type text font-bold">
+            <form>
+              <div className="issue-type text">
+              &nbsp;&nbsp;&nbsp;&nbsp;
+                <div className="blue-box">
                   <label>Issue: </label>
-                  <select name="issue" style={{ background: '#FADADD', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', padding: '6px', borderRadius: '4px'}}>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <div className="blue-box">
+                  <label>Type: </label>
+                </div>                
+              </div>
+              
+                <div className="issue-type text font-bold">
+                  <select name="issue" style={{ background: 'FFFFFF80', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', padding: '6px'}}>
                       <option value="Current">{Issues.Current}</option>
                       <option value="Next">{Issues.Next}</option>
                       <option value="None">{Issues.None}</option>
                   </select>
                   &nbsp;&nbsp;&nbsp;&nbsp;
-                  <label>Type: </label>
-                  <select name="issue" style={{ background: '#FADADD', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', padding: '6px', borderRadius: '4px' }}>
+
+                  <select name="issue" style={{ background: 'FFFFFF80', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', padding: '6px'}}>
                       <option value="Submission">{PreviewType.Submission}</option>
                       <option value="addRef">{PreviewType.AdditionalReference}</option>
                   </select>
@@ -171,12 +181,14 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             </div>
         </div>
         
-        <div className="flex flex-row  w-[100%] justify-between">
+      <div className="flex flex-row w-full justify-between">
+        <div className="image-container flex items-start">
           <img
             src={submission.mainSubmission.imageUrl}
             alt="Submission"
-            className="max-w-[40%] mr-4 rounded-lg"
+            className="image max-w-[100%] mr-4 rounded-lg"
           />
+        </div>
 
         <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
             <div className="title p-[5%] text-left"> 
@@ -193,14 +205,15 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
         </div>
 
         <div className="flex flex-row  w-[100%] justify-between mt-[10%]">
-          <div className="additional-images">
+          <div className="additional-images"> 
             {submission.additionalReferences?.map((image, index) => (
-              <img
-                key={index}
-                src={image.imageUrl}
-                alt={`Additional Image ${index}`}
-                className="max-w-[40%] mr-4 rounded-lg"
-              />
+            <div className="image-container flex items-start" key={index}>
+            <img
+              src={image.imageUrl}
+              alt={`Additional Image ${index}`}
+              className="image max-w-[100%] rounded-lg"
+            />
+          </div>
             ))}
           </div>
 
@@ -214,9 +227,6 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             </div>
           </div>
         </div>
-
-      
-    
         
         <div>
           <div className="font-bold UserEdit-header">Artist Statement</div>
@@ -329,8 +339,8 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
           </div>
         </div>
         
-        <div className="mt-[10%]">
-          <div className="font-bold">Artist Statement</div>
+        <div className="mt-[10%] ">
+          <div className="font-bold UserEdit-header">Artist Statement</div>
           <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
             Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
             Quasi sint pariatur, praesentium, accusantium hic ut enim repellendus 
@@ -342,7 +352,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
         </div>
 
         <div className="mt-[10%]">
-          <div className="font-bold">Note to editor</div>
+          <div className="font-bold UserEdit-header">Note to editor</div>
           <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
             Note to editor: Lorem ipsum dolor sit amet consectetur, adipisicing elit.
           </div>

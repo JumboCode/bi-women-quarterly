@@ -77,3 +77,23 @@ body {
     color: #395EB9;
     margin: 30px 0px;
 }
+
+.image-container {
+    width: 500px; 
+    height: auto; 
+  }
+  
+  .image {
+    width: 100%;
+    height: auto;
+  }
+
+
+  .blue-box {
+    background: #395EB9;
+    color: white;
+    padding: 3px;
+    border-radius: 5px;
+    display: inline-block;
+    font-size: 14px;
+  }
