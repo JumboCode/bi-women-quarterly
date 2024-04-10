@@ -33,6 +33,8 @@ type State = (
 | {
     // Submission Guideline view
     view: "SubmissionGuideline" | "NewSubmission";
+    // Whether guidelines have been reviewed
+    isGuidelineRead: boolean;
 }
 );
 
@@ -42,6 +44,8 @@ type State = (
 enum ActionType {
     // Change view from Submission Guideline ot New Submission
     SwitchView = 'SwitchView',
+    // Toggle whether guidelines have been read
+    ToggleGuidelineRead = 'ToggleGuidelineRead',
 }
 
 // Action definitions
@@ -51,6 +55,10 @@ type Action = (
     type: ActionType.SwitchView; 
     // New view to change to 
     newView: "SubmissionGuideline" | "NewSubmission"; //payload
+}
+| {
+    // Action type
+    type: ActionType.ToggleGuidelineRead; 
 }
 );
 
@@ -64,12 +72,18 @@ type Action = (
 const reducer = (state: State, action: Action): State => {
     switch (action.type) {
         case ActionType.SwitchView: {
-        return {
-            ...state, //return state as is except what's underneath
-            // switch from the SubmissionGuideline option for view
-            // to NewSubmission
-            view: action.newView,
-        };
+            return {
+                ...state, //return state as is except what's underneath
+                // switch from the SubmissionGuideline option for view
+                // to NewSubmission
+                view: action.newView,
+            };
+        }
+        case ActionType.ToggleGuidelineRead: {
+            return {
+                ...state,
+                isGuidelineRead: !state.isGuidelineRead,
+            };
         }
         default: {
         return state;
@@ -111,6 +125,7 @@ export default function SubmissionForm() {
     // Initial state
     const initialState: State = {
         view: 'SubmissionGuideline',
+        isGuidelineRead: false,
     };
 
     // Initialize state
@@ -131,7 +146,8 @@ export default function SubmissionForm() {
 
     // Destructure common state
     const {
-        view
+        view,
+        isGuidelineRead,
     } = state;
 
     // Initialize state
@@ -181,85 +197,64 @@ export default function SubmissionForm() {
         }
     };
 
-    /**
-     * Prints the title, issue, and type of the publication to the console
-     * when the form is submitted
-     * @author Alana Sendlakowski, Vanessa Rose, Shreyas Ravi
-     * @param event the event that has been changed
-     */
-    const handleSubmit = async (event: any) => {
-        handleNewPreview({
-            type,
-            title,
-            description,
-            imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
-            contentDriveUrl: "",
-        });
-        console.log("title: " + title);
-        
-        submission.title = submission.mainSubmission.title;
+    const onSubmit = async () => {
+        // Create a copy of the submission object
+        let updatedSubmission: Submission = submission;
+        updatedSubmission.title = submission.mainSubmission.title;
 
-        // posts files that have been selectted to server
-        await fetch("http://localhost:3001/update", {
-            method: "POST",
-            body: JSON.stringify(fileArray)
-        })
-            .then(res => res.json())
+        console.log("Submitting: ", updatedSubmission.title);
+
+        console.log("File Array: ", fileArray);
+
+        fileArray.forEach(async (file) => {
+            console.log("Submitting to server.");
+            // posts user response to server to be fetched in index.tsx
+            await fetch("http://localhost:3001/update", {
+                method: "POST",
+                body: file,
+            })
             .catch(err => console.error(err));
-        
-        
-        // upload submission to google drive
-        await fetch("http://localhost:3001/upload")
+         });
+
+         console.log("All done")
+         await new Promise(r => setTimeout(r, 1000));
+
+
+            await fetch("http://localhost:3001/upload")
             .then(res => res.json())
             .then(res => res.body)
             .then(responses => {
-                // set main submission contentDriveUrl
-                setSubmission(prevValues => {
-                    return {
-                        ...prevValues,
-                        mainSubmission: {
-                            ...prevValues.mainSubmission,
-                            contentDriveUrl:
-                                "https://drive.google.com/file/d/" +
-                                responses[0].id
-                        },
-                    };
-                });
-                // set additional references contentDriveUrl
-                for (let i = 1; i < responses.length; i++) {
-                    setSubmission(prevValues => {
-                        if (prevValues.additionalReferences) {
-                            const newReference: Preview = {
-                                ...prevValues.additionalReferences[i],
-                                contentDriveUrl:
-                                    "https://drive.google.com/file/d/" +
-                                    responses[i].id
-                            }
-                            const newAdditionalReferences = prevValues.additionalReferences;
-                            newAdditionalReferences[i] = newReference;
-                            return {
-                                ...prevValues,
-                                additionalReferences: newAdditionalReferences,
-                            };
-                        } else {
-                            return prevValues;
-                        }
-                    });
+                console.log(`response length: ${responses.length}`);
+                console.log(responses);
+                // Update main submission with drive info
+                if (responses[0]) {
+                    updatedSubmission.mainSubmission.contentDriveUrl = `https://drive.google.com/file/d/${responses[0].id}`;
+                    updatedSubmission.mainSubmission.imageUrl = responses[0].thumbnail;
                 }
+                // Update additional references with drive info
+                if (updatedSubmission.additionalReferences) {
+                    for (let i = 1; i < responses.length; i++) {
+                        updatedSubmission.additionalReferences[i - 1].contentDriveUrl = `https://drive.google.com/file/d/${responses[i].id}`;
+                        updatedSubmission.additionalReferences[i - 1].imageUrl = responses[i].thumbnail;
+                    }
 
+                    setSubmission(updatedSubmission);
+                }
+            })
+            .then(async () => {
                 try {
                     // add submission to database
-                    fetch("../api/submissions/add", {
+                    await fetch("../api/submissions/add", {
                         method: "POST",
                         body: JSON.stringify({
                             submission
-                        }),
+                        })
                     });
                 } catch (error) {
                     console.log(error);
                 }
             });
-    };
+        };
 
 
     /**
@@ -275,52 +270,31 @@ export default function SubmissionForm() {
         });
     };
 
+    // /**
+    //  * Adds the file name to the array of file names and changes the booleans
+    //  * to display the modal and files
+    //  * @author Alana Sendlakowski, Vanessa Rose, Shreyas Ravi
+    //  * @param event the event that has been changed
+    //  */
+    // const handleFileUpload = async (event: any) => {
+    //     event.preventDefault();
 
-/**
- * Prints the title, issue, and type of the publication to the console
- * when the form is submitted
- * @author Alana Sendlakowski, Vanessa Rose, Shreyas Ravi
- * @param event the event that has been changed
- */
-const onSubmit = async () => {
-    // Create a copy of the submission object
-    let updatedSubmission: Submission = submission;
-    updatedSubmission.title = submission.mainSubmission.title;
+    //     fileName.push(event.target.files[0].name);
 
-    // upload submission to google drive
-    await fetch("http://localhost:3001/upload")
-        .then(res => res.json())
-        .then(res => res.body)
-        .then(responses => {
-            // Update main submission with drive info
-            if (responses[0]) {
-                updatedSubmission.mainSubmission.contentDriveUrl = `https://drive.google.com/file/d/${responses[0].id}`;
-                updatedSubmission.mainSubmission.imageUrl = responses[0].thumbnail;
-            }
-            // Update additional references with drive info
-            if (updatedSubmission.additionalReferences) {
-                for (let i = 1; i < responses.length; i++) {
-                    updatedSubmission.additionalReferences[i - 1].contentDriveUrl = `https://drive.google.com/file/d/${responses[i].id}`;
-                    updatedSubmission.additionalReferences[i - 1].imageUrl = responses[i].thumbnail;
-                }
+    //     setShowModal(true);
+    //     setShowFile(true);
 
-                setSubmission(updatedSubmission);
-            }
-        })
-        .then(async () => {
-            try {
-                // add submission to database
-                await fetch("../api/submissions/add", {
-                    method: "POST",
-                    body: JSON.stringify({
-                        submission
-                    })
-                });
-            } catch (error) {
-                console.log(error);
-            }
-        });
-    };
+    //     let formData = new FormData();
+    //     formData.append(event.target.files[0].name, event.target.files[0]);
+
+    //     // posts user response to server to be fetched in index.tsx
+    //     await fetch("http://localhost:3001/update", {
+    //         method: "POST",
+    //         body: formData
+    //     })
+    //         .then(res => res.json())
+    //         .catch(err => console.error(err));
+    // };
 
     /**
      * Handles the change of file submissions
@@ -356,7 +330,15 @@ const onSubmit = async () => {
      * @returns new states of all the in the form
      */
     const handleTitleChange = (event : any) => {
-        setTitle(event.target.value);
+        setSubmission(prevValues => {
+            return { 
+                ...prevValues,
+                mainSubmission: {
+                    ...prevValues.mainSubmission,
+                    title: event.target.value
+                }
+            };
+        });
     }
 
 
@@ -367,7 +349,15 @@ const onSubmit = async () => {
      * @returns new states of all the elements in the form
      */
     const handleDescriptionChange = (event : any) => {
-        setDescription(event.target.value);
+        setSubmission(prevValues => {
+            return { 
+                ...prevValues,
+                mainSubmission: {
+                    ...prevValues.mainSubmission,
+                    description: event.target.value,
+                }
+            };
+        });
     }
 
     /**
@@ -379,17 +369,16 @@ const onSubmit = async () => {
     const handleFileChange = (index : number, event : any) => {
         let formData = new FormData();
         formData.append(event.target.files[0].name, event.target.files[0]);
-        console.log(event.target.files[0].name)
+
+        console.log("appending file: ", event.target.files[0].name, "which is at index: ", index)
 
         const newFileArray = fileArray;
         newFileArray.push(formData)
         setFileArray(newFileArray);
 
         if (index == -1) { // Adding main submission file
-            console.log("Updating showFile bool for main submission")
             setShowFile(true);
         } else { // Adding optional reference
-            console.log("Updating showImg bool for optional reference at ", index)
             const newOptionalRefs = [...optionalReferences.slice(0, optionalReferences.length)] //Note: this is to force rerender
             newOptionalRefs[index].showImg = true; 
             newOptionalRefs[index].filename = event.target.files[0].name;
@@ -458,25 +447,28 @@ const onSubmit = async () => {
                     </button>
                 </div>
                 {/* // Title */}
-                <h1 className="text-2xl font-bold pb-8 mt-3 ml-24">Submission Guideline</h1>
+                <h1 className="text-2xl font-bold pb-8 mt-3 ml-24">Submission Guidelines</h1>
                 {/* // Submission instructions */}
                 <div className="mb-20 ml-24">
-                Please review Submission Guideline before submitting.     
+                Please review the Submission Guidelines before continuing.     
                 </div> 
                 <div className="ml-24">
-                    <input type="checkbox" id="submission" name="submission" />
-                    <label for="submission"> I have read the Submission Guideline</label>
+                    <input type="checkbox" id="submission" name="submission" onClick={() => dispatch({type: ActionType.ToggleGuidelineRead})}/>
+                    <label> I have read the Submission Guidelines</label>
                 </div> 
                 <div className="ml-32"> 
-                        <button type="submit"
-                        onClick={() => {
-                            dispatch({
-                                type: ActionType.SwitchView,
-                                newView: "NewSubmission"
-                            });
-                        }}
-                        className="absolute rounded-lg mt-5 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg">
-                        Start
+                        <button 
+                            type="submit"
+                            disabled={!isGuidelineRead}
+                            onClick={() => {
+                                dispatch({
+                                    type: ActionType.SwitchView,
+                                    newView: "NewSubmission"
+                                });
+                            }}
+                            className={`absolute rounded-lg mt-5 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!isGuidelineRead ? "bg-opacity-50" : ""}`}
+                        >
+                            Start
                         </button>
                     </div>
             </div>
@@ -486,7 +478,7 @@ const onSubmit = async () => {
             <div className="p-8 mx-10 h-screen bg-[#ecf0f6]">
                 <div>
                     <button className="rounded-lg h-[40px] w-[90px] items-center ">
-                        <Link href="/submit"> &larr; Back</Link>
+                        <Link href="/"> &larr; Back</Link>
                     </button>
                 </div>
             {/* // Creates a form to retrieve title, issue, and name information */}
@@ -527,11 +519,10 @@ const onSubmit = async () => {
                                 <button 
                                 onClick={() => {
                                     setFile(null); 
-                                    setShowFile(false);
-                                    console.log("got clicked");                                 
+                                    setShowFile(false);                            
                                     }}>
                                     <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                        <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
+                                        <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clipRule="evenodd" />
                                     </svg>
                                     </button>
                             </div> 
@@ -577,12 +568,12 @@ const onSubmit = async () => {
                     }
                     {/* Submission Box 2 */}
                     <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
-                        <div onChange={handleTitleChange}>
+                        <div>
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-1 ">Title*</h3>
-                            <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Title of your piece" required />
-                            <div onChange={handleDescriptionChange}>
+                            <input onChange={handleTitleChange} type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Title of your piece" required />
+                            <div>
                                 <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Description</h3>
-                                <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Describe your piece" required />
+                                <input onChange={handleDescriptionChange} type="text" id="Description" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Describe your piece" required />
                                 <p className="text-xs text-gray-400 pt-1"><em>Max 400 Characters</em></p>
                             </div>
                         </div>
@@ -600,12 +591,11 @@ const onSubmit = async () => {
                                     <button className="absolute right-[80px] flex inline-block bg-[#FFFFFF] h-[30px] w-[115px] rounded-sm  text-center  outline outline-[#5072c0] outline-offset-[3px]"
                                             // className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
                                     onClick={() => {
-                                        console.log("got clicked")
                                         const newReferences = [...optionalReferences.slice(0, index), ...optionalReferences.slice(index + 1)];
                                         setOptionalReferences(newReferences);
                                         }}>
                                         <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                            <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
+                                            <path fillRule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
                                         </svg> Delete</button>    
                                     </div> 
                                 </div>
@@ -624,8 +614,7 @@ const onSubmit = async () => {
                                                 const newOptionalRefs = [...optionalReferences.slice(0, optionalReferences.length)] //Note: this is to force rerender
                                                 newOptionalRefs[index].showImg = false; 
                                                 setOptionalReferences(newOptionalRefs);
-
-                                                console.log("got clicked");                                 }}>
+                               }}>
                                                 <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                                     <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
                                                 </svg>
@@ -646,7 +635,7 @@ const onSubmit = async () => {
                                         <h1 className="flex grow text-center justify-center text-l font-bold pb-1 pt-1">Drag & Drop Files Here</h1>
                                         <h1 className="flex grow text-center justify-center text-m pb-1 pt-1">or</h1>
                                         
-                                        <div className="flex grid grid-cols-2 gap-4 pt-[20px]"> 
+                                        <div className="flex grid grid-cols-2 gap-4 pt-[20px]">
                                         <div className="flex grow text-justify justify-center text-[#3b60ba]">
                                             <form>
                                                 <div>
@@ -702,7 +691,11 @@ const onSubmit = async () => {
                                 imageUrl: "",
                                 contentDriveUrl: "",
                             };
-                            newReferences.push({ref: newPreview, showImg: false});
+                            newReferences.push({
+                                ref: newPreview,
+                                showImg: false,
+                                filename: "",
+                            });
                             setOptionalReferences(newReferences); 
                             }}
 
@@ -714,9 +707,9 @@ const onSubmit = async () => {
                 <div>
                 <h1 className="text-1xl font-bold pb-4 mt-3 pt-8 justify=">Artist Statement</h1>
                     <div className="p-6 h-[150px] w-[full] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
-                        <div onChange={handleSubmissionChange}> 
+                        <div>
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Note</h3>
-                            <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Your Artist Statement" required />
+                            <input name="artist_statement" onChange={handleSubmissionChange} type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Your Artist Statement" required />
                             <p className="text-xs text-gray-400 pt-1 pb-4"><em>Max 400 Characters</em></p>
                         </div>
                     </div>
@@ -725,9 +718,9 @@ const onSubmit = async () => {
                 <div>
                     <h1 className="text-1xl font-bold pb-4 mt-3 pt-8 justify=">Note to Editor</h1>
                     <div className="p-6 h-[250px] w-[full] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
-                        <div onChange={handleSubmissionChange}>
+                        <div>
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Subject</h3>
-                            <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Subject of your Note" required />
+                            <input name="editor_note" onChange={handleSubmissionChange} type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Subject of your Note" required />
                         
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Note</h3>
                             <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Note to Editor" required />
@@ -740,9 +733,9 @@ const onSubmit = async () => {
                         Save & Continue Later
                     </Link>
                 </button>
-                <button onClick={handleSubmit} className="absolute right-[64px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg">
+                <button onClick={onSubmit} className="absolute right-[64px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg">
                     <Link href="/">
-                        Review
+                        Submit
                     </Link>
                 </button>
             </div>

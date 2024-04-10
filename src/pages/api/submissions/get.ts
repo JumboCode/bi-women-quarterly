@@ -11,8 +11,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .find({})
             .toArray();
 
-        console.log(collection);
-
         res.status(201).json({ success: true, data: collection });
     } catch (e) {
         res.status(400).json({ success: false });
