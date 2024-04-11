@@ -179,15 +179,8 @@ export default function AdminHomePage() {
             await getSubmissions();
         })();
     }, []);
-
-
-    function deleteIssue(event: any) {
-        console.log(event);
-    }
     
-    function addNewIssue() {
-        console.log("in addNewIssue");
-    }
+    
 
 
 
@@ -208,7 +201,8 @@ export default function AdminHomePage() {
         
         // const [issues, setIssues] = React.useState<[string, string][]>([]);
         const [issues, setIssues] = React.useState<[string, string, string][]>([]);
-
+        const [addIssue, setAddIssue] = React.useState(false);
+        const [inputValue, setInputValue] = React.useState("");
 
         /**
          * Prints the title, issue, and type of the publication to the console
@@ -230,6 +224,10 @@ export default function AdminHomePage() {
             issues.push(event.target.value);
         };
 
+        // const change = (event: any) => {
+        //     issues.push(event.target.value);
+        // };
+
         function checkStatus(event: any): boolean {
             // (status === "Current")
             // console.log("HERERE");
@@ -247,40 +245,48 @@ export default function AdminHomePage() {
                 index++;
             });
 
+
+
             index = issues.findIndex(([id, status, title]) => title === event);
-            var [id, status, title] = issues[index]
-            issues[index] = [id, "Current", event];
-            
-            console.log(issues);
 
-            try {
-                // add submission to database
-                await fetch("../api/issues/edit", {
-                    method: "PATCH",
-                    body: JSON.stringify({
-                        id : id,
-                        status : status,
-                        title : title,
-                    })
-                });
-            } catch (error) {
-                console.log(error);
-            }
+            if (index != changed_index) {
 
-            var [id, status, title] = issues[changed_index];
+                var [id, status, title] = issues[index]
+                // issues[index] = [id, "Current", event];
+                console.log(id);
+                
+                // console.log(issues);
 
-            try {
-                // add submission to database
-                await fetch("../api/issues/edit", {
-                    method: "PATCH",
-                    body: JSON.stringify({
-                        id : id,
-                        status : status,
-                        title : title,
-                    })
-                });
-            } catch (error) {
-                console.log(error);
+                try {
+                    // add submission to database
+                    await fetch("../api/issues/edit", {
+                        method: "PATCH",
+                        body: JSON.stringify({
+                            id : id,
+                            status : "Current",
+                            title : title,
+                        })
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+
+                var [id, status, title] = issues[changed_index];
+                console.log(id);
+
+                try {
+                    // add submission to database
+                    await fetch("../api/issues/edit", {
+                        method: "PATCH",
+                        body: JSON.stringify({
+                            id : id,
+                            status : "Next",
+                            title : title,
+                        })
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
             }
 
             // try {
@@ -347,12 +353,55 @@ export default function AdminHomePage() {
                 return [];
             }
 
-            console.log(issues);
+            // console.log(issues);
             
             // issues.forEach(iss => {
             //     stars.push([iss, false]);
             // });
         };
+
+        const handleInputChange = (event: any) => {
+            const newValue = event.target.value;
+            setInputValue(newValue);
+            // You can send the input value here or pass it to another function
+            // console.log("Input value:", newValue);
+            // For sending it, you might use an API call or pass it to a parent component via a callback function
+        };
+
+        async function saveNewIssue() {
+            try {
+                // add submission to database
+                await fetch("../api/issues/add", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        status : "Next",
+                        title : inputValue,
+                    })
+                });
+            } catch (error) {
+                console.log(error);
+            }
+            console.log(inputValue);
+            setAddIssue(false);
+        }
+
+        async function deleteIssue(event: any) {
+            console.log(event);
+            // var index = issues.findIndex(([id, status, title]) => title === event);
+            // var [id, status, title] = issues[index];
+
+            try {
+                // add submission to database
+                await fetch("../api/issues/delete", {
+                    method: "DELETE",
+                    body: JSON.stringify({
+                        id : event,
+                    })
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        }
 
             
     
@@ -403,7 +452,7 @@ export default function AdminHomePage() {
                                             <div>
                                                 {issues.map(([id, status, title]) => (
                                                     <div className="flex">
-                                                        <div className="inline-block flex items-center justify-center pl-[10px]">
+                                                        <div onClick={() => deleteIssue(id)} className="inline-block flex items-center justify-center pl-[10px]">
                                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#385eb9" className="w-6 h-6">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                                             </svg>
@@ -460,15 +509,41 @@ export default function AdminHomePage() {
                                                 ))}
                                             </div>
 
-                                            <div onClick={() => addNewIssue()} className="mt-[40px] mb-[30px] ml-[10px] mr-[10px] border-dashed border-2 border-[#958cae] flex inline-block align-middle justify-center h-[45px] rounded-md items-center border-[#5a5a5b] text-[#5a5a5b] text-m">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                                </svg>
+                                            {addIssue ? (
+                                                <div>
+                                                    {/* <div className="w-72"> */}
 
-                                                <div className="pl-[10px]">
-                                                    add new issue 
+                                                    {/* <div key={title} className="inline-block shadow-lg flex inline-block align-middle pl-[10px] w-full h-[45px] rounded-md shadow-inner items-center m-[10px] text-primary-blue text-xl  bg-[#e3cafc]">
+                                                            {title}
+                                                        </div> */}
+                                                        {/* <div className="relative w-full min-w-[200px] h-10"> */}
+                                                        <div className="inline-block shadow-lg flex inline-block align-middle  ml-[44px] mr-[44px] h-[45px] rounded-md shadow-inner items-center m-[10px] text-[#5a5a5b] text-xl">
+                                                            <input
+                                                            className="w-full h-full rounded-md pl-[10px] pr-[10px] bg-[#f6e7ff] placeholder-shown:italic"
+                                                            placeholder="Type new issue title"
+                                                            onChange={handleInputChange}/>
+                                                        </div>
+                                                    {/* </div>  */}
+
+                                                    <div onClick={() => saveNewIssue()} className="pl-[10px] mt-[40px] mb-[30px] ml-[44px] mr-[44px] flex inline-block align-middle justify-center h-[45px] rounded-md items-center bg-[#ff4295] text-white font-bold text-xl">
+                                                            Save new issue 
+                                                    </div>
                                                 </div>
-                                            </div>
+
+                                            ) : (
+
+                                                <div onClick={() => setAddIssue(true)} className="mt-[40px] mb-[30px] ml-[44px] mr-[44px] border-dashed border-2 border-[#958cae] flex inline-block align-middle justify-center h-[45px] rounded-md items-center border-[#5a5a5b] text-[#5a5a5b] text-m">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                                    </svg>
+
+                                                    <div className="pl-[10px]">
+                                                        add new issue 
+                                                    </div>
+                                                </div>
+
+                                            )}
+
                                         </div>
 
                                     </div>
