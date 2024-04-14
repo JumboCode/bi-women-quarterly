@@ -335,7 +335,7 @@ export default function SubmissionForm() {
         fileArray.forEach(async (file) => {
             console.log("Submitting to server.");
             // posts user response to server to be fetched in index.tsx
-            await fetch("https://backend-phi-wine.vercel.app:3000/update", {
+            await fetch("https://backend-phi-wine.vercel.app/update", {
                 method: "POST",
                 body: file,
             })
@@ -345,7 +345,7 @@ export default function SubmissionForm() {
          console.log("All done")
          await new Promise(r => setTimeout(r, 1000));
 
-        await fetch("https://backend-phi-wine.vercel.app:3000/upload")
+        await fetch("https://backend-phi-wine.vercel.app/upload")
         .then(res => res.json())
         .then(res => res.body)
         .then(responses => {

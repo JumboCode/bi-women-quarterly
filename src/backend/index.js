@@ -12,7 +12,7 @@ let uploads = [];
 
 const storage = multer.diskStorage({
     destination: function (req, file, callback) {
-        const uploadDir = path.join(path.dirname(__dirname), "..", "uploads");
+        const uploadDir = path.join(path.dirname(__dirname), "uploads");
         callback(null, `${uploadDir}`);
     },
     filename: function (req, file, callback) {
@@ -37,7 +37,7 @@ app.use(express.static("public"));
 
 app.get("/thumbnail", async (req, res) => {
     const auth = new google.auth.GoogleAuth({
-        keyFile: "../key.json",
+        keyFile: "key.json",
         scopes: ["https://www.googleapis.com/auth/drive"]
     });
 
@@ -57,7 +57,7 @@ app.get("/thumbnail", async (req, res) => {
 app.get("/upload", async (req, res) => {
     try {
         const auth = new google.auth.GoogleAuth({
-            keyFile: "../key.json",
+            keyFile: "key.json",
             scopes: ["https://www.googleapis.com/auth/drive"]
         });
 
