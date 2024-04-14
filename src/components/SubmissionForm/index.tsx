@@ -731,15 +731,17 @@ export default function SubmissionForm() {
                                             <input
                                                 type="text"
                                                 id="Title"
-                                                title="title"
+                                                name="title"
                                                 onChange={(e) => dispatch({type: ActionType.UpdatePreview, index, field: e.target.name, value: e.target.value})}
+                                                value={preview.preview.title}
                                                 className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Title of your piece" required />
                                             <div>
                                                 <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Description</h3>
                                                 <input 
                                                     type="text"
-                                                    value="description"
+                                                    name="description"
                                                     onChange={(e) => dispatch({type: ActionType.UpdatePreview, index, field: e.target.name, value: e.target.value})}
+                                                    value={preview.preview.description}
                                                     id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Describe your piece" required />
                                                 <p className="text-xs text-gray-400 pt-1"><em>Max 400 Characters</em></p>
                                             </div>
