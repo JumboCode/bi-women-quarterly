@@ -24,6 +24,16 @@ import Statuses from '@/types/Statuses';
 
 
 /*------------------------------------------------------------------------*/
+/* -------------------------------- Types ------------------------------- */
+/*------------------------------------------------------------------------*/
+
+type PreviewRef = {
+    preview: Preview;
+    showImg: boolean;
+    filename: string;
+}
+
+/*------------------------------------------------------------------------*/
 /* -------------------------------- State ------------------------------- */
 /*------------------------------------------------------------------------*/
 
@@ -35,6 +45,10 @@ type State = (
     view: "SubmissionGuideline" | "NewSubmission";
     // Whether guidelines have been reviewed
     isGuidelineRead: boolean;
+    // Submission object to add
+    submission: Submission;
+    // Preview objects to add to the submission
+    previews: PreviewRef[];
 }
 );
 
@@ -46,6 +60,18 @@ enum ActionType {
     SwitchView = 'SwitchView',
     // Toggle whether guidelines have been read
     ToggleGuidelineRead = 'ToggleGuidelineRead',
+    // Update submission object
+    UpdateSubmission = 'UpdateSubmission',
+    // Update main submission
+    UpdateMainSubmission = 'UpdateMainSubmission',
+    // Update preview
+    UpdatePreview = 'UpdatePreview',
+    // Update preview reference
+    UpdatePreviewRef = 'UpdatePreviewRef',
+    // Add a new preview
+    AddPreview = 'AddPreview',
+    // Remove a preview
+    RemovePreview = 'RemovePreview',
 }
 
 // Action definitions
@@ -58,7 +84,53 @@ type Action = (
 }
 | {
     // Action type
-    type: ActionType.ToggleGuidelineRead; 
+    type: ActionType.UpdateSubmission,
+    // Field to update
+    field: string;
+    // Value to update to
+    value: string;
+}
+| {
+    // Action type
+    type: ActionType.UpdateMainSubmission,
+    // Field to update
+    field: string;
+    // Value to update to
+    value: string;
+}
+| {
+    // Action type
+    type: ActionType.UpdatePreview,
+    // Index of preview to update
+    index: number;
+    // Field to update
+    field: string;
+    // Value to update to
+    value: string;
+}
+| {
+    // Action type
+    type: ActionType.UpdatePreviewRef,
+    // Index of preview to update
+    index: number;
+    // Field to update
+    field: string;
+    // Value to update to
+    value: string | boolean;
+}
+| {
+    // Action type
+    type: ActionType.AddPreview,
+}
+| {
+    // Action type
+    type: ActionType.RemovePreview,
+    // Index of preview to remove
+    index: number;
+}
+| {
+    // Action type
+    type: ActionType.ToggleGuidelineRead,
 }
 );
 
@@ -73,10 +145,76 @@ const reducer = (state: State, action: Action): State => {
     switch (action.type) {
         case ActionType.SwitchView: {
             return {
-                ...state, //return state as is except what's underneath
-                // switch from the SubmissionGuideline option for view
-                // to NewSubmission
+                ...state,
                 view: action.newView,
+            };
+        }
+        case ActionType.UpdateSubmission: {
+            return {
+                ...state,
+                submission: {
+                    ...state.submission,
+                    [action.field]: action.value,
+                },
+            };
+        }
+        case ActionType.UpdateMainSubmission: {
+            return {
+                ...state,
+                submission: {
+                    ...state.submission,
+                    mainSubmission: {
+                        ...state.submission.mainSubmission,
+                        [action.field]: action.value,
+                    },
+                },
+            };
+        }
+        case ActionType.UpdatePreview: {
+            const newPreviews = state.previews;
+            newPreviews[action.index] = {
+                ...newPreviews[action.index],
+                preview: {
+                    ...newPreviews[action.index].preview,
+                    [action.field]: action.value,
+                },
+            };
+            return {
+                ...state,
+                previews: newPreviews,
+            };
+        }
+        case ActionType.UpdatePreviewRef: {
+            const newPreviews = state.previews;
+            newPreviews[action.index] = {
+                ...newPreviews[action.index],
+                [action.field]: action.value,
+            };
+            return {
+                ...state,
+                previews: newPreviews,
+            };
+        }
+        case ActionType.AddPreview: {
+            return {
+                ...state,
+                previews: [...state.previews, {
+                    showImg: false,
+                    filename: "",
+                    preview: {
+                        type: PreviewType.AdditionalReference,
+                        title: "",
+                        description: "",
+                        imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
+                        contentDriveUrl: "",
+                    },
+                }],
+            };
+        }
+        case ActionType.RemovePreview: {
+            return {
+                ...state,
+                previews: [...state.previews.slice(0, action.index), ...state.previews.slice(action.index + 1)]
             };
         }
         case ActionType.ToggleGuidelineRead: {
@@ -90,19 +228,6 @@ const reducer = (state: State, action: Action): State => {
         }
     }
 };
-
-/*----------------------------------------*/
-/* ---------- Additional UI -------------- */
-/*----------------------------------------*/
-
-
-// Store Preview of optional reference added and bool of whether to display
-// image icon (becomes true after uploading). Used for optionalReferences array.
-type optReference = {
-    ref: Preview;
-    showImg: Boolean;
-    filename: string;
-}
 
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
@@ -126,33 +251,7 @@ export default function SubmissionForm() {
     const initialState: State = {
         view: 'SubmissionGuideline',
         isGuidelineRead: false,
-    };
-
-    // Initialize state
-    // first box 
-    const [state, dispatch] = useReducer(reducer, initialState);
-    const [type, setType] = useState(PreviewType.Submission); 
-    // second box 
-    const [title, setTitle] = useState(""); 
-    const [description, setDescription] = useState("");
-    // Optional box 
-    const [optionalReferences, setOptionalReferences] = useState<optReference[]>([]); 
-    // To decide whether to render   
-    const [showFile, setShowFile] = useState(false);
-    // storing string of file name
-    const [fileArray, setFileArray] = useState<FormData[]>([]);  
-    // storing url of main submission file use this to store submission locally
-    const [file, setFile] = useState<File | null>(); 
-
-    // Destructure common state
-    const {
-        view,
-        isGuidelineRead,
-    } = state;
-
-    // Initialize state
-    const [submission, setSubmission] = useState<Submission>(
-        {
+        submission: {
             id : user.id,
             author : user.fullName ?? "", 
             title : "",
@@ -169,7 +268,32 @@ export default function SubmissionForm() {
                 imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
                 contentDriveUrl: "",
             },
-        })
+        },
+        previews: [],
+    };
+
+    // Initialize state
+    const [state, dispatch] = useReducer(reducer, initialState);
+
+    const [type, setType] = useState(PreviewType.Submission); 
+    // second box 
+    const [title, setTitle] = useState(""); 
+    const [description, setDescription] = useState("");
+ 
+    // To decide whether to render   
+    const [showFile, setShowFile] = useState(false);
+    // storing string of file name
+    const [fileArray, setFileArray] = useState<FormData[]>([]);  
+    // storing url of main submission file use this to store submission locally
+    const [file, setFile] = useState<File | null>(); 
+
+    // Destructure common state
+    const {
+        view,
+        isGuidelineRead,
+        submission,
+        previews,
+    } = state;
 
     const [issues, setIssues] = useState<string[]>([]);
 
@@ -202,8 +326,10 @@ export default function SubmissionForm() {
         let updatedSubmission: Submission = submission;
         updatedSubmission.title = submission.mainSubmission.title;
 
-        console.log("Submitting: ", updatedSubmission.title);
+        // Add the previews to the submission
+        updatedSubmission.additionalReferences = previews.map(preview => preview.preview);
 
+        console.log("Submitting: ", updatedSubmission.title);
         console.log("File Array: ", fileArray);
 
         fileArray.forEach(async (file) => {
@@ -219,54 +345,37 @@ export default function SubmissionForm() {
          console.log("All done")
          await new Promise(r => setTimeout(r, 1000));
 
-
-            await fetch("http://localhost:3001/upload")
-            .then(res => res.json())
-            .then(res => res.body)
-            .then(responses => {
-                console.log(`response length: ${responses.length}`);
-                console.log(responses);
-                // Update main submission with drive info
-                if (responses[0]) {
-                    updatedSubmission.mainSubmission.contentDriveUrl = `https://drive.google.com/file/d/${responses[0].id}`;
-                    updatedSubmission.mainSubmission.imageUrl = responses[0].thumbnail;
+        await fetch("http://localhost:3001/upload")
+        .then(res => res.json())
+        .then(res => res.body)
+        .then(responses => {
+            console.log(`response length: ${responses.length}`);
+            console.log(responses);
+            // Update main submission with drive info
+            if (responses[0]) {
+                updatedSubmission.mainSubmission.contentDriveUrl = `https://drive.google.com/file/d/${responses[0].id}`;
+                updatedSubmission.mainSubmission.imageUrl = responses[0].thumbnail;
+            }
+            // Update additional references with drive info
+            if (updatedSubmission.additionalReferences && responses.length > 1) {
+                for (let i = 1; i < responses.length; i++) {
+                    updatedSubmission.additionalReferences[i - 1].contentDriveUrl = `https://drive.google.com/file/d/${responses[i].id}`;
+                    updatedSubmission.additionalReferences[i - 1].imageUrl = responses[i].thumbnail;
                 }
-                // Update additional references with drive info
-                if (updatedSubmission.additionalReferences) {
-                    for (let i = 1; i < responses.length; i++) {
-                        updatedSubmission.additionalReferences[i - 1].contentDriveUrl = `https://drive.google.com/file/d/${responses[i].id}`;
-                        updatedSubmission.additionalReferences[i - 1].imageUrl = responses[i].thumbnail;
-                    }
-
-                    setSubmission(updatedSubmission);
-                }
-            })
-            .then(async () => {
-                try {
-                    // add submission to database
-                    await fetch("../api/submissions/add", {
-                        method: "POST",
-                        body: JSON.stringify({
-                            submission
-                        })
-                    });
-                } catch (error) {
-                    console.log(error);
-                }
-            });
-        };
-
-
-    /**
-     * Handles the change of elements in the form by updating useState variable
-     * @author Austen Money
-     * @param event the event that has been changed (when a new file is ubloaded
-     *              within the modal)
-     * @returns new states of all the elements in the form
-     */
-    const handleSubmissionChange = (event: any) => {
-        setSubmission(prevValues => {
-            return { ...prevValues, [event.target.name]: event.target.value };
+            }
+        })
+        .then(async () => {
+            try {
+                // add submission to database
+                await fetch("../api/submissions/add", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        submission: updatedSubmission
+                    })
+                });
+            } catch (error) {
+                console.log(error);
+            }
         });
     };
 
@@ -297,70 +406,6 @@ export default function SubmissionForm() {
     // };
 
     /**
-     * Handles the change of file submissions
-     * @author Austen Money
-     * @param event the event that has been changed
-     * @returns new states of all the elements in the form
-     */
-    const handleNewPreview = (newPreview: Preview) => {
-        // If the new preview is a main submission, update the main submission
-        if (newPreview.type === PreviewType.Submission) {
-            setSubmission(prevValues => {
-                return { ...prevValues, mainSubmission: newPreview };
-            });
-        } else { 
-            // If this is additional reference, add it to (or create) the array
-            if (!submission.additionalReferences) {
-                setSubmission(prevValues => {
-                    return { ...prevValues, additionalReferences: [newPreview] };
-                });
-            } else {
-                const newReferences = submission.additionalReferences?.push(newPreview);
-                setSubmission(prevValues => {
-                    return { ...prevValues, newReferences };
-                });
-            }
-         }
-    };
-
-    /**
-     * Handles the change of elements in the form by updating useState variable
-     * @author Alana Sendlakowski, Vanessa Rose
-     * @param event the event that has been changed
-     * @returns new states of all the in the form
-     */
-    const handleTitleChange = (event : any) => {
-        setSubmission(prevValues => {
-            return { 
-                ...prevValues,
-                mainSubmission: {
-                    ...prevValues.mainSubmission,
-                    title: event.target.value
-                }
-            };
-        });
-    }
-
-
-    /**
-     * Handles the change of elements in the form by updating useState variable
-     * @author Alana Sendlakowski, Vanessa Rose
-     * @param event the event that has been changed
-     * @returns new states of all the elements in the form
-     */
-    const handleDescriptionChange = (event : any) => {
-        setSubmission(prevValues => {
-            return { 
-                ...prevValues,
-                mainSubmission: {
-                    ...prevValues.mainSubmission,
-                    description: event.target.value,
-                }
-            };
-        });
-    }
-
-    /**
      * Update fileArray with new uploaded file. Adjusts display settings
      * @author Avery Hanna, So Hyun Kim
      * @param index the index of the optional reference who's file we should remove
@@ -379,10 +424,7 @@ export default function SubmissionForm() {
         if (index == -1) { // Adding main submission file
             setShowFile(true);
         } else { // Adding optional reference
-            const newOptionalRefs = [...optionalReferences.slice(0, optionalReferences.length)] //Note: this is to force rerender
-            newOptionalRefs[index].showImg = true; 
-            newOptionalRefs[index].filename = event.target.files[0].name;
-            setOptionalReferences(newOptionalRefs);
+            dispatch({type: ActionType.UpdatePreviewRef, index, field: "showImg", value: true});
         }
     }
 
@@ -395,7 +437,7 @@ export default function SubmissionForm() {
      * @returns updates fileArray
      */
     const removeFile = (index : number) => {
-        const nameToDelete = optionalReferences[index].filename
+        const nameToDelete = previews[index].filename
         
         // for every index in fileArray, check key until find match
         var fileArrayInd = 0;
@@ -431,13 +473,9 @@ export default function SubmissionForm() {
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
-    /**
-     * Main UI of New Submission 
-     * @author So Hyun Kim, Avery Hanna
-     */
-//react node variable and assign something different depending on view and then return that variable at end
-// or multiple returns 
-// <Link href="/submissionguideline">Submission Guideline</Link>
+
+    console.log('Submission: ', JSON.stringify(submission, null, 2));
+
     if (view == "SubmissionGuideline") {
         return (
             <div className="p-8 h-screen bg-[#ecf0f6] tile col-span-3 row-span-6">
@@ -450,11 +488,23 @@ export default function SubmissionForm() {
                 <h1 className="text-2xl font-bold pb-8 mt-3 ml-24">Submission Guidelines</h1>
                 {/* // Submission instructions */}
                 <div className="mb-20 ml-24">
-                Please review the Submission Guidelines before continuing.     
+                    Please review the {' '}
+                    <u>
+                        <a target="_blank" rel="noopener noreferrer" href="https://www.biwomenquarterly.com/submission-guidelines/">
+                            Submission Guidelines
+                        </a>
+                    </u>
+                    {' '} before continuing.     
                 </div> 
                 <div className="ml-24">
                     <input type="checkbox" id="submission" name="submission" onClick={() => dispatch({type: ActionType.ToggleGuidelineRead})}/>
-                    <label> I have read the Submission Guidelines</label>
+                    <label> I have read the {' '}
+                        <u>
+                            <a target="_blank" rel="noopener noreferrer" href="https://www.biwomenquarterly.com/submission-guidelines/">
+                                Submission Guidelines
+                            </a>
+                        </u>
+                    </label>
                 </div> 
                 <div className="ml-32"> 
                         <button 
@@ -488,7 +538,7 @@ export default function SubmissionForm() {
                     <div className="flex md:flex md:flex-grow flex-row justify-end space-x-1 px-[20px] py-[10px]">
                         <select name="issue" className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
                                 value={submission.issue} 
-                                onChange={handleSubmissionChange}>
+                                onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})}>
                             <option defaultValue="Select Issues">Select Issue</option> 
                                 <option value="Any">Any</option>
                                 {
@@ -500,7 +550,12 @@ export default function SubmissionForm() {
                                 }
                         </select>
                         {/* drop down element for type selection */}
-                            <select name="medium" className="absolute right-[80px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" value={submission.medium} onChange={handleSubmissionChange}>
+                            <select
+                                name="medium" 
+                                className="absolute right-[80px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg"
+                                value={submission.medium}
+                                onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})}
+                            >
                                 <option defaultValue="Select Type">Select Type</option>
                                 <option value={Mediums.Fiction}>{Mediums.Fiction}</option>
                                 <option value={Mediums.Nonfiction}>{Mediums.Nonfiction}</option>
@@ -545,7 +600,7 @@ export default function SubmissionForm() {
                         <div className="flex grow text-justify justify-center text-[#3b60ba]">       
                             <form>
                                 <div>
-                                    <label type="submit" className="resize inline-block h-[30px] w-[115px] pt-[3px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]">
+                                    <label className="resize inline-block h-[30px] w-[115px] pt-[3px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]">
                                         <input
                                             type="file"
                                             name="files"
@@ -570,10 +625,24 @@ export default function SubmissionForm() {
                     <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                         <div>
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-1 ">Title*</h3>
-                            <input onChange={handleTitleChange} type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Title of your piece" required />
+                            <input 
+                                name="title"
+                                onChange={(e) => dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value})}
+                                type="text"
+                                id="Title"
+                                className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12"
+                                placeholder="Title of your piece"
+                                required />
                             <div>
                                 <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Description</h3>
-                                <input onChange={handleDescriptionChange} type="text" id="Description" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Describe your piece" required />
+                                <input
+                                    name="description"
+                                    onChange={(e) => dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value})}
+                                    type="text"
+                                    id="Description"
+                                    className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12"
+                                    placeholder="Describe your piece"
+                                    required />
                                 <p className="text-xs text-gray-400 pt-1"><em>Max 400 Characters</em></p>
                             </div>
                         </div>
@@ -581,7 +650,7 @@ export default function SubmissionForm() {
                 </div> 
                 {/* Optional Images */}
                 {
-                    optionalReferences.map((reference, index) => {
+                    previews.map((preview, index) => {
                         return (
                             <div>
                                 <div className="grid grid-cols-2 gap-4" >
@@ -590,10 +659,7 @@ export default function SubmissionForm() {
                                     <div className="flex md:flex md:flex-grow flex-row justify-end space-x-1 px-[20px] py-[40px]">
                                     <button className="absolute right-[80px] flex inline-block bg-[#FFFFFF] h-[30px] w-[115px] rounded-sm  text-center  outline outline-[#5072c0] outline-offset-[3px]"
                                             // className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
-                                    onClick={() => {
-                                        const newReferences = [...optionalReferences.slice(0, index), ...optionalReferences.slice(index + 1)];
-                                        setOptionalReferences(newReferences);
-                                        }}>
+                                    onClick={() => {dispatch({type: ActionType.RemovePreview, index})}}>
                                         <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                             <path fillRule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
                                         </svg> Delete</button>    
@@ -603,18 +669,14 @@ export default function SubmissionForm() {
                                 {/* Submission Boxes */}
                                 <div className="flex flex-cols-2 gap-4">
                                     {/* Submission Box 1 */}
-                                    {reference.showImg? (
+                                    {preview.showImg ? (
                                         <div className=" resize p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">                     
                                         <div className="flex  text-justify justify-end text-[#3b60ba]"> 
                                             <button 
                                             onClick={() => {
                                                 removeFile(index); 
-                                                
-                                                // Change bool to display upload options again
-                                                const newOptionalRefs = [...optionalReferences.slice(0, optionalReferences.length)] //Note: this is to force rerender
-                                                newOptionalRefs[index].showImg = false; 
-                                                setOptionalReferences(newOptionalRefs);
-                               }}>
+                                                dispatch({type: ActionType.UpdatePreviewRef, index, field: "showImg", value: false});
+                                            }}>
                                                 <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                                     <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
                                                 </svg>
@@ -639,7 +701,7 @@ export default function SubmissionForm() {
                                         <div className="flex grow text-justify justify-center text-[#3b60ba]">
                                             <form>
                                                 <div>
-                                                    <label type="submit" className="resize inline-block h-[30px] w-[115px] pt-[3px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]">
+                                                    <label className="resize inline-block h-[30px] w-[115px] pt-[3px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]">
                                                         <input
                                                             type="file"
                                                             name="files"
@@ -664,12 +726,21 @@ export default function SubmissionForm() {
 
                                     {/* Submission Box 2 */}
                                     <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
-                                        <div onChange={handleTitleChange}>
+                                        <div>
                                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-1 ">Title*</h3>
-                                            <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Title of your piece" required />
-                                            <div onChange={handleDescriptionChange}>
+                                            <input
+                                                type="text"
+                                                id="Title"
+                                                title="title"
+                                                onChange={(e) => dispatch({type: ActionType.UpdatePreview, index, field: e.target.name, value: e.target.value})}
+                                                className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Title of your piece" required />
+                                            <div>
                                                 <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Description</h3>
-                                                <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Describe your piece" required />
+                                                <input 
+                                                    type="text"
+                                                    value="description"
+                                                    onChange={(e) => dispatch({type: ActionType.UpdatePreview, index, field: e.target.name, value: e.target.value})}
+                                                    id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Describe your piece" required />
                                                 <p className="text-xs text-gray-400 pt-1"><em>Max 400 Characters</em></p>
                                             </div>
                                         </div>
@@ -680,25 +751,11 @@ export default function SubmissionForm() {
                     })
                 }
                 <div>
-                    {/* Optional Image button */}
+                    {/* Add Optional Image button */}
                     <button 
                         onClick={() => {
-                            const newReferences = optionalReferences
-                            const newPreview = {
-                                type: PreviewType.AdditionalReference,
-                                title: "",
-                                description: "",
-                                imageUrl: "",
-                                contentDriveUrl: "",
-                            };
-                            newReferences.push({
-                                ref: newPreview,
-                                showImg: false,
-                                filename: "",
-                            });
-                            setOptionalReferences(newReferences); 
-                            }}
-
+                            dispatch({type: ActionType.AddPreview});
+                        }}
                         className="rounded-lg items-center pt-4 ml-20">
                         <Link href="/submit">+ Additional Photos</Link>
                     </button>
@@ -709,7 +766,7 @@ export default function SubmissionForm() {
                     <div className="p-6 h-[150px] w-[full] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                         <div>
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Note</h3>
-                            <input name="artist_statement" onChange={handleSubmissionChange} type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Your Artist Statement" required />
+                            <input name="artist_statement" onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})} type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Your Artist Statement" required />
                             <p className="text-xs text-gray-400 pt-1 pb-4"><em>Max 400 Characters</em></p>
                         </div>
                     </div>
@@ -720,7 +777,7 @@ export default function SubmissionForm() {
                     <div className="p-6 h-[250px] w-[full] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                         <div>
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Subject</h3>
-                            <input name="editor_note" onChange={handleSubmissionChange} type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Subject of your Note" required />
+                            <input name="editor_note" onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})} type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Subject of your Note" required />
                         
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Note</h3>
                             <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Note to Editor" required />
@@ -728,16 +785,16 @@ export default function SubmissionForm() {
                         </div>
                     </div>
                 </div>
-                <button className="absolute right-[176px] mt-[100px] rounded-lg bg-white  m-6 h-[40px] w-[200px]  items-center shadow-lg">
-                    <Link href="/">
+                <Link href="/">
+                    <button className="absolute right-[176px] mt-[100px] rounded-lg bg-white  m-6 h-[40px] w-[200px]  items-center shadow-lg">
                         Save & Continue Later
-                    </Link>
-                </button>
-                <button onClick={onSubmit} className="absolute right-[64px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg">
-                    <Link href="/">
+                    </button>
+                </Link>
+                <Link href="/">
+                    <button onClick={onSubmit} className="absolute right-[64px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg">
                         Submit
-                    </Link>
-                </button>
+                    </button>
+                </Link>
             </div>
         )
     }

@@ -154,6 +154,12 @@ const AdminGrid: React.FC<Props> = (properties) => {
 
     const rows: Submission[] = submissionArray;
 
+    console.log("Rows: ");
+    rows.forEach((row) => {
+        console.log(JSON.stringify(row, null, 2));
+    }
+    );
+
     const columns: GridColDef[] = [
         {
             field: "Drive",
@@ -347,7 +353,11 @@ const AdminGrid: React.FC<Props> = (properties) => {
             <DataGrid
                 rows={rows}
                 columns={columns}
-                getRowId={(row: any) =>  `${row.authorName}|${row.title}|${row.date}`}
+                getRowId={(row: Submission) => {
+                    console.log("Row: ");
+                    console.log(JSON.stringify(row, null, 2)); 
+                    return `${row.author}|${row.title}|${row.date}`
+                }}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{ toolbar: { showQuickFilter: true, quickFilterProps: { debounceMs: 500 } }}}
                 className="mx-20 mt-0 border-none"
