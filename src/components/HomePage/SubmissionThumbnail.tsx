@@ -53,18 +53,18 @@ const SubmissionThumbnail: React.FC<Props> = props => {
                 e.preventDefault();
                 window.location.href=contentDriveUrl;
             }}
-            className="group block flex-col items-start bg-[#ffffff3c] hover:bg-[#385FB8] cursor-pointer m-2 p-2.5 transition-colors rounded-lg hover:text-[#ffffff]">
-                <div className="max-w-md min-w-min w-2/4 bg-gray-200 m-auto">
+            className="group block flex flex-col items-start bg-[#ffffff3c] hover:bg-[#385FB8] cursor-pointer m-2 p-5 transition-colors rounded-lg hover:text-[#ffffff] w-full h-full">
+                <div className="w-full h-full bg-gray-200 m-auto"> {/*max-w-md min-w-min */}
                     <img src={imageUrl} className="max-w-full rounded-lg"></img>
                 </div>
-                <div className="max-w-md min-w-min flex justify-between py-2">
+                <div className="max-w-md flex min-w-min justify-between py-2">
                     <div className="text-[#385FB8] font-bold md:text-xl lg:text-2xl xl:text-2xl group-hover:text-white">{title}</div>
                     {/*PENDING*/}
                     {/* <div className="text-[#385FB8] md:text-sm font-bold group-hover:text-white border-2 border-[#385FB8] rounded-xl p-2  group-hover:border-white">PENDING</div> */}
                     {/*APPROVED*/}
                     <div className={status === Statuses.Approved
-                    ? "text-[#385FB8] md:text-sm font-bold group-hover:text-[#385FB8] bg-[#ffffff] rounded-xl p-2"
-                    : "text-[#385FB8] md:text-sm font-bold group-hover:text-white border-2 border-[#385FB8] rounded-xl p-2  group-hover:border-white"
+                    ? "bg-[#ffffff] rounded-xl p-2"
+                    : "text-[#385FB8] md:text-sm font-bold group-hover:text-white border-2 border-[#385FB8] rounded-xl p-2 group-hover:border-white"
                     }>{status.toLocaleUpperCase()} </div>
                     {/* <div className="text-[#385FB8] md:text-sm font-bold group-hover:text-[#385FB8] bg-[#ffffff] rounded-xl p-2">APPROVED</div> */}
                     {/* <div className="font-normal">{contentDriveUrl}</div> */}
