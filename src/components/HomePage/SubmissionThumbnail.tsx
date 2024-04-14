@@ -17,6 +17,11 @@ type Props = {
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
 
+export const openInNewTab = (url: string): void => {
+    const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
+    if (newWindow) newWindow.opener = null
+  }
+
 const SubmissionThumbnail: React.FC<Props> = props => {
     /* -------------- Props ------------- */
 
@@ -32,7 +37,7 @@ const SubmissionThumbnail: React.FC<Props> = props => {
         <button 
             onClick={(e) => {
                 e.preventDefault();
-                window.location.href=contentDriveUrl;
+                openInNewTab(contentDriveUrl);
             }}
             className="flex justify-center p-4 m-2 bg-white bg-opacity-30 rounded-lg shadow-md hover:shadow-lg"
         >
