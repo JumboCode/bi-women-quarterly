@@ -9,10 +9,6 @@ import { UserButton } from "@clerk/nextjs";
 
 // Import types
 import Submission from "@/types/Submission";
-import Preview from "@/types/Preview";
-import PreviewType from "@/types/PreviewType";
-import Statuses from "@/types/Statuses";
-import Mediums from "@/types/Mediums";
 
 // Import components
 import AdminGrid from "@/components/AdminHomePage/AdminGrid";

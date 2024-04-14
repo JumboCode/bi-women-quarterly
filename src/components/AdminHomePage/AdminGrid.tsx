@@ -52,7 +52,7 @@ const nameStyle = {
 /*------------------------------------------------------------------------*/
 /* -------------------------------- State ------------------------------- */
 /*------------------------------------------------------------------------*/
-  
+
 /* -------- State Definition -------- */
 
 type State = {
@@ -64,8 +64,8 @@ type State = {
 
 // Types of actions
 enum ActionType {
-// Set issues
-setIssues = 'setIssues',
+    // Set issues
+    setIssues = 'setIssues',
 }
 
 // Action definitions
@@ -84,17 +84,17 @@ type Action = {
  * @returns updated state
  */
 const reducer = (state: State, action: Action): State => {
-switch (action.type) {
-    case ActionType.setIssues: {
-    return {
-        ...state,
-        issues: action.newIssues,
-    };
+    switch (action.type) {
+        case ActionType.setIssues: {
+            return {
+                ...state,
+                issues: action.newIssues,
+            };
+        }
+        default: {
+            return state;
+        }
     }
-    default: {
-        return state;
-    }
-}
 };
 
 /*------------------------------------------------------------------------*/
@@ -132,12 +132,12 @@ const AdminGrid: React.FC<Props> = (properties) => {
     /* ------------------------- Component Functions ------------------------ */
     /*------------------------------------------------------------------------*/
 
-     /**
-     * Fetches the issue themes from the database and sets the issues state
-     * @author Austen Money
-     * @author Walid Nejmi
-     * @param event the event that has been changed
-     */
+    /**
+    * Fetches the issue themes from the database and sets the issues state
+    * @author Austen Money
+    * @author Walid Nejmi
+    * @param event the event that has been changed
+    */
     const fetchIssueThemes = async () => {
         try {
             await fetch("../api/issues/get", { method: "GET" })
@@ -171,10 +171,10 @@ const AdminGrid: React.FC<Props> = (properties) => {
             headerClassName: "drive-header",
             renderCell: (cellValues) => {
                 return (
-                    <button 
+                    <button
                         onClick={(e) => {
                             e.preventDefault();
-                            window.location.href=cellValues.row.mainSubmission.contentDriveUrl;
+                            window.location.href = cellValues.row.mainSubmission.contentDriveUrl;
                         }}
                         style={linkStyle}
                     >
@@ -279,11 +279,11 @@ const AdminGrid: React.FC<Props> = (properties) => {
             renderCell: (cellValues) => {
                 return (
                     cellValues.row.tags &&
-                        cellValues.row.tags.map((tag: string) =>
-                            <div style={tagStyle}>
-                                {tag}
-                            </div>
-                        )
+                    cellValues.row.tags.map((tag: string) =>
+                        <div style={tagStyle}>
+                            {tag}
+                        </div>
+                    )
                 );
             }
         },
@@ -329,6 +329,9 @@ const AdminGrid: React.FC<Props> = (properties) => {
         })();
     }, []);
 
+    const CustomNoRowsOverlay = () => (
+        <p className="flip">No submissions matched your search/filters.</p>
+    );
 
     /*------------------------------------------------------------------------*/
     /* ------------------------------ Rendering ----------------------------- */
@@ -353,27 +356,35 @@ const AdminGrid: React.FC<Props> = (properties) => {
             <DataGrid
                 rows={rows}
                 columns={columns}
-                getRowId={(row: Submission) => {
-                    console.log("Row: ");
-                    console.log(JSON.stringify(row, null, 2)); 
-                    return `${row.author}|${row.title}|${row.date}`
+                getRowId={(row: any) => `${row.authorName}|${row.title}|${row.date}`}
+                slots={{
+                    toolbar: GridToolbar,
+                    noResultsOverlay: CustomNoRowsOverlay,
                 }}
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{ toolbar: { showQuickFilter: true, quickFilterProps: { debounceMs: 500 } }}}
+                slotProps={{ toolbar: { showQuickFilter: true, quickFilterProps: { debounceMs: 500 } } }}
                 className="mx-20 mt-0 border-none"
                 getRowSpacing={params => ({
                     top: params.isFirstVisible ? 0 : 3,
                     bottom: params.isLastVisible ? 0 : 3
                 })}
+                autoHeight
                 sx={{
                     '&, [class^=MuiDataGrid]': { border: 'none' },
                     '& .MuiDataGrid-virtualScroller': {
                         transform: 'rotateX(180deg)',
-                        paddingBlock: "20px"
                     },
                     '& .MuiDataGrid-virtualScrollerContent': {
                         transform: 'rotateX(180deg)',
                     },
+                    // Fixes the CustomNoRowsOverlay text so that it's
+                    // unflipped and centered.
+                    '& .flip': {
+                        backgroundColor: "rgba(255, 255, 255, 0.3)",
+                        transform: 'rotateX(180deg)',
+                        paddingBlock: "45px",
+                        margin: 'auto',
+                        textAlign: 'center',
+                    }
                 }}
             />
         </Box>
