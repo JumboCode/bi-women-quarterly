@@ -112,7 +112,7 @@ const onSubmit = async () => {
     updatedSubmission.title = submission.mainSubmission.title;
 
     // upload submission to google drive
-    await fetch("http://localhost:3001/upload")
+    await fetch("https://backend-phi-wine.vercel.app/upload")
         .then(res => res.json())
         .then(res => res.body)
         .then(responses => {
@@ -278,7 +278,7 @@ const onSubmit = async () => {
                 type="submit"
                 className="absolute left-[10px] mt-[100px] rounded-lg bg-white  m-6 h-[40px] w-[90px]  items-center shadow-lg"
             >
-                <Link href="/">Cancel</Link>
+                <Link href="/home">Cancel</Link>
             </button>
             <button
                 type="submit"
@@ -286,7 +286,7 @@ const onSubmit = async () => {
                 onClick={onSubmit}
                 className="absolute bottom-[10px] right-[10px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg"
             >
-                <Link href="/">Submit</Link>
+                <Link href="/home">Submit</Link>
             </button>
         </div>
     );

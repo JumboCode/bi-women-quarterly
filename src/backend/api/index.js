@@ -37,7 +37,7 @@ app.use(express.static("public"));
 
 app.get("/thumbnail", async (req, res) => {
     const auth = new google.auth.GoogleAuth({
-        keyFile: "src/backend/key.json",
+        keyFile: "../key.json",
         scopes: ["https://www.googleapis.com/auth/drive"]
     });
 
@@ -57,7 +57,7 @@ app.get("/thumbnail", async (req, res) => {
 app.get("/upload", async (req, res) => {
     try {
         const auth = new google.auth.GoogleAuth({
-            keyFile: "src/backend/key.json",
+            keyFile: "../key.json",
             scopes: ["https://www.googleapis.com/auth/drive"]
         });
 
@@ -141,7 +141,9 @@ app.post("/update", upload.any("inputFile"), async (req, res) => {
     uploads.push(req.files[0]);
 });
 
-const port = 3001;
+const port = 3000;
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+
+module.exports = app;

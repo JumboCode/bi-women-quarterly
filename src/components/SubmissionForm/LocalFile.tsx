@@ -62,7 +62,7 @@ function LocalFile(props: Props) {
         formData.append(event.target.files[0].name, event.target.files[0]);
 
         // posts user response to server to be fetched in index.tsx
-        await fetch("http://localhost:3001/update", {
+        await fetch("https://backend-phi-wine.vercel.app/update", {
             method: "POST",
             body: formData
         })
