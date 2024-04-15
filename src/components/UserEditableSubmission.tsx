@@ -40,12 +40,24 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
     setSubmission({ ...submission, mainSubmission: { ...submission.mainSubmission, [name]: value} });
   };
 
+  const handleArtistStatementChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    const value = event.target.value;
+    setSubmission({ ...submission, artist_statement: value });
+  };
+  
+
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const img = URL.createObjectURL(e.target.files[0]);
       setSubmission({ ...submission, mainSubmission: { ...submission.mainSubmission, imageUrl: img } });
     }
   };
+
+  const handleNoteEditorChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    const value = event.target.value;
+    setSubmission({ ...submission, editor_note: value });
+  };
+  
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -195,12 +207,12 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             <div className="title p-[5%] text-left"> 
               <b style={{ color: "#395EB9" }}>Title*</b>
               <br></br>
-              <input type='text' name="title" value={submission.title} onChange={handleSubmissionChange}></input>
+              <input className="UserEdit-inputbox" type='text' name="title" value={submission.title} onChange={handleSubmissionChange}></input>
             </div>
             <div className="image-description text-black p-[5%] text-left">
               <b style={{ color: "#395EB9" }}>Description</b>
               <br></br>
-              <textarea name="description" value={submission.mainSubmission.description} onChange={handleMainSubmissionChange}> 
+              <textarea className="UserEdit-inputbox" name="description" value={submission.mainSubmission.description} onChange={handleMainSubmissionChange}> 
               </textarea>
             </div>
           </div>
@@ -224,9 +236,9 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             <div className="title p-[5%] text-left"> 
               <b style={{ color: "#395EB9" }}>My process</b>
               <br></br>
-              <span>This photo captures the midway point of my painting, 
-                offering a glimpse into the evolving work as it takes shape on 
-                the canvas.</span>
+              {submission.additionalReferences?.map((image, index) => (
+                <span key={index}>{image.description}</span>
+            ))}
             </div>
           </div>
         </div>
@@ -234,22 +246,13 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
         <div>
           <div className="font-bold UserEdit-header">Artist Statement</div>
           <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
-          <textarea className="UserEdit-inputbox" 
-            value="Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
-            Quasi sint pariatur, praesentium, accusantium hic ut enim repellendus 
-            ratione ipsum, illo voluptatem. Vel pariatur adipisci quidem dolorum, 
-            exercitationem dicta. Vero, officia? Lorem, ipsum dolor sit amet consectetur 
-            adipisicing elit. Tenetur nobis temporibus iusto odio vitae amet ex, 
-            nemo quae veniam rem dolore sequi aliquam eius even.">
-           </textarea>
+          <textarea className="UserEdit-inputbox" value={submission.artist_statement}  onChange={handleArtistStatementChange}> </textarea>
           </div>
         </div>
         <div>
           <div className="font-bold UserEdit-header">Note to editor</div>
           <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
-          <textarea className="UserEdit-inputbox" 
-            value="Note to editor: Lorem ipsum dolor sit amet consectetur, adipisicing elit.">
-           </textarea>
+          <textarea className="UserEdit-inputbox" value={submission.editor_note}  onChange={handleNoteEditorChange}> </textarea>
           </div>
         </div>
         
@@ -335,9 +338,9 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             <div className="title p-[5%] text-left"> 
               <b style={{ color: "#395EB9" }}>My process</b>
               <br></br>
-              <span>This photo captures the midway point of my painting, 
-                offering a glimpse into the evolving work as it takes shape on 
-                the canvas.</span>
+              {submission.additionalReferences?.map((image, index) => (
+                <span key={index}>{image.description}</span>
+            ))}
             </div>
           </div>
         </div>
@@ -345,19 +348,14 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
         <div className="mt-[10%] ">
           <div className="font-bold UserEdit-header">Artist Statement</div>
           <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
-            Quasi sint pariatur, praesentium, accusantium hic ut enim repellendus 
-            ratione ipsum, illo voluptatem. Vel pariatur adipisci quidem dolorum, 
-            exercitationem dicta. Vero, officia? Lorem, ipsum dolor sit amet consectetur 
-            adipisicing elit. Tenetur nobis temporibus iusto odio vitae amet ex, 
-            nemo quae veniam rem dolore sequi aliquam eius even.
+            {submission.artist_statement}
           </div>
         </div>
 
         <div className="mt-[10%]">
           <div className="font-bold UserEdit-header">Note to editor</div>
           <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
-            {submission.editors}
+            {submission.editor_note}
           </div>
         </div>
         
