@@ -53,6 +53,14 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
     }
   };
 
+  const handleAdditionalImageDescriptionChange = (index: number, event: ChangeEvent<HTMLTextAreaElement>) => {
+    const value = event.target.value;
+    const updatedAdditionalReferences = [...(submission.additionalReferences ?? [])];
+    updatedAdditionalReferences[index] = { ...updatedAdditionalReferences[index], description: value };
+    setSubmission({ ...submission, additionalReferences: updatedAdditionalReferences });
+  };
+  
+  
   const handleNoteEditorChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const value = event.target.value;
     setSubmission({ ...submission, editor_note: value });
@@ -237,7 +245,9 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
               <b style={{ color: "#395EB9" }}>My process</b>
               <br></br>
               {submission.additionalReferences?.map((image, index) => (
-                <span key={index}>{image.description}</span>
+                <textarea className="UserEdit-inputbox" key={index} onChange={(event) => handleAdditionalImageDescriptionChange(index, event)}>
+                  {image.description}
+                </textarea>
             ))}
             </div>
           </div>
