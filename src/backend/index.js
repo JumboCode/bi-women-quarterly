@@ -12,7 +12,7 @@ let uploads = [];
 
 const storage = multer.diskStorage({
     destination: function (req, file, callback) {
-        const uploadDir = path.join(path.dirname(__dirname), "..", "uploads");
+        const uploadDir = "/tmp/";
         callback(null, `${uploadDir}`);
     },
     filename: function (req, file, callback) {
@@ -28,7 +28,6 @@ const storage = multer.diskStorage({
             `${file.originalname.split(".")[0]}-${date}.${extension}`
         );
     }
-    // hihi:
 });
 
 const upload = multer({ storage: storage });
@@ -37,7 +36,7 @@ app.use(express.static("public"));
 
 app.get("/thumbnail", async (req, res) => {
     const auth = new google.auth.GoogleAuth({
-        keyFile: "src/backend/key.json",
+        keyFile: "key.json",
         scopes: ["https://www.googleapis.com/auth/drive"]
     });
 
@@ -57,7 +56,7 @@ app.get("/thumbnail", async (req, res) => {
 app.get("/upload", async (req, res) => {
     try {
         const auth = new google.auth.GoogleAuth({
-            keyFile: "src/backend/key.json",
+            keyFile: "key.json",
             scopes: ["https://www.googleapis.com/auth/drive"]
         });
 
@@ -135,13 +134,18 @@ app.get("/upload", async (req, res) => {
             error: "An error occurred during file upload."
         });
     }
+
+    res.status(200).send("");
 });
 
 app.post("/update", upload.any("inputFile"), async (req, res) => {
     uploads.push(req.files[0]);
+    res.status(200).send("");
 });
 
-const port = 3001;
+const port = 3000;
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+
+module.exports = app;
