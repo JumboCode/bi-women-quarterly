@@ -26,8 +26,8 @@ const ShowSubmissionThumbnails: React.FC<Props> = props => {
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
     return (
-        <div className="mx-auto flex">
-            <div className="grid grid-cols-3 m-3 min-w-80 min-auto shrink-0">
+        <div className=" flex "> {/* mx-auto */}
+            <div className="grid gap-3 grid-cols-3 flex m-3 min-w-80 min-auto"> {/*  */}
                 {submissions.map(submission => {
                     return (
                         <SubmissionThumbnail
