@@ -225,32 +225,32 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             </div>
           </div>
         </div>
-
-        <div className="flex flex-row  w-[100%] justify-between mt-[10%]">
-          <div className="additional-images"> 
+          <div>
             {submission.additionalReferences?.map((image, index) => (
-            <div className="image-container flex items-start" key={index}>
-            <img
-              src={image.imageUrl}
-              alt={`Additional Image ${index}`}
-              className="image max-w-[100%] rounded-lg"
-              
-            />
-          </div>
-            ))}
-          </div>
+            <div className="flex flex-row w-[100%] justify-between mt-[10%]" key={index}>
+              <div className="additional-images"> 
+                <div className="image-container flex items-start">
+                  <img
+                    src={image.imageUrl}
+                    alt={`Additional Image ${index}`}
+                    className="image max-w-[100%] rounded-lg"
+                  />
+                </div>
+              </div>
 
-          <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
-            <div className="title p-[5%] text-left"> 
-              <b style={{ color: "#395EB9" }}>My process</b>
-              <br></br>
-              {submission.additionalReferences?.map((image, index) => (
-                <textarea className="UserEdit-inputbox" key={index} onChange={(event) => handleAdditionalImageDescriptionChange(index, event)}>
-                  {image.description}
-                </textarea>
-            ))}
+              <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
+                <div className="title p-[5%] text-left"> 
+                  <b style={{ color: "#395EB9" }}>My process</b>
+                  <br></br>
+                  <textarea
+                    className="UserEdit-inputbox"
+                    value={image.description}
+                    onChange={(event) => handleAdditionalImageDescriptionChange(index, event)}
+                  />
+                </div>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
         
         <div>
@@ -332,27 +332,29 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
           </div>
         </div>
 
-        <div className="flex flex-row  w-[100%] justify-between mt-[10%]">
-          <div className="additional-images">
+        <div>
+          
             {submission.additionalReferences?.map((image, index) => (
-              <img
-                key={index}
-                src={image.imageUrl}
-                alt={`Additional Image ${index}`}
-                className="max-w-[100%] mr-4 rounded-lg"
-              />
-            ))}
-          </div>
+            <div className="flex flex-row w-[100%] justify-between mt-[10%]" key={index}>
+              <div className="additional-images"> 
+                <div className="image-container flex items-start">
+                  <img
+                    src={image.imageUrl}
+                    alt={`Additional Image ${index}`}
+                    className="image max-w-[100%] rounded-lg"
+                  />
+                </div>
+              </div>
 
-          <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
-            <div className="title p-[5%] text-left"> 
-              <b style={{ color: "#395EB9" }}>My process</b>
-              <br></br>
-              {submission.additionalReferences?.map((image, index) => (
-                <span key={index}>{image.description}</span>
-            ))}
+              <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
+                <div className="title p-[5%] text-left"> 
+                  <b style={{ color: "#395EB9" }}>My process</b>
+                  <br></br>
+                  <span>{image.description}</span>
+                </div>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
         
         <div className="mt-[10%] ">
