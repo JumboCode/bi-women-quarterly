@@ -23,21 +23,29 @@ const SubmissionThumbnail: React.FC<Props> = props => {
     // Destructure all props
     const { preview } = props;
 
-    const { type, imageUrl, title, description } = preview;
+    const { imageUrl, title, contentDriveUrl } = preview;
 
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
     return (
-        <div>
-            <div className="flex-col items-start">
-                <div className="max-w-md min-w-min w-2/4 bg-gray-200"><img src={imageUrl} className="max-w-full"></img></div>
-                <div className="max-w-md min-w-min w-2/4">
-                    <div className="font-normal">{title}</div>
+        <button 
+            onClick={(e) => {
+                e.preventDefault();
+                window.location.href=contentDriveUrl;
+            }}
+            className="flex justify-center p-4 m-2 bg-white bg-opacity-30 rounded-lg shadow-md hover:shadow-lg"
+        >
+            <div className="flex flex-col justify-center ms-8">
+                <div className="w-3/4">
+                    <img src={imageUrl} className=""></img>
+                </div>
+                <div className="w-3/4 b-0">
+                    <div className="text-primary-blue text-base text-md font-semibold">{title}</div>
                 </div>
             </div>
             <br />
-        </div>
+        </button>
     );
 };
 

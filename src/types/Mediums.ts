@@ -9,7 +9,7 @@ enum Mediums {
     Poetry = "Poetry",
     VisualArt = "Visual Art",
     Other = "Other",
-    None = "None",
+    None = "None"
 }
 
 export default Mediums;

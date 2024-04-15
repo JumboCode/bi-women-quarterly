@@ -7,7 +7,7 @@
  */
 
 // import components
-import SubmissionThumbnail from "./SubmissionThumbnail"; 
+import SubmissionThumbnail from "./SubmissionThumbnail";
 // import types
 import Preview from "@/types/Preview";
 
@@ -27,11 +27,11 @@ const ShowSubmissionThumbnails: React.FC<Props> = props => {
     /*----------------------------------------*/
     return (
         <div className="mx-auto">
-            <div className="grid grid-cols-4 mx-20 my-20">
-                {previews.map((preview) => {
+            <div className="grid grid-cols-4 m-4">
+                {previews.map(preview => {
                     return (
                         <SubmissionThumbnail
-                            key={preview.title}
+                            key={`${preview.title}|${preview.imageUrl}|${preview.contentDriveUrl}`}
                             preview={preview}
                         ></SubmissionThumbnail>
                     );
