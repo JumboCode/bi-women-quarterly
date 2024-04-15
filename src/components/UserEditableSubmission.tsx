@@ -3,11 +3,11 @@ import React, { useState, ChangeEvent } from 'react';
 import Submission from '@/types/Submission';
 import PreviewType from '@/types/PreviewType';
 import Issues from '@/types/Issues';
+
 // Import FontAwesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-
 
 
 // import '.src/styles/ViewSub.css'; 
@@ -30,13 +30,14 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
 
   /* ------------- Actions ------------ */
 
-  const handleChange = (key: keyof Submission, value: string) => {
-    setSubmission({ ...submission, [key]: value });
+  const handleSubmissionChange = (e : React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+    setSubmission({ ...submission, [e.target.name]: e.target.value});
   };
 
-  const handleTextAreaChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    const { name, value } = event.target;
-    handleChange(name as keyof Submission, value);
+  const handleMainSubmissionChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setSubmission({ ...submission, mainSubmission: { ...submission.mainSubmission, [name]: value} });
   };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -171,7 +172,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
                   </select>
                   &nbsp;&nbsp;&nbsp;&nbsp;
 
-                  <select name="issue" style={{ background: 'FFFFFF80', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', padding: '6px'}}>
+                  <select name="PreviewType" style={{ background: 'FFFFFF80', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', padding: '6px'}}>
                       <option value="Submission">{PreviewType.Submission}</option>
                       <option value="addRef">{PreviewType.AdditionalReference}</option>
                   </select>
@@ -194,12 +195,13 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             <div className="title p-[5%] text-left"> 
               <b style={{ color: "#395EB9" }}>Title*</b>
               <br></br>
-              <span>{submission.title}</span>
+              <input type='text' name="title" value={submission.title} onChange={handleSubmissionChange}></input>
             </div>
             <div className="image-description text-black p-[5%] text-left">
               <b style={{ color: "#395EB9" }}>Description</b>
               <br></br>
-              <span>{submission.mainSubmission.description}</span>
+              <textarea name="description" value={submission.mainSubmission.description} onChange={handleMainSubmissionChange}> 
+              </textarea>
             </div>
           </div>
         </div>
@@ -212,6 +214,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
               src={image.imageUrl}
               alt={`Additional Image ${index}`}
               className="image max-w-[100%] rounded-lg"
+              
             />
           </div>
             ))}
@@ -250,7 +253,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
           </div>
         </div>
         
-        <div className="bottom-0 right-0 w-full flex flex-row justify-end">
+        <div className="bottom-0 right-0 w-full flex flex-row justify-end my-[10%]">
           <form onSubmit={handleSave} className="bg-pink p-3 flex">
             <button type="button" onClick={handleEdit} className="mr-2 UserEdit-bottombutton">
               Save & Continue Later
@@ -323,7 +326,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
                 key={index}
                 src={image.imageUrl}
                 alt={`Additional Image ${index}`}
-                className="max-w-[40%] mr-4 rounded-lg"
+                className="max-w-[100%] mr-4 rounded-lg"
               />
             ))}
           </div>
@@ -354,7 +357,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
         <div className="mt-[10%]">
           <div className="font-bold UserEdit-header">Note to editor</div>
           <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
-            Note to editor: Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+            {submission.editors}
           </div>
         </div>
         
