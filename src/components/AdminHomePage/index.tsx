@@ -421,118 +421,95 @@ export default function AdminHomePage() {
                 {showModal ? (
                     <>
                     <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                            <div className="pt-[10px] w-1/2 border-0 rounded-md shadow-lg relative flex flex-col bg-[#dcadff] outline-none focus:outline-none">
-                                <div className="absolute absolute right-[10px]">
-                                    <button onClick={() => setShowModal(false)}>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth="2"
-                                            stroke="#385eb9"
-                                            className="w-7 h-7"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M6 18L18 6M6 6l12 12"
-                                            />
-                                        </svg>
-                                    </button>
-                                </div>
-
+                        <div className="pt-[10px] w-1/2 border-0 rounded-md shadow-lg relative flex flex-col bg-[#dcadff] outline-none focus:outline-none">
+                            <div className="absolute absolute right-[10px]">
+                                <button onClick={() => setShowModal(false)}>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth="2"
+                                        stroke="#385eb9"
+                                        className="w-7 h-7"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M6 18L18 6M6 6l12 12"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div>
                                 <div>
-                                    <div>
-                                        <div className="mb-[10px] flex items-center justify-center text-xl text-primary-blue font-bold">
-                                            Update Issues
-                                        </div>
+                                    <div className="mt-[10px] mb-[10px] flex items-center justify-center text-xl text-primary-blue font-bold">
+                                        Current Issues
+                                    </div>
 
-                                        <div className="p-[10px]">
-                                            
-                                            <div>
-                                                {issues.map(([id, status, title]) => (
-                                                    <div className="flex">
-                                                        <div onClick={() => deleteIssue(id)} className="inline-block flex items-center justify-center pl-[10px]">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#385eb9" className="w-6 h-6">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                                            </svg>
-                                                        </div>
+                                    <div className="p-[10px]">
+                                        <div>
+                                            {issues.map(([id, status, title]) => (
+                                                <div className="flex">
+                                                    <div onClick={() => deleteIssue(id)} className="inline-block flex items-center justify-center pl-[10px]">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#385eb9" className="w-6 h-6">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                                        </svg>
+                                                    </div>
 
-                                                        <div key={title} className="inline-block shadow-lg flex inline-block align-middle pl-[10px] w-full h-[45px] rounded-md shadow-inner items-center m-[10px] text-primary-blue text-xl  bg-[#e3cafc]">
-                                                            {title}
-                                                        </div>
+                                                    <div key={title} className="inline-block shadow-lg flex inline-block align-middle pl-[10px] w-full h-[45px] rounded-md shadow-inner items-center m-[10px] text-primary-blue text-xl  bg-[#e3cafc]">
+                                                        {title}
+                                                    </div>
+                                                        
+                                                    <div>
+                                                        {(status == "Current") ? (
+                                                            <div>
+                                                                <div className="flex items-center mb-4">
+                                                                    <input onClick={() => changeStatus(title)} checked={status == "Current"} id="default-radio-1" type="radio" value="" name="default-radio" className="hidden p-[0px] m-[0px] text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                                                                </div>
 
-                                                        {(checkStatus(status)) ? (
-                                                            <div onClick={() => changeStatus(title)} className="inline-block flex items-center justify-center pr-[10px]">
-                                                                <svg  xmlns="http://www.w3.org/2000/svg" fill="#385eb9" viewBox="0 0 24 24" stroke-width="1.5" stroke="#385eb9" className="w-6 h-6">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-                                                                </svg>
+                                                                <label className="inline-block flex items-center justify-center pr-[10px]">
+                                                                    <svg onClick={() => changeStatus(title)} xmlns="http://www.w3.org/2000/svg" fill="#385eb9" viewBox="0 0 24 24" stroke-width="1.5" stroke="#385eb9" className="w-6 h-6">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                                                                    </svg>
+                                                                </label>
                                                             </div>
                                                         ) : (
-                                                            <div onClick={() => changeStatus(title)} className="inline-block flex items-center justify-center pr-[10px]">
-                                                                <svg  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#385eb9" className="w-6 h-6">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-                                                                </svg>
+                                                            <div>
+                                                                <div className="flex items-center mb-4">
+                                                                    <input onClick={() => changeStatus(title)} id="default-radio-1" type="radio" value="" name="default-radio" className="hidden text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                                                                </div>
+                                                                
+                                                                <div className="inline-block flex items-center justify-center pr-[10px]">
+                                                                    <svg onClick={() => changeStatus(title)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#385eb9" className="w-6 h-6">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                                                                    </svg>
+                                                                </div>
                                                             </div>
                                                         )}
-
-
-
-{/* <div class="flex items-center">
-    <input checked id="default-radio-2" type="radio" value="" name="default-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-    <label for="default-radio-2" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Checked state</label>
-</div> */}
-
-                                                            {/* {(status == "Current") ? (
-//                                                             <div className="flex items-center mb-4">
-//                                                                 <input onClick={() => changeStatus(title)} checked={status == "Current"} id="default-radio-1" type="radio" value="" name="default-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-//                                                             </div>
-                                                                <div className="inline-block flex items-center justify-center pr-[10px]">
-                                                                    <svg onClick={() => changeStatus(title)} xmlns="http://www.w3.org/2000/svg" fill="#385eb9" viewBox="0 0 24 24" stroke-width="1.5" stroke="#385eb9" className="w-6 h-6">
-                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-                                                                    </svg>
-                                                                </div>
-                                                               ) : 
-//                                                                 <div className="flex items-center mb-4">
-//                                                                     <input onClick={() => changeStatus(title)} id="default-radio-1" type="radio" value="" name="default-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-//                                                                 </div>
-                                                                <div className="inline-block flex items-center justify-center pr-[10px]">
-                                                                    <svg onClick={() => changeStatus(title)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#385eb9" className="w-6 h-6">
-                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-                                                                    </svg>
-                                                                </div>
-                                                            } */}
-
-
-                                                        
                                                     </div>
-                                                ))}
-                                            </div>
+                                                </div>
+                                            ))}
+                                        </div>
 
+                                        <div>
                                             {addIssue ? (
                                                 <div>
-                                                    {/* <div className="w-72"> */}
-
-                                                    {/* <div key={title} className="inline-block shadow-lg flex inline-block align-middle pl-[10px] w-full h-[45px] rounded-md shadow-inner items-center m-[10px] text-primary-blue text-xl  bg-[#e3cafc]">
-                                                            {title}
-                                                        </div> */}
-                                                        {/* <div className="relative w-full min-w-[200px] h-10"> */}
-                                                        <div className="inline-block shadow-lg flex inline-block align-middle  ml-[44px] mr-[44px] h-[45px] rounded-md shadow-inner items-center m-[10px] text-[#5a5a5b] text-xl">
-                                                            <input
+                                                    <div className="inline-block shadow-lg flex inline-block align-middle  ml-[44px] mr-[44px] h-[45px] rounded-md shadow-inner items-center m-[10px] text-[#5a5a5b] text-xl">
+                                                        <input
                                                             className="w-full h-full rounded-md pl-[10px] pr-[10px] bg-[#f6e7ff] placeholder-shown:italic"
                                                             placeholder="Type new issue title"
-                                                            onChange={handleInputChange}/>
-                                                        </div>
-                                                    {/* </div>  */}
+                                                            onChange={handleInputChange}
+                                                        />
+                                                    </div>
 
-                                                    <div onClick={() => saveNewIssue()} className="pl-[10px] mt-[40px] mb-[30px] ml-[44px] mr-[44px] flex inline-block align-middle justify-center h-[45px] rounded-md items-center bg-[#ff4295] text-white font-bold text-xl">
-                                                            Save new issue 
+                                                    <div onClick={() => saveNewIssue()} className="pl-[10px] mt-[20px] mb-[30px] ml-[44px] mr-[44px] flex inline-block align-middle justify-center h-[45px] rounded-md items-center bg-[#ff4295] text-white font-bold text-xl">
+                                                        Save New Issue 
                                                     </div>
                                                 </div>
 
                                             ) : (
 
-                                                <div onClick={() => setAddIssue(true)} className="mt-[40px] mb-[30px] ml-[44px] mr-[44px] border-dashed border-2 border-[#958cae] flex inline-block align-middle justify-center h-[45px] rounded-md items-center border-[#5a5a5b] text-[#5a5a5b] text-m">
+                                                <div onClick={() => setAddIssue(true)} className="mt-[10px] mb-[30px] ml-[44px] mr-[44px] border-dashed border-2 border-[#958cae] flex inline-block align-middle justify-center h-[45px] rounded-md items-center border-[#5a5a5b] text-[#5a5a5b] text-m">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                                     </svg>
@@ -543,6 +520,7 @@ export default function AdminHomePage() {
                                                 </div>
 
                                             )}
+                                        </div>
 
                                         </div>
 
