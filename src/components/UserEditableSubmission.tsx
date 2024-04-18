@@ -1,8 +1,9 @@
 // ... other imports
-import React, { useState, ChangeEvent } from 'react'; 
+import React, {useState, ChangeEvent, useEffect, useReducer,  } from 'react'; 
 import Submission from '@/types/Submission';
 import PreviewType from '@/types/PreviewType';
-import Issues from '@/types/Issues';
+import Issues from '@/types/Issues';  
+
 
 // Import FontAwesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -47,14 +48,28 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
     }
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Save logic goes here
-    setEditOn(false);
+    try {
+      // add submission to database
+      await fetch("../api/submissions/edit", {
+          method: "PUT",
+          body: JSON.stringify({
+              submission: submission
+          })
+      });
+      } catch (error) {
+          console.log(error);
+      }
   };
 
   const handleEdit = () => {
-    setEditOn(true);
+    if (editOn == false) {
+      setEditOn(true);
+    } else {
+      setEditOn(false);
+    }
+    
   };
 
 
@@ -132,8 +147,8 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
   const body = editOn ? (
       <div className="flex flex-row h-screen UserEdit-container m-[0px] justify-around overflow-y-scroll" style={{backgroundImage: 'linear-gradient(to bottom right, #FFD3CB, #E7A5FF, #B3C9FF)'}}>
         <div className="w-[70%] mt-[5%]">
-          <form onSubmit={handleEdit} className="flex flex-row justify-start mb-4">
-            <button type="submit" className="text-white px-4 py-2 mb-4 inline-block absolute top-0 left-0" style={{ color: '#395EB9', fontSize: '24px' }}>
+          <form className="flex flex-row justify-start mb-4">
+            <button className="text-white px-4 py-2 mb-4 inline-block absolute top-0 left-0" style={{ color: '#395EB9', fontSize: '24px' }}>
             <FontAwesomeIcon icon={faArrowLeft} /> Back
             </button>
           </form>
@@ -254,11 +269,11 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
         </div>
         
         <div className="bottom-0 right-0 w-full flex flex-row justify-end my-[10%]">
-          <form onSubmit={handleSave} className="bg-pink p-3 flex">
+          <form onSubmit={onSubmit} className="bg-pink p-3 flex">
             <button type="button" onClick={handleEdit} className="mr-2 UserEdit-bottombutton">
-              Save & Continue Later
+              Cancel
             </button>
-            <button type="submit" className="UserEdit-bottombuttonred">
+            <button type="submit" onClick={handleEdit} className="UserEdit-bottombuttonred">
               Submit
             </button>
           </form>
@@ -357,7 +372,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
         <div className="mt-[10%]">
           <div className="font-bold UserEdit-header">Note to editor</div>
           <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
-            {submission.editors}
+            {submission.editor_note}
           </div>
         </div>
         
@@ -365,7 +380,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
           <button type="button" className="UserEdit-bottombutton">
             Delete Submission
           </button>
-          <form onSubmit={handleSave} className="bg-pink p-3 flex items-center ">
+          <form onSubmit={onSubmit} className="bg-pink p-3 flex items-center ">
             <div className="submission-date text-white pr-10">
               Submitted: {submission.date}
             </div>
