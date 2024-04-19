@@ -7,6 +7,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const db = client.db("BiWomenQuarterly");
 
         const collection = await db.collection("Issues").find({}).toArray();
+        
+        console.log("HHERHEHRHHER");
+        console.log(collection);
 
         res.status(201).json({ success: true, data: collection });
     } catch (e) {
