@@ -283,7 +283,7 @@ export default function SubmissionForm() {
     // To decide whether to render   
     const [showFile, setShowFile] = useState(false);
     // storing string of file name
-    const [fileArray, setFileArray] = useState<FormData[]>([]);  
+    const [fileArray, setFileArray] = useState<FormData>(new FormData());  
     // storing url of main submission file use this to store submission locally
     const [file, setFile] = useState<File | null>(); 
 
@@ -332,37 +332,30 @@ export default function SubmissionForm() {
         console.log("Submitting: ", updatedSubmission.title);
         console.log("File Array: ", fileArray);
 
-        fileArray.forEach(async (file) => {
-            console.log("Submitting to server.");
-            // posts user response to server to be fetched in index.tsx
-            await fetch("https://backend-phi-wine.vercel.app/update", {
-                method: "POST",
-                body: file,
-            })
-            .catch(err => console.error(err));
-         });
-
-         console.log("All done")
-         await new Promise(r => setTimeout(r, 1000));
-
-        await fetch("https://backend-phi-wine.vercel.app/upload")
-        .then(res => res.json())
-        .then(res => res.body)
-        .then(responses => {
-            console.log(`response length: ${responses.length}`);
-            console.log(responses);
-            // Update main submission with drive info
-            if (responses[0]) {
-                updatedSubmission.mainSubmission.contentDriveUrl = `https://drive.google.com/file/d/${responses[0].id}`;
-                updatedSubmission.mainSubmission.imageUrl = responses[0].thumbnail;
-            }
-            // Update additional references with drive info
-            if (updatedSubmission.additionalReferences && responses.length > 1) {
-                for (let i = 1; i < responses.length; i++) {
-                    updatedSubmission.additionalReferences[i - 1].contentDriveUrl = `https://drive.google.com/file/d/${responses[i].id}`;
-                    updatedSubmission.additionalReferences[i - 1].imageUrl = responses[i].thumbnail;
+        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/update`, {
+            method: "POST",
+            body: fileArray
+        })
+        .then(async () => {
+            await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/upload`)
+            .then(res => res.json())
+            .then(res => res.body)
+            .then(responses => {
+                console.log(`response length: ${responses.length}`);
+                console.log(responses);
+                // Update main submission with drive info
+                if (responses[0]) {
+                    updatedSubmission.mainSubmission.contentDriveUrl = `https://drive.google.com/file/d/${responses[0].id}`;
+                    updatedSubmission.mainSubmission.imageUrl = responses[0].thumbnail;
                 }
-            }
+                // Update additional references with drive info
+                if (updatedSubmission.additionalReferences && responses.length > 1) {
+                    for (let i = 1; i < responses.length; i++) {
+                        updatedSubmission.additionalReferences[i - 1].contentDriveUrl = `https://drive.google.com/file/d/${responses[i].id}`;
+                        updatedSubmission.additionalReferences[i - 1].imageUrl = responses[i].thumbnail;
+                    }
+                }
+            })
         })
         .then(async () => {
             try {
@@ -376,7 +369,8 @@ export default function SubmissionForm() {
             } catch (error) {
                 console.log(error);
             }
-        });
+        })
+        .catch(err => console.error(err));
     };
 
     // /**
@@ -412,14 +406,8 @@ export default function SubmissionForm() {
      * @returns updates fileArray
      */
     const handleFileChange = (index : number, event : any) => {
-        let formData = new FormData();
-        formData.append(event.target.files[0].name, event.target.files[0]);
-
         console.log("appending file: ", event.target.files[0].name, "which is at index: ", index)
-
-        const newFileArray = fileArray;
-        newFileArray.push(formData)
-        setFileArray(newFileArray);
+        fileArray.append(event.target.files[0].name, event.target.files[0]);
 
         if (index == -1) { // Adding main submission file
             setShowFile(true);
@@ -438,21 +426,7 @@ export default function SubmissionForm() {
      */
     const removeFile = (index : number) => {
         const nameToDelete = previews[index].filename
-        
-        // for every index in fileArray, check key until find match
-        var fileArrayInd = 0;
-        while ((!fileArray[fileArrayInd].has(nameToDelete)) && (fileArrayInd < fileArray.length)) {
-            fileArrayInd++ 
-        }
-
-        var newFileArray = fileArray;
-        // if found valid index with that key, delete that element from array
-        // Note: should always find key
-        if (fileArrayInd < fileArray.length) {
-            newFileArray.splice(fileArrayInd)
-        }
-
-        setFileArray(newFileArray)
+        fileArray.delete(nameToDelete);
     }
 
 
