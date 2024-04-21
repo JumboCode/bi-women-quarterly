@@ -23,7 +23,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         // get the document to substitute in
         const body = JSON.parse(req.body);
-
+        
         const documentID = body["id"];
         // replaces the old document with the new one by ID
         await collect.replaceOne({ id: documentID }, body);
