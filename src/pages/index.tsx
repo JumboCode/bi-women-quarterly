@@ -54,18 +54,25 @@ export default function Home() {
                         description: "Additional reference description",
                         imageUrl: "https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350",
                         contentDriveUrl: ""
+                    },
+                    {
+                        title: "Additional Reference",
+                        type: PreviewType.Submission,
+                        description: "Additional reference description",
+                        imageUrl: "https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350",
+                        contentDriveUrl: ""
                     }
                 ],
     }
     const [submission, setSubmission] = useState<Submission>(initialSubmission);
     
-    useEffect(() => {
-        (async () => {
-            const submission = await getSubmission("use_test");
-            console.log("here", submission[0].submission);
-            setSubmission(submission[0].submission);
-        })();
-    }, []);
+    // useEffect(() => {
+    //     (async () => {
+    //         const submission = await getSubmission("use_test");
+    //         console.log("here", submission[0].submission);
+    //         setSubmission(submission[0].submission);
+    //     })();
+    // }, []);
 
     return (
         <div>

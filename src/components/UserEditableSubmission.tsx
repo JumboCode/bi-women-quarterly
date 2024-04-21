@@ -3,6 +3,7 @@ import React, { useState, ChangeEvent, useEffect, useReducer, } from 'react';
 import Submission from '@/types/Submission';
 import Preview from '@/types/Preview';
 import PreviewType from '@/types/PreviewType';
+import Mediums from '@/types/Mediums';
 import Issues from '@/types/Issues';
 
 
@@ -14,7 +15,6 @@ import { error } from 'console';
 import { init } from 'next/dist/compiled/webpack/webpack';
 
 
-// import '.src/styles/ViewSub.css'; 
 type Props = {
   submission: Submission;
 };
@@ -30,8 +30,9 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
   const [editOn, setEditOn] = useState<boolean>(false);
 
   type State = {
-    // additionalRef: AdditionalRef[];
     submission: Submission;
+    additionalRefIndex: number;
+    initialAddRefIndex: number;
   }
 
   enum ActionType {
@@ -41,8 +42,6 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
     UpdateMainSubmission = 'UpdateMainSubmission',
     // Update preview
     UpdateAdditional = 'UpdateAdditional',
-    //  // Update preview reference
-    //  UpdatePreviewRef = 'UpdatePreviewRef',
     // Add a new preview
     AddAdditionalRef = 'AddAdditionalRef',
     // Remove a preview
@@ -78,16 +77,6 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
       // Value to update to
       value: string;
     }
-    // | {
-    //     // Action type
-    //     type: ActionType.UpdatePreviewRef,
-    //     // Index of preview to update
-    //     index: number;
-    //     // Field to update
-    //     field: string;
-    //     // Value to update to
-    //     value: string | boolean;
-    // }
     | {
       // Action type
       type: ActionType.AddAdditionalRef,
@@ -146,10 +135,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             ...state.submission.additionalReferences.slice(0, action.index),
             {
               ...state.submission.additionalReferences[action.index],
-              preview: {
-                ...state.submission.additionalReferences[action.index],
-                [action.field]: action.value,
-              },
+              [action.field]: action.value,
             },
             ...state.submission.additionalReferences.slice(action.index + 1)
           ]
@@ -179,6 +165,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
           const additionalReferences = state.submission.additionalReferences || [];
           return {
             ...state,
+            additionalRefIndex: additionalReferences.length,
             submission: { 
               ...state.submission,
               additionalReferences: [...additionalReferences, {
@@ -206,6 +193,8 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
       }
       case ActionType.Cancel: {
         return {
+          ...state,
+          additionalRefIndex: state.initialAddRefIndex,
           submission: action.submission,
         }
       }
@@ -217,16 +206,18 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
 
   const initialState = {
       submission: initialSubmission,
+      additionalRefIndex: initialSubmission.additionalReferences ?  initialSubmission.additionalReferences.length - 1 : -1,
+      initialAddRefIndex: initialSubmission.additionalReferences ?  initialSubmission.additionalReferences.length - 1 : -1,
   }
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const handleSubmissionChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleSubmissionChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLSelectElement>) => {
     // setSubmission({ ...submission, [e.target.name]: e.target.value });
     dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})
   };
 
-  const handleMainSubmissionChange = (e: ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLInputElement>) => {
+  const handleMainSubmissionChange = (e: ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
     dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value})
   };
 
@@ -237,6 +228,14 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
   //     setSubmission({ ...submission, mainSubmission: { ...submission.mainSubmission, imageUrl: img } });
   //   }
   // };
+  
+  const handleAddAdditionalRef = () => {
+    dispatch({type:ActionType.AddAdditionalRef});
+  }
+
+  const handleUpdateAdditionalRef = (index: number, e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+    dispatch({type:ActionType.UpdateAdditional, field: e.target.name, value: e.target.value, index: index})
+  } 
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -265,7 +264,6 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
 
   /* Testing */
   useEffect(() => {
-    console.log(state.submission);
     (async () => {
         dispatch({type: ActionType.Cancel, submission: initialSubmission})
     })();
@@ -278,11 +276,11 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
   const body = editOn ? (
     <div className="flex flex-row h-screen UserEdit-container m-[0px] justify-around overflow-y-scroll" style={{ backgroundImage: 'linear-gradient(to bottom right, #FFD3CB, #E7A5FF, #B3C9FF)' }}>
       <div className="w-[70%] mt-[5%]">
-        {/* <form className="flex flex-row justify-start mb-4">
+        <form className="flex flex-row justify-start mb-4">
           <button className="text-white px-4 py-2 mb-4 inline-block absolute top-0 left-0" style={{ color: '#395EB9', fontSize: '24px' }}>
             <FontAwesomeIcon icon={faArrowLeft} /> Back
           </button>
-        </form> */}
+        </form>
         <form onSubmit={onSubmit}>
           <div className="title-date flex items-center justify-between mb-4">
             <div className="flex flex-row">
@@ -299,31 +297,33 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
               </button>
             </div>
             <div className="flex items-center issue-type text font-bold">
-                <div className="issue-type text">
-                  &nbsp;&nbsp;&nbsp;&nbsp;
+              <div className='selectBox'>
                   <div className="blue-box">
                     <label>Issue: </label>
                   </div>
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  <div className="blue-box">
-                    <label>Type: </label>
+                  <div>
+                    <select name="issue" style={{ background: 'FFFFFF80', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', padding: '6px' }} value={state.submission.issue} onChange={handleSubmissionChange}>
+                      <option value="Current">{Issues.Current}</option>
+                      <option value="Next">{Issues.Next}</option>
+                      <option value="Previous">{Issues.Previous}</option>
+                      <option value="None">{Issues.None}</option>
+                    </select>
                   </div>
+              </div>
+              <div className='selectBox'>
+                <div className="blue-box">
+                  <label>Type: </label>
                 </div>
-
-                <div className="issue-type text font-bold">
-                  <select name="issue" style={{ background: 'FFFFFF80', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', padding: '6px' }}>
-                    <option value="Current">{Issues.Current}</option>
-                    <option value="Next">{Issues.Next}</option>
-                    <option value="None">{Issues.None}</option>
-                  </select>
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-
-                  <select name="PreviewType" style={{ background: 'FFFFFF80', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', padding: '6px' }}>
-                    <option value="Submission">{PreviewType.Submission}</option>
-                    <option value="addRef">{PreviewType.AdditionalReference}</option>
+                <div>
+                  <select name="PreviewType" style={{ background: 'FFFFFF80', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', padding: '6px' }} value={state.submission.mainSubmission.type} onChange={handleMainSubmissionChange}>
+                      <option value="Fiction">{Mediums.Fiction}</option>
+                      <option value="NonFiction">{Mediums.Nonfiction}</option>
+                      <option value="Other">{Mediums.Other}</option>
+                      <option value="Poetry">{Mediums.Poetry}</option>
+                      <option value="VisArt">{Mediums.VisualArt}</option>
                   </select>
                 </div>
-
+              </div>
             </div>
           </div>
 
@@ -345,56 +345,53 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
               <div className="image-description text-black p-[5%] text-left ">
                 <b style={{ color: "#395EB9" }}>Description</b>
                 <br></br>
-                <textarea className="UserEdit-inputbox" name="description" value={state.submission.mainSubmission.description} onChange={handleMainSubmissionChange}>
-                </textarea>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-row  w-[100%] justify-between mt-[10%]">
-            <div className="additional-images">
-              {state.submission.additionalReferences?.map((image, index) => (
-                <div className="image-container flex items-start" key={index}>
-                  <img
-                    src={image.imageUrl}
-                    alt={`Additional Image ${index}`}
-                    className="image max-w-[100%] rounded-lg"
-
-                  />
+                <div>
+                  <textarea className="UserEdit-inputbox" name="description" value={state.submission.mainSubmission.description} onChange={handleMainSubmissionChange}>
+                  </textarea>
                 </div>
-              ))}
-            </div>
-
-            <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
-              <div className="title p-[5%] text-left">
-                <b style={{ color: "#395EB9" }}>My process</b>
-                <br></br>
-                <span>This photo captures the midway point of my painting,
-                  offering a glimpse into the evolving work as it takes shape on
-                  the canvas.</span>
+                
               </div>
             </div>
           </div>
+
+         
+          {state.submission.additionalReferences?.map((additionalReference, index) => (
+            <div className="flex flex-row  w-[100%] justify-between mt-[10%]">
+              <div className="additional-images">
+                <div className="AdditionalReference">
+                  <div className="image-container flex items-start" key={index}>
+                    <img
+                      src={additionalReference.imageUrl}
+                      alt={`Additional Image ${index}`}
+                      className="image max-w-[100%] rounded-lg"
+                    />
+                  </div>
+                  <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
+                    <div className="title p-[5%] text-left">
+                      <input type="type" name="title" onChange={(e: ChangeEvent<HTMLInputElement>) => handleUpdateAdditionalRef(index, e)} value={additionalReference.title} style={{ color: "#395EB9" }}></input>
+                      <textarea name="description" onChange={(e: ChangeEvent<HTMLTextAreaElement>) => handleUpdateAdditionalRef(index, e)} value={additionalReference.description}></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+            
+      
 
           <div>
             <div className="font-bold UserEdit-header">Artist Statement</div>
-            <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
-              {/* <textarea className="UserEdit-inputbox"
-                value="Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
-              Quasi sint pariatur, praesentium, accusantium hic ut enim repellendus 
-              ratione ipsum, illo voluptatem. Vel pariatur adipisci quidem dolorum, 
-              exercitationem dicta. Vero, officia? Lorem, ipsum dolor sit amet consectetur 
-              adipisicing elit. Tenetur nobis temporibus iusto odio vitae amet ex, 
-              nemo quae veniam rem dolore sequi aliquam eius even.">
-              </textarea> */}
+            <div className=' UserEdit-textbox'>
+            <textarea name="artist_statement" className=" UserEdit-inputbox flex-col items-center py-2 p-[50px] mb-[10%] max-w-[100%] " value= {state.submission.artist_statement} onChange={handleSubmissionChange}>
+            </textarea>
             </div>
+            
           </div>
           <div>
             <div className="font-bold UserEdit-header">Note to editor</div>
-            <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
-              {/* <textarea className="UserEdit-inputbox"
-                value="Note to editor: Lorem ipsum dolor sit amet consectetur, adipisicing elit.">
-              </textarea> */}
+            <div className=' UserEdit-textbox'>
+            <textarea name="editor_note" className=" UserEdit-inputbox flex-col items-center py-2 p-[50px] mb-[10%]  max-w-[100%] " value={state.submission.editor_note} onChange={handleSubmissionChange}>
+            </textarea>
             </div>
           </div>
           <div className="bottom-0 right-0 w-full flex flex-row justify-end my-[10%]">
@@ -431,17 +428,28 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             </button>
           </div>
 
-          <div className="flex items-center">
-            <form>
-              <div className="issue-type text font-bold">
-                <label>Issue: </label>
-                {state.submission.issue}
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <label>Type: </label>
-                {state.submission.mainSubmission.type}
+          <div className="flex items-center issue-type text font-bold">
+              <div className='selectBox'>
+                  <div className="blue-box">
+                    <label>Issue: </label>
+                  </div>
+                  <div>
+                    <select name="issue" style={{ background: 'FFFFFF80', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', padding: '6px' }} value={state.submission.issue}>
+                      <option selected >{state.submission.issue}</option>
+                    </select>
+                  </div>
               </div>
-            </form>
-          </div>
+              <div className='selectBox'>
+                <div className="blue-box">
+                  <label>Type: </label>
+                </div>
+                <div>
+                  <select name="PreviewType" style={{ background: 'FFFFFF80', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', padding: '6px' }} value={state.submission.mainSubmission.type}>
+                    <option selected >{state.submission.mainSubmission.type}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
         </div>
         <div className="flex flex-row  w-[100%] justify-between">
           <img
@@ -463,39 +471,33 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             </div>
           </div>
         </div>
-
+        
         <div className="flex flex-row  w-[100%] justify-between mt-[10%]">
-          <div className="additional-images">
-            {state.submission.additionalReferences?.map((image, index) => (
-              <img
-                key={index}
-                src={image.imageUrl}
-                alt={`Additional Image ${index}`}
-                className="max-w-[100%] mr-4 rounded-lg"
-              />
-            ))}
-          </div>
-
-          <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
-            <div className="title p-[5%] text-left">
-              <b style={{ color: "#395EB9" }}>My process</b>
-              <br></br>
-              <span>This photo captures the midway point of my painting,
-                offering a glimpse into the evolving work as it takes shape on
-                the canvas.</span>
+            <div className="additional-images">
+              {state.submission.additionalReferences?.map((additionalReference, index) => (
+                <div className="AdditionalReference">
+                  <div className="image-container flex items-start" key={index}>
+                    <img
+                      src={additionalReference.imageUrl}
+                      alt={`Additional Image ${index}`}
+                      className="image max-w-[100%] rounded-lg"
+                    />
+                  </div>
+                  <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
+                    <div className="title p-[5%] text-left">
+                      <div style={{ color: "#395EB9" }}>{additionalReference.title}</div>
+                      <div>{additionalReference.description}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
 
         <div className="mt-[10%] ">
           <div className="font-bold UserEdit-header">Artist Statement</div>
           <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-            Quasi sint pariatur, praesentium, accusantium hic ut enim repellendus
-            ratione ipsum, illo voluptatem. Vel pariatur adipisci quidem dolorum,
-            exercitationem dicta. Vero, officia? Lorem, ipsum dolor sit amet consectetur
-            adipisicing elit. Tenetur nobis temporibus iusto odio vitae amet ex,
-            nemo quae veniam rem dolore sequi aliquam eius even.
+            {state.submission.artist_statement}
           </div>
         </div>
 
