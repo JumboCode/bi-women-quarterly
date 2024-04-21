@@ -5,7 +5,9 @@ export default authMiddleware({
         "/api/submissions/get",
         "/api/submissions/add",
         "/api/submissions/get-by-user",
-        "/api/webhook"
+        "/api/webhook",
+        "/",
+        "/submit"
     ]
 });
 
