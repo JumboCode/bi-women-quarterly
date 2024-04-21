@@ -481,7 +481,7 @@ export default function SubmissionForm() {
             <div className="p-8 h-screen bg-[#ecf0f6] tile col-span-3 row-span-6">
                 <div>
                     <button className="rounded-lg h-[40px] w-[90px] items-center ">
-                        <Link href="/home"> &larr; Back</Link>
+                        <Link href="/"> &larr; Back</Link>
                     </button>
                 </div>
                 {/* // Title */}
@@ -528,7 +528,7 @@ export default function SubmissionForm() {
             <div className="p-8 mx-10 h-screen bg-[#ecf0f6]">
                 <div>
                     <button className="rounded-lg h-[40px] w-[90px] items-center ">
-                        <Link href="/home"> &larr; Back</Link>
+                        <Link href="/"> &larr; Back</Link>
                     </button>
                 </div>
             {/* // Creates a form to retrieve title, issue, and name information */}
@@ -787,12 +787,12 @@ export default function SubmissionForm() {
                         </div>
                     </div>
                 </div>
-                <Link href="/home">
+                <Link href="/">
                     <button className="absolute right-[176px] mt-[100px] rounded-lg bg-white  m-6 h-[40px] w-[200px]  items-center shadow-lg">
                         Save & Continue Later
                     </button>
                 </Link>
-                <Link href="/home">
+                <Link href="/">
                     <button onClick={onSubmit} className="absolute right-[64px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg">
                         Submit
                     </button>
