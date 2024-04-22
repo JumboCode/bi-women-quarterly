@@ -41,10 +41,7 @@ const SubmissionThumbnail: React.FC<Props> = props => {
             const id = contentDriveUrl.split("/").toReversed()[0];
             await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/thumbnail/?id=${id}`, { method: "GET" })
                 .then(res => res.json())
-                .then(res => {
-                    console.log(res.body);
-                    setImageUrl(res.body);
-                });
+                .then(res => setImageUrl(res.body));
         }
         getThumbnailUrl();
     });
