@@ -823,7 +823,7 @@ export default function SubmissionForm() {
                     <button 
                     data-tooltip-id="my-tooltip"
                     data-tooltip-content="Please complete all required fields before submitting"
-                    data-tooltip-place="top"
+                    data-tooltip-place="top-end"
                     onClick={onSubmit} 
                     className= {`absolute right-[64px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!ReqFieldsFilled ? "bg-opacity-50" : ""}`}
                     // className={`absolute rounded-lg mt-5 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!isGuidelineRead ? "bg-opacity-50" : ""}`}
