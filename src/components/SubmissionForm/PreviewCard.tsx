@@ -6,6 +6,7 @@
 
 // Import types
 import Preview from "@/types/Preview";
+import { useState, useEffect } from "react";
 
 // Props definition
 type Props = {
@@ -22,11 +23,23 @@ const PreviewCard: React.FC<Props> = props => {
     // Destructure all props
     const { preview } = props;
 
-    const { type, imageUrl, title, description } = preview;
+    const { type, id, title, description } = preview;
+
+    const [imageUrl, setImageUrl] = useState<string>("");
+
+    useEffect(() => {
+        async function getThumbnailUrl() {
+            await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/thumbnail/?id=${id}`, { method: "GET" })
+                .then(res => res.json())
+                .then(res => setImageUrl(res.body));
+        }
+        getThumbnailUrl();
+    });
 
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
+    
     return (
         <div>
             <div className="py-6">{type}</div>

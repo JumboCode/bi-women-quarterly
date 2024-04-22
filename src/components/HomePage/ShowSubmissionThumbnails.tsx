@@ -31,7 +31,7 @@ const ShowSubmissionThumbnails: React.FC<Props> = props => {
                 {previews.map(preview => {
                     return (
                         <SubmissionThumbnail
-                            key={`${preview.title}|${preview.imageUrl}|${preview.contentDriveUrl}`}
+                            key={`${preview.title}|${preview.id}|${preview.contentDriveUrl}`}
                             preview={preview}
                         ></SubmissionThumbnail>
                     );
