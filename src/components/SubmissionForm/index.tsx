@@ -282,6 +282,8 @@ export default function SubmissionForm() {
  
     // To decide whether to render   
     const [showFile, setShowFile] = useState(false);
+    // To decide whether able to submit
+    const [ReqFieldsFilled, setReqFieldsFilled] = useState(false);
     // storing string of file name
     const [fileArray, setFileArray] = useState<FormData>(new FormData());  
     // storing url of main submission file use this to store submission locally
@@ -414,6 +416,8 @@ export default function SubmissionForm() {
         } else { // Adding optional reference
             dispatch({type: ActionType.UpdatePreviewRef, index, field: "showImg", value: true});
         }
+
+        setReqFieldsFilled(checkReqFields()) // check if this completes required fieldss
     }
 
 
@@ -427,6 +431,38 @@ export default function SubmissionForm() {
     const removeFile = (index : number) => {
         const nameToDelete = previews[index].filename
         fileArray.delete(nameToDelete);
+        setReqFieldsFilled(false); // When remove file, can't submit until they upload replacement or drop that optional element
+    }
+
+    const checkReqFields = () => {
+        console.log("checking required fields")
+        // check main submission title
+        if (submission.mainSubmission.title == "") {
+            console.log("no main submision title")
+            return false
+        }
+
+        // check files filled. FileArray size should equal optional references + 1 for main submission
+        if (previews.length + 1 != Array.from(fileArray.keys()).length) {
+            console.log("not enough uploaded files")
+            return false
+        }
+
+        // check artist statement filled
+        if (submission.artist_statement == "") {
+            console.log("incomplete artist statement")
+            return false
+        }
+        
+        // check optional elements titles  
+        for (let i = 0; i < previews.length; i++) {
+            if (previews[i].preview.title == "") {
+                console.log("incomplete optional photos titles")
+                return false
+            }
+        }
+        console.log("good to submit")
+        return true
     }
 
 
@@ -551,7 +587,7 @@ export default function SubmissionForm() {
                                     setShowFile(false);                            
                                     }}>
                                     <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                        <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clipRule="evenodd" />
+                                        <path fillRule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clipRule="evenodd" />
                                     </svg>
                                     </button>
                             </div> 
@@ -601,7 +637,10 @@ export default function SubmissionForm() {
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-1 ">Title*</h3>
                             <input 
                                 name="title"
-                                onChange={(e) => dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value})}
+                                onChange={(e) => {
+                                    dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value})
+                                    setReqFieldsFilled(checkReqFields())
+                                }}
                                 type="text"
                                 id="Title"
                                 className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12"
@@ -634,7 +673,10 @@ export default function SubmissionForm() {
                                     <div className="flex md:flex md:flex-grow flex-row justify-end space-x-1 px-[20px] py-[40px]">
                                     <button className="absolute right-[80px] flex inline-block bg-[#FFFFFF] h-[30px] w-[115px] rounded-sm  text-center  outline outline-[#5072c0] outline-offset-[3px]"
                                             // className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
-                                    onClick={() => {dispatch({type: ActionType.RemovePreview, index})}}>
+                                    onClick={() => {
+                                        dispatch({type: ActionType.RemovePreview, index})
+                                        setReqFieldsFilled(checkReqFields())
+                                        }}>
                                         <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                             <path fillRule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
                                         </svg> Delete</button>    
@@ -707,7 +749,10 @@ export default function SubmissionForm() {
                                                 type="text"
                                                 id="Title"
                                                 name="title"
-                                                onChange={(e) => dispatch({type: ActionType.UpdatePreview, index, field: e.target.name, value: e.target.value})}
+                                                onChange={(e) => {
+                                                    dispatch({type: ActionType.UpdatePreview, index, field: e.target.name, value: e.target.value})
+                                                    setReqFieldsFilled(checkReqFields())
+                                                }}
                                                 value={preview.preview.title}
                                                 maxLength={400}
                                                 className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Title of your piece" required />
@@ -745,7 +790,10 @@ export default function SubmissionForm() {
                     <div className="p-6 h-[150px] w-[full] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                         <div>
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Note</h3>
-                            <input name="artist_statement" onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})} type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Your Artist Statement" maxLength={400} required />
+                            <input name="artist_statement" onChange={(e) => {
+                                dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})
+                                setReqFieldsFilled(checkReqFields())
+                            }} type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Your Artist Statement" maxLength={400} required />
                             <p className="text-xs text-gray-400 pt-1 pb-4"><em>Max 400 Characters</em></p>
                         </div>
                     </div>
@@ -770,7 +818,10 @@ export default function SubmissionForm() {
                     </button>
                 </Link>
                 <Link href="/">
-                    <button onClick={onSubmit} className="absolute right-[64px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg">
+                    <button onClick={onSubmit} 
+                    className={`absolute right-[64px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!ReqFieldsFilled ? "bg-opacity-50" : ""}`}
+                    // className={`absolute rounded-lg mt-5 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!isGuidelineRead ? "bg-opacity-50" : ""}`}
+                    disabled={!ReqFieldsFilled}>
                         Submit
                     </button>
                 </Link>
