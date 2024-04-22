@@ -16,7 +16,7 @@ type Preview = {
     type: PreviewType; 
     title: string;
     description: string;
-    id: string;
+    thumbnailUrl: string;
     contentDriveUrl: string;
 };
 

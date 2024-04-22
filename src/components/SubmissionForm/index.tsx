@@ -205,7 +205,7 @@ const reducer = (state: State, action: Action): State => {
                         type: PreviewType.AdditionalReference,
                         title: "",
                         description: "",
-                        id: "",
+                        thumbnailUrl: "",
                         contentDriveUrl: "",
                     },
                 }],
@@ -265,7 +265,7 @@ export default function SubmissionForm() {
                 type: PreviewType.Submission,
                 title: "",
                 description: "",
-                id: "",
+                thumbnailUrl: "",
                 contentDriveUrl: "",
             },
         },
@@ -346,13 +346,13 @@ export default function SubmissionForm() {
                 // Update main submission with drive info
                 if (responses[0]) {
                     updatedSubmission.mainSubmission.contentDriveUrl = `https://drive.google.com/file/d/${responses[0].id}`;
-                    updatedSubmission.mainSubmission.id = responses[0].id;
+                    updatedSubmission.mainSubmission.thumbnailUrl = responses[0].thumbnailUrl;
                 }
                 // Update additional references with drive info
                 if (updatedSubmission.additionalReferences && responses.length > 1) {
                     for (let i = 1; i < responses.length; i++) {
                         updatedSubmission.additionalReferences[i - 1].contentDriveUrl = `https://drive.google.com/file/d/${responses[i].id}`;
-                        updatedSubmission.additionalReferences[i - 1].id = responses[i].id;
+                        updatedSubmission.additionalReferences[i - 1].thumbnailUrl = responses[i].thumbnailUrl;
                     }
                 }
             })

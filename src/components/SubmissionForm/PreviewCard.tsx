@@ -23,18 +23,7 @@ const PreviewCard: React.FC<Props> = props => {
     // Destructure all props
     const { preview } = props;
 
-    const { type, id, title, description } = preview;
-
-    const [imageUrl, setImageUrl] = useState<string>("");
-
-    useEffect(() => {
-        async function getThumbnailUrl() {
-            await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/thumbnail/?id=${id}`, { method: "GET" })
-                .then(res => res.json())
-                .then(res => setImageUrl(res.body));
-        }
-        getThumbnailUrl();
-    });
+    const { type, thumbnailUrl, title, description } = preview;
 
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
@@ -46,7 +35,7 @@ const PreviewCard: React.FC<Props> = props => {
 
             <div className="flex">
                 <div className="max-w-xl min-w-min w-1/3 bg-gray-200">
-                    <img src={imageUrl} className="max-w-full"></img>
+                    <img src={thumbnailUrl} className="max-w-full"></img>
                 </div>
 
                 <div className="ps-12">
