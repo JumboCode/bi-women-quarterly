@@ -35,6 +35,11 @@ const upload = multer({ storage: multer.memoryStorage() });
 app.use(express.static("public"));
 
 app.get("/thumbnail", async (req, res) => {
+    const id = req.query.id;
+    if (!id) {
+        res.status(400).json({ error: "No file ID provided" });
+    }
+
     const auth = new google.auth.GoogleAuth({
         keyFile: path.join(__dirname, "key.json"),
         scopes: ["https://www.googleapis.com/auth/drive"]
@@ -45,12 +50,15 @@ app.get("/thumbnail", async (req, res) => {
         auth
     });
 
-    const response = await drive.files.get({
-        fileId: req.body,
+    await drive.files.get({
+        fileId: id,
         fields: "thumbnailLink"
-    });
-
-    return response.result.thumbnailLink;
+    })
+    .then(response => {
+        return response.data.thumbnailLink;
+    })
+    .then(link => res.status(200).json({ body: link }))
+    .catch(_ => res.status(200).json({ body: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png" }));
 });
 
 app.get("/upload", async (req, res) => {

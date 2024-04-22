@@ -7,7 +7,7 @@
 
 // Import types
 import Preview from "@/types/Preview";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Props definition
 type Props = {
@@ -34,22 +34,20 @@ const SubmissionThumbnail: React.FC<Props> = props => {
     // fetch the new thumbnail using file id
     // get file id from contentdriveurl + "thumbnail"
 
-    const [newImageUrl, setImageUrl] = useState(""); // TODO: fix this jank
+    const [newImageUrl, setImageUrl] = useState<string>(""); // TODO: fix this jank
 
-    async () => {
-        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/thumbnail`, {
-            method: "GET",
-            body: contentDriveUrl.split("/").toReversed()[0]
-        })
-            .then(res => {
-                console.log(res.json());
-                return res.json();
-            })
-            .then(res => {
-                console.log(res.body);
-                setImageUrl(res.body);
-            });
-    }
+    useEffect(() => {
+        async function getThumbnailUrl() {
+            const id = contentDriveUrl.split("/").toReversed()[0];
+            await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/thumbnail/?id=${id}`, { method: "GET" })
+                .then(res => res.json())
+                .then(res => {
+                    console.log(res.body);
+                    setImageUrl(res.body);
+                });
+        }
+        getThumbnailUrl();
+    });
 
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
