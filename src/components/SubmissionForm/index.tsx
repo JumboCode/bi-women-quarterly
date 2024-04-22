@@ -14,6 +14,7 @@ import Mediums from "@/types/Mediums";
 
 // Import Next
 import Link from "next/link";
+import { Tooltip } from "react-tooltip";
 
 // Import clerk
 import { useUser } from "@clerk/nextjs";
@@ -818,12 +819,31 @@ export default function SubmissionForm() {
                     </button>
                 </Link>
                 <Link href="/">
-                    <button onClick={onSubmit} 
-                    className={`absolute right-[64px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!ReqFieldsFilled ? "bg-opacity-50" : ""}`}
+                    <Tooltip id="my-tooltip"/>
+                    <button 
+                    data-tooltip-id="my-tooltip"
+                    data-tooltip-content="Please complete all required fields before submitting"
+                    data-tooltip-place="top"
+                    onClick={onSubmit} 
+                    className= {`absolute right-[64px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!ReqFieldsFilled ? "bg-opacity-50" : ""}`}
                     // className={`absolute rounded-lg mt-5 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!isGuidelineRead ? "bg-opacity-50" : ""}`}
                     disabled={!ReqFieldsFilled}>
                         Submit
                     </button>
+                    
+
+
+
+
+                    {/* <div data-popover id="popover-default" role="tooltip" className="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                        <div className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                            <h3 className="font-semibold text-gray-900 dark:text-white">Missing required fields</h3>
+                        </div>
+                        <div className="px-3 py-2">
+                            <p>Please complete all required fields before submitting</p>
+                        </div>
+                        <div data-popper-arrow></div>
+                    </div> */}
                 </Link>
             </div>
         )
