@@ -46,7 +46,6 @@ const SubmissionThumbnail: React.FC<Props> = props => {
         status,
         date,
         mainSubmission: {
-            imageUrl,
             contentDriveUrl,
         }
     } = submission;
