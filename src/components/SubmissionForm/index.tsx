@@ -672,7 +672,7 @@ export default function SubmissionForm() {
                                     <h1 className="text-1xl font-bold pb-4 mt-3 pt-8 justify=">Optional Related Photo</h1>
                                     {/* <button className="inline-block h-[30px] w-[115px] rounded-sm  text-center  outline outline-[#5072c0] outline-offset-[3px]" */}
                                     <div className="flex md:flex md:flex-grow flex-row justify-end space-x-1 px-[20px] py-[40px]">
-                                    <button className="absolute right-[80px] flex flex-row inline-block bg-[#FFFFFF] h-[30px] w-[115px]  rounded-lg  text-center   "
+                                    <button className="absolute right-[80px] flex inline-block bg-[#FFFFFF] h-[30px] w-[115px]  rounded-lg  text-center   "
                                             // className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
                                     onClick={() => {
                                         dispatch({type: ActionType.RemovePreview, index})
