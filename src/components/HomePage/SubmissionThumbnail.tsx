@@ -28,23 +28,7 @@ const SubmissionThumbnail: React.FC<Props> = props => {
 
     // Destructure all props
     const { preview } = props;
-
-    const { imageUrl, title, contentDriveUrl } = preview;
-
-    // fetch the new thumbnail using file id
-    // get file id from contentdriveurl + "thumbnail"
-
-    const [newImageUrl, setImageUrl] = useState<string>(""); // TODO: fix this jank
-
-    useEffect(() => {
-        async function getThumbnailUrl() {
-            const id = contentDriveUrl.split("/").toReversed()[0];
-            await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/thumbnail/?id=${id}`, { method: "GET" })
-                .then(res => res.json())
-                .then(res => setImageUrl(res.body));
-        }
-        getThumbnailUrl();
-    });
+    const { thumbnailUrl, title, contentDriveUrl } = preview;
 
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
@@ -59,7 +43,7 @@ const SubmissionThumbnail: React.FC<Props> = props => {
         >
             <div className="flex flex-col justify-center ms-8">
                 <div className="w-3/4">
-                    <img src={newImageUrl} className=""></img>
+                    <img src={thumbnailUrl} className=""></img>
                 </div>
                 <div className="w-3/4 b-0">
                     <div className="text-primary-blue text-base text-md font-semibold">{title}</div>
