@@ -672,7 +672,7 @@ export default function SubmissionForm() {
                                     <h1 className="text-1xl font-bold pb-4 mt-3 pt-8 justify=">Optional Related Photo</h1>
                                     {/* <button className="inline-block h-[30px] w-[115px] rounded-sm  text-center  outline outline-[#5072c0] outline-offset-[3px]" */}
                                     <div className="flex md:flex md:flex-grow flex-row justify-end space-x-1 px-[20px] py-[40px]">
-                                    <button className="absolute right-[80px] flex inline-block bg-[#FFFFFF] h-[30px] w-[115px] rounded-sm  text-center  outline outline-[#5072c0] outline-offset-[3px]"
+                                    <button className="absolute right-[80px] flex flex-row inline-block bg-[#FFFFFF] h-[30px] w-[115px]  rounded-lg  text-center   "
                                             // className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
                                     onClick={() => {
                                         dispatch({type: ActionType.RemovePreview, index})
@@ -790,7 +790,7 @@ export default function SubmissionForm() {
                 <h1 className="text-1xl font-bold pb-4 mt-3 pt-8 justify=">Artist Statement</h1>
                     <div className="p-6 h-[150px] w-[full] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                         <div>
-                            <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Note</h3>
+                            <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Note*</h3>
                             <input name="artist_statement" onChange={(e) => {
                                 dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})
                                 setReqFieldsFilled(checkReqFields())
@@ -821,9 +821,11 @@ export default function SubmissionForm() {
                 <Link href="/">
                     <Tooltip id="my-tooltip"/>
                     <button 
-                    data-tooltip-id="my-tooltip"
+                    data-tooltip-id= {ReqFieldsFilled? "none" : "my-tooltip"}
                     data-tooltip-content="Please complete all required fields before submitting"
                     data-tooltip-place="top-end"
+                 
+                    
                     onClick={onSubmit} 
                     className= {`absolute right-[64px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!ReqFieldsFilled ? "bg-opacity-50" : ""}`}
                     // className={`absolute rounded-lg mt-5 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!isGuidelineRead ? "bg-opacity-50" : ""}`}
