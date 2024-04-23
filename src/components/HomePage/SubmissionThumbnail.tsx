@@ -5,6 +5,8 @@
  * @author So Hyun Kim
  */
 
+import React, { useEffect, useState } from "react";
+
 // Import types
 import Statuses from "@/types/Statuses";
 import Submission from "@/types/Submission";
@@ -76,7 +78,7 @@ const SubmissionThumbnail: React.FC<Props> = props => {
             className="group block flex flex-col items-start bg-[#ffffff3c] hover:bg-[#385FB8] cursor-pointer p-4 transition-colors rounded-lg hover:text-[#ffffff] w-full"
         >
             <div className="w-full mb-2 object-cover"> {/*max-w-md min-w-min */}
-                <img src={imageUrl} className="max-h-96 rounded-lg"></img>
+                <img src={newImageUrl} className="max-h-96 rounded-lg"></img>
             </div>
             <div className="w-full flex min-w-min justify-between">
                 <div className="text-[#385FB8] font-bold md:text-xl lg:text-2xl xl:text-2xl group-hover:text-white">{title}</div>
