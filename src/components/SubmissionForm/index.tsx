@@ -376,32 +376,6 @@ export default function SubmissionForm() {
         .catch(err => console.error(err));
     };
 
-    // /**
-    //  * Adds the file name to the array of file names and changes the booleans
-    //  * to display the modal and files
-    //  * @author Alana Sendlakowski, Vanessa Rose, Shreyas Ravi
-    //  * @param event the event that has been changed
-    //  */
-    // const handleFileUpload = async (event: any) => {
-    //     event.preventDefault();
-
-    //     fileName.push(event.target.files[0].name);
-
-    //     setShowModal(true);
-    //     setShowFile(true);
-
-    //     let formData = new FormData();
-    //     formData.append(event.target.files[0].name, event.target.files[0]);
-
-    //     // posts user response to server to be fetched in index.tsx
-    //     await fetch("http://localhost:3001/update", {
-    //         method: "POST",
-    //         body: formData
-    //     })
-    //         .then(res => res.json())
-    //         .catch(err => console.error(err));
-    // };
-
     /**
      * Update fileArray with new uploaded file. Adjusts display settings
      * @author Avery Hanna, So Hyun Kim
@@ -435,6 +409,11 @@ export default function SubmissionForm() {
         setReqFieldsFilled(false); // When remove file, can't submit until they upload replacement or drop that optional element
     }
 
+    /*
+     * Checks whether required fields have been satisfied. Returns true if so, false if not
+     * @author Avery Hanna
+     * @returns value to update ReqFieldsFilled to
+     */
     const checkReqFields = () => {
         console.log("checking required fields")
         // check main submission title
@@ -668,17 +647,17 @@ export default function SubmissionForm() {
                     previews.map((preview, index) => {
                         return (
                             <div>
-                                <div className="grid grid-cols-2 gap-4" >
+                                <div className=" grid grid-cols-2 gap-4 " >
                                     <h1 className="text-1xl font-bold pb-4 mt-3 pt-8 justify=">Optional Related Photo</h1>
                                     {/* <button className="inline-block h-[30px] w-[115px] rounded-sm  text-center  outline outline-[#5072c0] outline-offset-[3px]" */}
-                                    <div className="flex md:flex md:flex-grow flex-row justify-end space-x-1 px-[20px] py-[40px]">
-                                    <button className="absolute right-[80px] flex inline-block bg-[#FFFFFF] h-[30px] w-[115px]  rounded-lg  text-center   "
+                                    <div className="flex md:flex md:flex-grow flex-row  justify-end space-x-1 px-[20px] py-[40px]">
+                                    <button className="absolute right-[80px] flex inline-block bg-[#FFFFFF] items-center justify-center h-[30px] w-[115px] rounded-lg  text-center   "
                                             // className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
                                     onClick={() => {
                                         dispatch({type: ActionType.RemovePreview, index})
                                         setReqFieldsFilled(checkReqFields())
                                         }}>
-                                        <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                            <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                             <path fillRule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
                                         </svg> Delete</button>    
                                     </div> 
@@ -780,6 +759,7 @@ export default function SubmissionForm() {
                     <button 
                         onClick={() => {
                             dispatch({type: ActionType.AddPreview});
+                            setReqFieldsFilled(checkReqFields())
                         }}
                         className="rounded-lg items-center pt-4 ml-20">
                         <Link href="/submit">+ Additional Photos</Link>
@@ -814,7 +794,7 @@ export default function SubmissionForm() {
                     </div>
                 </div>
                     <Link href="/">
-                    <button className="absolute right-[176px] mt-[50px] rounded-lg bg-white m-6 h-[40px] w-[200px]  items-center shadow-lg">
+                    <button className="absolute right-[176px] mt-[70px] rounded-lg bg-white m-6 h-[40px] w-[200px]  items-center shadow-lg">
                             Discard
                         </button>
                     </Link>
@@ -827,13 +807,13 @@ export default function SubmissionForm() {
                         data-tooltip-place="top-end"
                         
                         onClick={onSubmit} 
-                        className={`absolute right-[64px] mt-[50px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!ReqFieldsFilled ? "bg-opacity-50" : ""}`}
+                        className={`absolute right-[64px] mt-[70px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!ReqFieldsFilled ? "bg-opacity-50" : ""}`}
                         // className={`absolute rounded-lg mt-5 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!isGuidelineRead ? "bg-opacity-50" : ""}`}
                         disabled={!ReqFieldsFilled}>
                             Submit
                         </button>
                 </Link>
-                <div className="mt-[100px] space-y-[100px] text-black text-opacity-0 ">
+                <div className="mt-[150px] space-y-[100px] text-black text-opacity-0 ">
                       .
                 </div>
             </div>
