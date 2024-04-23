@@ -246,7 +246,7 @@ export default function HomePage() {
         (async () => {
             // TODO: fix this hacky way of getting submissions
             await getSubmissions();
-            await new Promise(r => setTimeout(r, 2000));
+            await new Promise(r => setTimeout(r, 3000));
             await getSubmissions();
         })();
     }, [user]);

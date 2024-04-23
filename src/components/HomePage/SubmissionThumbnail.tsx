@@ -28,6 +28,11 @@ function formatDate(dateString: string): string {
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
 
+export const openInNewTab = (url: string): void => {
+    const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
+    if (newWindow) newWindow.opener = null
+}
+
 const SubmissionThumbnail: React.FC<Props> = props => {
     /* -------------- Props ------------- */
 
@@ -44,14 +49,29 @@ const SubmissionThumbnail: React.FC<Props> = props => {
         }
     } = submission;
 
+    // fetch the new thumbnail using file id
+    // get file id from contentdriveurl + "thumbnail"
+
+    const [newImageUrl, setImageUrl] = useState<string>(""); // TODO: fix this jank
+
+    useEffect(() => {
+        async function getThumbnailUrl() {
+            const id = contentDriveUrl.split("/").toReversed()[0];
+            await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/thumbnail/?id=${id}`, { method: "GET" })
+                .then(res => res.json())
+                .then(res => setImageUrl(res.body));
+        }
+        getThumbnailUrl();
+    });
+
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
     return (
-        <button 
+        <button
             onClick={(e) => {
                 e.preventDefault();
-                window.location.href=contentDriveUrl;
+                openInNewTab(contentDriveUrl);
             }}
             className="group block flex flex-col items-start bg-[#ffffff3c] hover:bg-[#385FB8] cursor-pointer p-4 transition-colors rounded-lg hover:text-[#ffffff] w-full"
         >
