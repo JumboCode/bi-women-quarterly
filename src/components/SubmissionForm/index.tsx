@@ -536,7 +536,7 @@ export default function SubmissionForm() {
         )
     } else {
         return (
-            <div className="p-8 mx-10 h-screen bg-[#ecf0f6]">
+            <div className="p-8 mx-10 mb-5 h-screen bg-[#ecf0f6]">
                 <div>
                     <button className="rounded-lg h-[40px] w-[90px] items-center ">
                         <Link href="/"> &larr; Back</Link>
@@ -813,41 +813,31 @@ export default function SubmissionForm() {
                         </div>
                     </div>
                 </div>
-                <Link href="/">
-                    <button className="absolute right-[176px] mt-[100px] rounded-lg bg-white  m-6 h-[40px] w-[200px]  items-center shadow-lg">
-                        Discard
-                    </button>
-                </Link>
-                <Link href="/">
-                    <Tooltip id="my-tooltip"/>
-                    <button 
-                    data-tooltip-id= {ReqFieldsFilled? "none" : "my-tooltip"}
-                    data-tooltip-content="Please complete all required fields before submitting"
-                    data-tooltip-place="top-end"
-                 
+                    <Link href="/">
+                    <button className="absolute right-[176px] mt-[50px] rounded-lg bg-white m-6 h-[40px] w-[200px]  items-center shadow-lg">
+                            Discard
+                        </button>
+                    </Link>
+                    <Link href="/">
+                        <Tooltip id="my-tooltip"/>
                     
-                    onClick={onSubmit} 
-                    className= {`absolute right-[64px] mt-[100px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!ReqFieldsFilled ? "bg-opacity-50" : ""}`}
-                    // className={`absolute rounded-lg mt-5 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!isGuidelineRead ? "bg-opacity-50" : ""}`}
-                    disabled={!ReqFieldsFilled}>
-                        Submit
-                    </button>
-                    
-
-
-
-
-                    {/* <div data-popover id="popover-default" role="tooltip" className="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
-                        <div className="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
-                            <h3 className="font-semibold text-gray-900 dark:text-white">Missing required fields</h3>
-                        </div>
-                        <div className="px-3 py-2">
-                            <p>Please complete all required fields before submitting</p>
-                        </div>
-                        <div data-popper-arrow></div>
-                    </div> */}
+                        <button 
+                        data-tooltip-id= {ReqFieldsFilled? "none" : "my-tooltip"}
+                        data-tooltip-content="Please complete all required fields before submitting"
+                        data-tooltip-place="top-end"
+                        
+                        onClick={onSubmit} 
+                        className={`absolute right-[64px] mt-[50px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!ReqFieldsFilled ? "bg-opacity-50" : ""}`}
+                        // className={`absolute rounded-lg mt-5 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!isGuidelineRead ? "bg-opacity-50" : ""}`}
+                        disabled={!ReqFieldsFilled}>
+                            Submit
+                        </button>
                 </Link>
+                <div className="mt-[100px] space-y-[100px] text-black text-opacity-0 ">
+                      .
+                </div>
             </div>
+
         )
     }
     
