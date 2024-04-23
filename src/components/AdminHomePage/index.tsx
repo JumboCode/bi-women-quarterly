@@ -132,6 +132,8 @@ export default function AdminHomePage() {
             type: ActionType.ToggleLoadingOn
         });
 
+        console.log("Getting submissions");
+
         try {
             // get submissions from database
             const url = '/api/submissions/get';
@@ -143,6 +145,7 @@ export default function AdminHomePage() {
                 .then(res => {
                     if (res.success) {
                         console.log("Successfully connected to database");
+                        console.log(res.data);
                         dispatch({
                             type: ActionType.UpdateAllSubmissions,
                             newSubmissions: res.data

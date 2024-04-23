@@ -13,9 +13,11 @@ import SocialMedias from "../../types/SocialMedias";
  */
 export default function UserForm() {
     var new_social_medias: SocialMedias = {
+        LinkedIn: "",
         Facebook: "",
         Instagram: "",
-        X: ""
+        X: "",
+        TikTok: ""
     };
     var new_user: User = {
         email: "",

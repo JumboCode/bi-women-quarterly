@@ -1,43 +1,47 @@
 const express = require("express");
 const { google } = require("googleapis");
 const multer = require("multer");
-const path = require("path");
 const cors = require("cors");
-const fs = require("fs");
+const path = require("path");
+const { Readable } = require("stream");
 
 const app = express();
 app.use(cors());
 
 let uploads = [];
 
-const storage = multer.diskStorage({
-    destination: function (req, file, callback) {
-        const uploadDir = path.join(path.dirname(__dirname), "..", "uploads");
-        callback(null, `${uploadDir}`);
-    },
-    filename: function (req, file, callback) {
-        const extension = file.originalname.split(".").pop();
-        const today = new Date();
-        const day = String(today.getDate()).padStart(2, "0");
-        const month = String(today.getMonth() + 1).padStart(2, "0");
-        const year = today.getFullYear();
+// const storage = multer.diskStorage({
+//     destination: function (req, file, callback) {
+//         const uploadDir = "/tmp/";
+//         callback(null, `${uploadDir}`);
+//     },
+//     filename: function (req, file, callback) {
+//         const extension = file.originalname.split(".").pop();
+//         const today = new Date();
+//         const day = String(today.getDate()).padStart(2, "0");
+//         const month = String(today.getMonth() + 1).padStart(2, "0");
+//         const year = today.getFullYear();
 
-        const date = year + "-" + month + "-" + day;
-        callback(
-            null,
-            `${file.originalname.split(".")[0]}-${date}.${extension}`
-        );
-    }
-    // hihi:
-});
+//         const date = year + "-" + month + "-" + day;
+//         callback(
+//             null,
+//             `${file.originalname.split(".")[0]}-${date}.${extension}`
+//         );
+//     }
+// });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(express.static("public"));
 
 app.get("/thumbnail", async (req, res) => {
+    const id = req.query.id;
+    if (!id) {
+        res.status(400).json({ error: "No file ID provided" });
+    }
+
     const auth = new google.auth.GoogleAuth({
-        keyFile: "src/backend/key.json",
+        keyFile: path.join(__dirname, "key.json"),
         scopes: ["https://www.googleapis.com/auth/drive"]
     });
 
@@ -46,18 +50,21 @@ app.get("/thumbnail", async (req, res) => {
         auth
     });
 
-    const response = await drive.files.get({
-        fileId: req.body,
+    await drive.files.get({
+        fileId: id,
         fields: "thumbnailLink"
-    });
-
-    return response.result.thumbnailLink;
+    })
+    .then(response => {
+        return response.data.thumbnailLink;
+    })
+    .then(link => res.status(200).json({ body: link }))
+    .catch(_ => res.status(200).json({ body: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png" }));
 });
 
 app.get("/upload", async (req, res) => {
     try {
         const auth = new google.auth.GoogleAuth({
-            keyFile: "src/backend/key.json",
+            keyFile: path.join(__dirname, "key.json"),
             scopes: ["https://www.googleapis.com/auth/drive"]
         });
 
@@ -70,33 +77,27 @@ app.get("/upload", async (req, res) => {
 
         while (uploads.length > 0) {
             const file = uploads.shift();
+            const bufferStream = new Readable({
+                read() {
+                    this.push(file.buffer);
+                    this.push(null);
+                }
+            });
 
-            console.log(file);
             await drive.files
                 .create({
                     requestBody: {
-                        name: file.filename,
+                        name: file.originalname,
 
                         // update parent ID based on dest google drive folder
                         parents: ["1GWQygniBTLm7aE4jPFWi3jIt8v7NJiK0"]
                     },
                     media: {
                         mimeType: file.mimetype,
-                        body: fs.createReadStream(file.path)
+                        body: bufferStream
                     }
                 })
                 .then(response => {
-                    console.log(response);
-
-                    fs.unlink(file.path, err => {
-                        if (err) {
-                            console.error(err);
-                            return res
-                                .status(500)
-                                .send("Error deleting local file.");
-                        }
-                    });
-
                     const permissions = {
                         type: "anyone",
                         role: "writer"
@@ -114,21 +115,8 @@ app.get("/upload", async (req, res) => {
                             "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png"
                     });
                 });
-
-            await drive.files
-                .get({
-                    fileId: responses[responses.length - 1].id,
-                    fields: "thumbnailLink"
-                })
-                .then(res => {
-                    // Checks if thumbnail link is not undefined, means it's an image that has a thumbnail
-                    if (res.data.thumbnailLink != undefined) {
-                        responses[responses.length - 1].thumbnail =
-                            res.data.thumbnailLink;
-                    }
-                });
         }
-        res.json({ body: responses });
+        res.status(200).json({ body: responses });
     } catch (error) {
         console.error("Error uploading files:", error);
         res.status(500).json({
@@ -138,10 +126,16 @@ app.get("/upload", async (req, res) => {
 });
 
 app.post("/update", upload.any("inputFile"), async (req, res) => {
-    uploads.push(req.files[0]);
+    for (const file of req.files) {
+        console.log(file);
+        uploads.push(file);
+    }
+    res.status(200).send("Successfully updated");
 });
 
 const port = 3001;
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+
+module.exports = app;
