@@ -416,6 +416,7 @@ export default function SubmissionForm() {
      */
     const checkReqFields = () => {
         console.log("checking required fields")
+        console.log("previews length", previews.length)
         // check main submission title
         if (submission.mainSubmission.title == "") {
             console.log("no main submision title")
@@ -426,6 +427,9 @@ export default function SubmissionForm() {
         if (previews.length + 1 != Array.from(fileArray.keys()).length) {
             console.log("not enough uploaded files")
             return false
+        } else {
+            console.log("previews length + 1", previews.length + 1)
+            console.log("fileArray length:", Array.from(fileArray.keys()).length)
         }
 
         // check artist statement filled
@@ -445,6 +449,11 @@ export default function SubmissionForm() {
         return true
     }
 
+    const sleep = (delay : number) => new Promise((resolve) => setTimeout(resolve, delay))
+
+    const delaySeconds = async () => {
+        await sleep(5000)
+    }
 
     /*------------------------------------------------------------------------*/
     /* ------------------------- Lifecycle Functions ------------------------ */
@@ -759,7 +768,11 @@ export default function SubmissionForm() {
                     <button 
                         onClick={() => {
                             dispatch({type: ActionType.AddPreview});
-                            setReqFieldsFilled(checkReqFields())
+                            console.log("before delay")
+                            delaySeconds()
+                            console.log("before setReqFields update")
+                            setReqFieldsFilled(checkReqFields());
+                            console.log("after setReqFields update")
                         }}
                         className="rounded-lg items-center pt-4 ml-20">
                         <Link href="/submit">+ Additional Photos</Link>
