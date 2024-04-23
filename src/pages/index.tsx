@@ -44,7 +44,7 @@ export default function Home() {
                     title: "",
                     type: PreviewType.Submission,
                     description: "a description",
-                    imageUrl: "https://cdn.shopify.com/s/files/1/1414/2472/files/1-_604px-Mona_Lisa__by_Leonardo_da_Vinci__from_C2RMF_retouched.jpg?v=1558424691",
+                    thumbnailUrl: "https://cdn.shopify.com/s/files/1/1414/2472/files/1-_604px-Mona_Lisa__by_Leonardo_da_Vinci__from_C2RMF_retouched.jpg?v=1558424691",
                     contentDriveUrl: "https://drive.google.com/drive/u/0/home",
                 },
                 additionalReferences: [
@@ -52,14 +52,14 @@ export default function Home() {
                         title: "Additional Reference",
                         type: PreviewType.AdditionalReference,
                         description: "Additional reference description",
-                        imageUrl: "https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350",
+                        thumbnailUrl: "https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350",
                         contentDriveUrl: ""
                     },
                     {
                         title: "Additional Reference",
                         type: PreviewType.AdditionalReference,
                         description: "Additional reference description",
-                        imageUrl: "https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350",
+                        thumbnailUrl: "https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350",
                         contentDriveUrl: ""
                     }
                 ],

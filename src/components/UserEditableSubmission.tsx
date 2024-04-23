@@ -173,7 +173,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
                   type: PreviewType.AdditionalReference,
                   title: "",
                   description: "",
-                  imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
+                  thumbnailUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
                   contentDriveUrl: "",
               }],
             },
@@ -223,10 +223,10 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
   };
 
   // const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   dispatch({type:ActionType.UpdateMainSubmission, field: "imageUrl", value})
+  //   dispatch({type:ActionType.UpdateMainSubmission, field: "thumbnailUrl", value})
   //   if (e.target.files && e.target.files[0]) {
   //     const img = URL.createObjectURL(e.target.files[0]);
-  //     setSubmission({ ...submission, mainSubmission: { ...submission.mainSubmission, imageUrl: img } });
+  //     setSubmission({ ...submission, mainSubmission: { ...submission.mainSubmission, thumbnailUrl: img } });
   //   }
   // };
   
@@ -376,7 +376,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
           <div className="flex flex-row w-[100%] justify-between">
             <div className="UserEdit-image-container flex items-start">
               <img
-                src={state.submission.mainSubmission.imageUrl}
+                src={state.submission.mainSubmission.thumbnailUrl}
                 alt="Submission"
                 className="image max-w-[100%] mr-4 rounded-lg"
               />
@@ -432,7 +432,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
               <div className="additional-images">
                 <div className="UserEdit-image-container flex items-start">
                   <img
-                    src={additionalReference.imageUrl}
+                    src={additionalReference.thumbnailUrl}
                     alt={`Additional Image ${index}`}
                     className="image max-w-[100%] mr-4 rounded-lg"
                   />
@@ -580,7 +580,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
         <div className="flex flex-row  w-[100%] justify-between">
           <div className="UserEdit-image-container flex items-start">
             <img
-              src={state.submission.mainSubmission.imageUrl}
+              src={state.submission.mainSubmission.thumbnailUrl}
               alt="Submission"
               className="max-w-[100%] mr-4 rounded-lg"
             />
@@ -617,7 +617,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
               <div className="additional-images">
                 <div className="UserEdit-image-container flex items-start">
                   <img
-                    src={additionalReference.imageUrl}
+                    src={additionalReference.thumbnailUrl}
                     alt={`Additional Image ${index}`}
                     className="image max-w-[100%] rounded-lg"
                   />
