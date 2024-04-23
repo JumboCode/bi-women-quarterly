@@ -6,6 +6,7 @@
 
 // Import types
 import Preview from "@/types/Preview";
+import { useState, useEffect } from "react";
 
 // Props definition
 type Props = {
@@ -22,18 +23,19 @@ const PreviewCard: React.FC<Props> = props => {
     // Destructure all props
     const { preview } = props;
 
-    const { type, imageUrl, title, description } = preview;
+    const { type, thumbnailUrl, title, description } = preview;
 
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
+    
     return (
         <div>
             <div className="py-6">{type}</div>
 
             <div className="flex">
                 <div className="max-w-xl min-w-min w-1/3 bg-gray-200">
-                    <img src={imageUrl} className="max-w-full"></img>
+                    <img src={thumbnailUrl} className="max-w-full"></img>
                 </div>
 
                 <div className="ps-12">
