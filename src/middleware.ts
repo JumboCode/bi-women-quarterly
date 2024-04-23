@@ -5,7 +5,8 @@ export default authMiddleware({
     ignoredRoutes: [
         "/api/submissions/get",
         "/api/submissions/add",
-        "/api/submissions/get-by-user"
+        "/api/submissions/get-by-user",
+        "/api/submissions/edit"
     ]
 });
 
