@@ -48,3 +48,16 @@ body {
         display:block;
     }
 }
+
+.image-preview {
+    /* Ensure that the image does not exceed the parent's bounds */
+    max-width: 100%;
+    max-height: 150px;
+  
+    /* Scale the image proportionally */
+    object-fit: contain;
+  
+    /* Center the image within its container */
+    display: block;
+    margin: auto;
+  }

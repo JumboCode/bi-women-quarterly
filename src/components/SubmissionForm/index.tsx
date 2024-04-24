@@ -21,6 +21,7 @@ import { useUser } from "@clerk/nextjs";
 // Import components
 import Preview from '@/types/Preview';
 import Statuses from '@/types/Statuses';
+import ImagePreview from '@/components/SubmissionForm/ImagePreview'
 
 
 /*------------------------------------------------------------------------*/
@@ -205,7 +206,7 @@ const reducer = (state: State, action: Action): State => {
                         type: PreviewType.AdditionalReference,
                         title: "",
                         description: "",
-                        thumbnailUrl: "",
+                        imageUrl: "",
                         contentDriveUrl: "",
                     },
                 }],
@@ -265,7 +266,7 @@ export default function SubmissionForm() {
                 type: PreviewType.Submission,
                 title: "",
                 description: "",
-                thumbnailUrl: "",
+                imageUrl: "",
                 contentDriveUrl: "",
             },
         },
@@ -285,7 +286,7 @@ export default function SubmissionForm() {
     // storing string of file name
     const [fileArray, setFileArray] = useState<FormData>(new FormData());  
     // storing url of main submission file use this to store submission locally
-    const [file, setFile] = useState<File | null>(); 
+    const [file, setFile] = useState<File | null>(null); 
 
     // Destructure common state
     const {
@@ -346,13 +347,13 @@ export default function SubmissionForm() {
                 // Update main submission with drive info
                 if (responses[0]) {
                     updatedSubmission.mainSubmission.contentDriveUrl = `https://drive.google.com/file/d/${responses[0].id}`;
-                    updatedSubmission.mainSubmission.thumbnailUrl = responses[0].thumbnailUrl;
+                    updatedSubmission.mainSubmission.imageUrl = responses[0].imageUrl;
                 }
                 // Update additional references with drive info
                 if (updatedSubmission.additionalReferences && responses.length > 1) {
                     for (let i = 1; i < responses.length; i++) {
                         updatedSubmission.additionalReferences[i - 1].contentDriveUrl = `https://drive.google.com/file/d/${responses[i].id}`;
-                        updatedSubmission.additionalReferences[i - 1].thumbnailUrl = responses[i].thumbnailUrl;
+                        updatedSubmission.additionalReferences[i - 1].imageUrl = responses[i].imageUrl;
                     }
                 }
             })
@@ -411,8 +412,11 @@ export default function SubmissionForm() {
 
         if (index == -1) { // Adding main submission file
             setShowFile(true);
+            setFile(event.target.files[0]);
         } else { // Adding optional reference
             dispatch({type: ActionType.UpdatePreviewRef, index, field: "showImg", value: true});
+            dispatch({type: ActionType.UpdatePreviewRef, index, field: "filename", value: event.target.files[0].name});
+            console.log(previews);
         }
     }
 
@@ -542,7 +546,7 @@ export default function SubmissionForm() {
                 {/* Submission Boxes */}
                 <div className="flex flex-cols-2 gap-4">
                     {/* Submission Box 1 */}
-                    {showFile? (
+                    {showFile ? (
                         <div className=" resize p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">                     
                             <div className="flex  text-justify justify-end text-[#3b60ba]"> 
                                 <button 
@@ -556,7 +560,10 @@ export default function SubmissionForm() {
                                     </button>
                             </div> 
                             <div className="flex items-center justify-center ">
-                                <img className="h-[150px]" src="https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png"></img>
+                                <ImagePreview
+                                    file={file}
+                                    fallbackImageUrl="https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png"
+                                />
                             </div>
                         </div> 
                     ) : 
@@ -633,7 +640,10 @@ export default function SubmissionForm() {
                                     <div className="flex md:flex md:flex-grow flex-row justify-end space-x-1 px-[20px] py-[40px]">
                                     <button className="absolute right-[80px] flex inline-block bg-[#FFFFFF] h-[30px] w-[115px] rounded-sm  text-center  outline outline-[#5072c0] outline-offset-[3px]"
                                             // className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
-                                    onClick={() => {dispatch({type: ActionType.RemovePreview, index})}}>
+                                    onClick={() => {
+                                        removeFile(index);
+                                        dispatch({type: ActionType.RemovePreview, index});
+                                    }}>
                                         <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                             <path fillRule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
                                         </svg> Delete</button>    
@@ -657,7 +667,10 @@ export default function SubmissionForm() {
                                                 </button>
                                         </div> 
                                         <div className="flex items-center justify-center ">
-                                            <img className="h-[150px]" src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Picture_icon_BLACK.svg"></img>
+                                            <ImagePreview
+                                                file={fileArray.get(preview.filename) as File}
+                                                fallbackImageUrl="https://upload.wikimedia.org/wikipedia/commons/6/6b/Picture_icon_BLACK.svg"
+                                            />
                                         </div>
                                         </div> 
                                     ) :
@@ -733,7 +746,8 @@ export default function SubmissionForm() {
                             dispatch({type: ActionType.AddPreview});
                         }}
                         className="rounded-lg items-center pt-4 ml-20">
-                        <Link href="/submit">+ Additional Photos</Link>
+                        + Additional Photos
+                        {/* <Link>+ Additional Photos</Link> */}
                     </button>
                 </div>
                 {/* Artist Statement */}
