@@ -498,8 +498,8 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
             </div>
             <div className=" UserEdit-textbox">
               <textarea
-                name="editor_note flex-col items-center py-2 p-[50px] mb-[10%]  max-w-[100%] "
-                className=" UserEdit-inputbox"
+                name="editor_note"
+                className=" UserEdit-inputbox flex-col items-center max-w-[100%] "
                 value={state.submission.editor_note}
                 onChange={handleSubmissionChange}
               ></textarea>
