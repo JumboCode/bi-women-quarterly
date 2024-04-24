@@ -242,7 +242,6 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
     e.preventDefault();
     try {
       // add submission to database
-      console.log("here");
       await fetch("../api/submissions/edit", {
         method: "POST",
         body: JSON.stringify({
@@ -254,6 +253,16 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
     }
     handleEdit();
   };
+
+  const deleteSubmit = async (id: string, title: string) => {
+    try {
+      await fetch(`../api/submissions/delete?id=${id}&title=${title}`, {
+        method: "DELETE",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const handleEdit = () => {
     if (editOn == false) {
@@ -378,7 +387,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
               <img
                 src={state.submission.mainSubmission.thumbnailUrl}
                 alt="Submission"
-                className="image max-w-[100%] mr-4 rounded-lg"
+                className="UserEdit-image max-w-[100%] mr-4 rounded-lg"
               />
             </div>
             <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
@@ -434,7 +443,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
                   <img
                     src={additionalReference.thumbnailUrl}
                     alt={`Additional Image ${index}`}
-                    className="image max-w-[100%] mr-4 rounded-lg"
+                    className="UserEdit-image max-w-[100%] mr-4 rounded-lg"
                   />
                 </div>
               </div>
@@ -614,14 +623,12 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
 
         {state.submission.additionalReferences?.map((additionalReference, index) => ( 
           <div key={index} className="flex flex-row w-[100%] justify-between mt-[5%]">
-              <div className="additional-images">
-                <div className="UserEdit-image-container flex items-start">
-                  <img
-                    src={additionalReference.thumbnailUrl}
-                    alt={`Additional Image ${index}`}
-                    className="image max-w-[100%] rounded-lg"
-                  />
-                </div>
+              <div className="UserEdit-image-container flex items-start">
+                <img
+                  src={additionalReference.thumbnailUrl}
+                  alt={`Additional Image ${index}`}
+                  className="UserEdit-image max-w-[100%] rounded-lg"
+                />
               </div>
 
               <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
@@ -664,7 +671,7 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
 
         <div className=" bottom-0 left-0 w-full flex justify-between my-[10%]">
           <div className='p-3 flex items-center"'>
-            <button type="button" className="UserEdit-bottombutton">
+            <button type="button" onClick={(e) => deleteSubmit(state.submission.id, state.submission.title)} className="UserEdit-bottombutton">
               Delete Submission
             </button>
           </div>
