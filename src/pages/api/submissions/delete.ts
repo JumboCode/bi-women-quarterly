@@ -16,8 +16,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const db = client.db("BiWomenQuarterly");
         const collect = db.collection("Submissions");
 
-        // Delete the document with the given ID
-        await collect.deleteOne({ "submission.id": req.query.id })
+        // Delete the document with the given user ID and title
+        await collect.deleteOne({ "submission.id": req.query.id, "submission.title": req.query.title })
 
         res.status(201).json({ success: true });
     } catch (e) {
