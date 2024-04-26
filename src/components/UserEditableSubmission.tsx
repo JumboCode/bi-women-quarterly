@@ -23,7 +23,9 @@ type Props = {
 /**
    * Allows the fields of submission to be edited, has very basic css for the 
    * display of the submission
-   * @author Allison Zhang and Kevin Yuan
+   * @author Allison Zhang
+   * @author Walid Nejmi
+   * @author Kevin Yuan
    * @param submission Submission to be edited
    */
 
