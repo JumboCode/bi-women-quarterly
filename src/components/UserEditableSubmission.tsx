@@ -41,12 +41,12 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
     UpdateSubmission = 'UpdateSubmission',
     // Update main submission
     UpdateMainSubmission = 'UpdateMainSubmission',
-    // Update preview
+    // Update Additional Reference
     UpdateAdditional = 'UpdateAdditional',
-    // Add a new preview
-    AddAdditionalRef = 'AddAdditionalRef',
-    // Remove a preview
-    RemoveAdditionalRef = 'RemoveAdditionalRef',
+    // // Add an additional reference
+    // AddAdditionalRef = 'AddAdditionalRef',
+    // // Remove an additional reference
+    // RemoveAdditionalRef = 'RemoveAdditionalRef',
     // Cancel
     Cancel = "Cancel",
   }
@@ -78,16 +78,16 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
       // Value to update to
       value: string;
     }
-    | {
-      // Action type
-      type: ActionType.AddAdditionalRef,
-    }
-    | {
-      // Action type
-      type: ActionType.RemoveAdditionalRef,
-      // Index of preview to remove
-      index: number;
-    }
+    // | {
+    //   // Action type
+    //   type: ActionType.AddAdditionalRef,
+    // }
+    // | {
+    //   // Action type
+    //   type: ActionType.RemoveAdditionalRef,
+    //   // Index of preview to remove
+    //   index: number;
+    // }
     | {
       // Action type
       type: ActionType.Cancel,
@@ -151,47 +151,36 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
           throw Error("Trying to edit when there are no additional references");
         }
       }
-      // case ActionType.UpdatePreviewRef: {
-      //     const newPreviews = state.additionalRef;
-      //     newPreviews[action.index] = {
-      //         ...newPreviews[action.index],
-      //         [action.field]: action.value,
-      //     };
+      // case ActionType.AddAdditionalRef: {
+      //     const additionalReferences = state.submission.additionalReferences || [];
       //     return {
-      //         ...state,
-      //         additionalRef: newPreviews,
+      //       ...state,
+      //       additionalRefIndex: additionalReferences.length,
+      //       submission: { 
+      //         ...state.submission,
+      //         additionalReferences: [...additionalReferences, {
+      //             type: PreviewType.AdditionalReference,
+      //             title: "",
+      //             description: "",
+      //             thumbnailUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
+      //             contentDriveUrl: "",
+      //         }],
+      //       },
       //     };
       // }
-      case ActionType.AddAdditionalRef: {
-          const additionalReferences = state.submission.additionalReferences || [];
-          return {
-            ...state,
-            additionalRefIndex: additionalReferences.length,
-            submission: { 
-              ...state.submission,
-              additionalReferences: [...additionalReferences, {
-                  type: PreviewType.AdditionalReference,
-                  title: "",
-                  description: "",
-                  thumbnailUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
-                  contentDriveUrl: "",
-              }],
-            },
-          };
-      }
-      case ActionType.RemoveAdditionalRef: {
-        if (state.submission.additionalReferences != undefined) { 
-          return {
-            ...state,
-            submission: { 
-              ...state.submission,
-              additionalReferences: [...state.submission.additionalReferences.slice(0, action.index), ...state.submission.additionalReferences.slice(action.index + 1)]
-            }
-          };
-        } else {
-          throw Error("Trying to remove when there are no additional references");
-        }
-      }
+      // case ActionType.RemoveAdditionalRef: {
+      //   if (state.submission.additionalReferences != undefined) { 
+      //     return {
+      //       ...state,
+      //       submission: { 
+      //         ...state.submission,
+      //         additionalReferences: [...state.submission.additionalReferences.slice(0, action.index), ...state.submission.additionalReferences.slice(action.index + 1)]
+      //       }
+      //     };
+      //   } else {
+      //     throw Error("Trying to remove when there are no additional references");
+      //   }
+      // }
       case ActionType.Cancel: {
         return {
           ...state,
@@ -221,18 +210,6 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
   const handleMainSubmissionChange = (e: ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
     dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value})
   };
-
-  // const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   dispatch({type:ActionType.UpdateMainSubmission, field: "thumbnailUrl", value})
-  //   if (e.target.files && e.target.files[0]) {
-  //     const img = URL.createObjectURL(e.target.files[0]);
-  //     setSubmission({ ...submission, mainSubmission: { ...submission.mainSubmission, thumbnailUrl: img } });
-  //   }
-  // };
-  
-  const handleAddAdditionalRef = () => {
-    dispatch({type:ActionType.AddAdditionalRef});
-  }
 
   const handleUpdateAdditionalRef = (index: number, e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
     dispatch({type:ActionType.UpdateAdditional, field: e.target.name, value: e.target.value, index: index})
