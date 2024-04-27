@@ -369,7 +369,11 @@ export default function AdminHomePage() {
                             <div>
                                 <div>
                                     <div className="mt-[10px] mb-[10px] flex items-center justify-center text-xl text-primary-blue font-bold">
-                                        Current Issues
+                                        Update Issues
+                                    </div>
+
+                                    <div className="flex justify-end h-1 pe-[5px] text-sm italic text-primary-blue">
+                                        Current
                                     </div>
 
                                     <div className="p-[10px]">
@@ -423,7 +427,7 @@ export default function AdminHomePage() {
 
                                             ) : (
 
-                                                <div onClick={() => setAddIssue(true)} className="mt-[10px] mb-[30px] ml-[44px] mr-[44px] border-dashed border-2 border-[#958cae] flex inline-block align-middle justify-center h-[45px] rounded-md items-center border-[#5a5a5b] text-[#5a5a5b] text-m">
+                                                <button onClick={() => setAddIssue(true)} className="mt-[10px] mb-[30px] ml-[44px] mr-[44px] border-dashed border-2 border-[#958cae] flex inline-block align-middle justify-center h-[45px] w-5/6 rounded-md items-center border-[#5a5a5b] text-[#5a5a5b] text-m">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                                     </svg>
@@ -431,7 +435,7 @@ export default function AdminHomePage() {
                                                     <div className="pl-[10px]">
                                                         add new issue 
                                                     </div>
-                                                </div>
+                                                </button>
 
                                             )}
                                         </div>
