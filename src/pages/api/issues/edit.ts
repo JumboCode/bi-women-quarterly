@@ -21,11 +21,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         // Update the specific fields using $set
         await collect.updateOne({ _id: new ObjectId(id)}, { $set:{status: status} });
 
-        // console.log("2");
-
-        // debugging info
         const collection = await db.collection("Issues").find({}).toArray();
-        console.log(collection);
 
         res.status(200).json({ success: true, data: collection });
     } catch (e) {

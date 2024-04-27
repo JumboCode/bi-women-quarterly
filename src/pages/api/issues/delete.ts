@@ -21,7 +21,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         // delete the defined document from the "Issues" collection
         const { id } = JSON.parse(req.body);
-        const document = await collect.deleteOne({ _id: new ObjectId(id) });
+        await collect.deleteOne({ _id: new ObjectId(id) });
 
         // accesses collection to verify that everything was inserted correctly
         const collection = await db.collection("Issues").find({}).toArray();
