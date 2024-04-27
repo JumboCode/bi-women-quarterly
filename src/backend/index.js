@@ -83,7 +83,7 @@ app.get("/upload", async (req, res) => {
                     responses.push({
                         name: response.data.name,
                         id: response.data.id,
-                        thumbnailUrl: thumbnailUrl
+                        imageUrl: thumbnailUrl
                     });
                 });
         }
