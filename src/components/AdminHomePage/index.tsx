@@ -234,6 +234,11 @@ export default function AdminHomePage() {
          * @author Alana Sendlakowski, Vanessa Rose
          */
         async function saveNewIssue() {
+            // show loading spinner
+            dispatch({
+                type: ActionType.ToggleLoadingOn
+            })
+
             try {
                 // add submission to database
                 await fetch("../api/issues/add", {
@@ -247,6 +252,11 @@ export default function AdminHomePage() {
                 console.log(error);
             }
 
+            // hide loading spinner
+            dispatch({
+                type: ActionType.ToggleLoadingOff
+            })
+
             setupIssueModal();
         }
         
@@ -256,6 +266,10 @@ export default function AdminHomePage() {
          * @param id of the issue to be deleted
          */
         async function deleteIssue(event: any) {
+            // show loading spinner
+            dispatch({
+                type: ActionType.ToggleLoadingOn
+            })
             
             // if the element to delete is the current issue, must select a new current
             if (current == event) {
@@ -290,6 +304,11 @@ export default function AdminHomePage() {
             } catch (error) {
                 console.log(error);
             }
+
+            // hide loading spinner
+            dispatch({
+                type: ActionType.ToggleLoadingOff
+            })
 
             setupIssueModal();   
         }
@@ -358,7 +377,12 @@ export default function AdminHomePage() {
                     <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                         <div className="pt-[10px] w-1/2 border-0 rounded-md shadow-lg relative flex flex-col bg-[#dcadff] outline-none focus:outline-none">
                             <div className="absolute absolute right-[10px]">
-                                <button onClick={() => closeModal(document.querySelector('input[name="radio"]:checked').value)}>
+                                <button onClick={() => {
+                                    const selectedRadio = document.querySelector('input[name="radio"]:checked') as HTMLInputElement;
+                                    if (selectedRadio) {
+                                        closeModal(selectedRadio.value);
+                                    }
+                                }}>
                                     
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="#385eb9" className="w-7 h-7">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>
@@ -372,76 +396,73 @@ export default function AdminHomePage() {
                                         Update Issues
                                     </div>
 
-                                    <div className="flex justify-end h-1 pe-[5px] text-sm italic text-primary-blue">
-                                        Current
-                                    </div>
+                                            <div className="flex justify-end h-1 pe-[5px] text-sm italic text-primary-blue">
+                                                Current
+                                            </div>
+                                            <div className="p-[10px]">
+                                            <div>
+                                                {issues.map(([_id, status, title]) => (
+                                                    <div className="flex">
+                                                        <div onClick={() => deleteIssue(_id)} className="inline-block flex items-center justify-center pl-[10px]">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#385eb9" className="w-6 h-6 cursor-pointer hover:stroke-black hover:fill-[#385eb9]">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                                            </svg>
+                                                        </div>
 
-                                    <div className="p-[10px]">
-                                        <div>
-                                            {issues.map(([_id, status, title]) => (
-                                                <div className="flex">
-                                                    <div onClick={() => deleteIssue(_id)} className="inline-block flex items-center justify-center pl-[10px]">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#385eb9" className="w-6 h-6 cursor-pointer hover:stroke-black hover:fill-[#385eb9]">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                                        </svg>
+                                                        <div key={title} className="inline-block shadow-lg flex inline-block align-middle pl-[10px] w-full h-[45px] rounded-md shadow-inner items-center m-[10px] text-primary-blue text-xl  bg-[#e3cafc]">
+                                                            {title}
+                                                        </div>
+                                                            
+                                                        <div>
+                                                            {(status === "Current") ? (
+                                                                <div>
+                                                                    <div className="flex items-center mb-4">
+                                                                        <input id="radio-current" type="radio" value={_id} defaultChecked={status == "Current"} name="radio" className="relative w-5 h-5 ml-[2px] mr-[10px] mt-[22.5px] before:content[''] cursor-pointer appearance-none rounded-full border transition-all border-[#385eb9] checked:bg-[#385eb9] checked:border-white"/>
+                                                                    </div>
+                                                                </div>
+                                                            ) : (
+                                                                <div>
+                                                                    <div className="flex items-center mb-4">
+                                                                        <input id="radio-current" type="radio" value={_id} name="radio" className="relative w-5 h-5 ml-[2px] mr-[10px] mt-[22.5px] before:content[''] cursor-pointer appearance-none rounded-full border transition-all border-[#385eb9] checked:bg-[#385eb9] checked:border-white"/>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                     </div>
+                                                ))}
+                                            </div>
 
-                                                    <div key={title} className="inline-block shadow-lg flex inline-block align-middle pl-[10px] w-full h-[45px] rounded-md shadow-inner items-center m-[10px] text-primary-blue text-xl  bg-[#e3cafc]">
-                                                        {title}
-                                                    </div>
-                                                        
+                                            <div>
+                                                {addIssue ? (
                                                     <div>
-                                                        {(status === "Current") ? (
-                                                            <div>
-                                                                <div className="flex items-center mb-4">
-                                                                    <input id="radio-current" type="radio" value={_id} defaultChecked={status == "Current"} name="radio" className="relative w-5 h-5 ml-[2px] mr-[10px] mt-[22.5px] before:content[''] cursor-pointer appearance-none rounded-full border transition-all border-[#385eb9] checked:bg-[#385eb9] checked:border-white"/>
-                                                                </div>
-                                                            </div>
-                                                        ) : (
-                                                            <div>
-                                                                <div className="flex items-center mb-4">
-                                                                    <input id="radio-current" type="radio" value={_id} name="radio" className="relative w-5 h-5 ml-[2px] mr-[10px] mt-[22.5px] before:content[''] cursor-pointer appearance-none rounded-full border transition-all border-[#385eb9] checked:bg-[#385eb9] checked:border-white"/>
-                                                                </div>
-                                                            </div>
-                                                        )}
+                                                        <div className="inline-block shadow-lg flex inline-block align-middle  ml-[44px] mr-[44px] h-[45px] rounded-md shadow-inner items-center m-[10px] text-[#5a5a5b] text-xl">
+                                                            <input
+                                                                className="w-full h-full rounded-md pl-[10px] pr-[10px] bg-[#f6e7ff] placeholder-shown:italic"
+                                                                placeholder="Type new issue title"
+                                                                onChange={handleInputChange}
+                                                            />
+                                                        </div>
+
+                                                        <button onClick={() => saveNewIssue()} className="pl-[10px] mt-[20px] mb-[30px] ml-[44px] mr-[44px] flex inline-block align-middle justify-center h-[45px] w-5/6 rounded-md items-center bg-[#ff4295] text-white font-bold text-xl">
+                                                            Save New Issue 
+                                                        </button>
                                                     </div>
-                                                </div>
-                                            ))}
+
+                                                ) : (
+
+                                                    <button onClick={() => setAddIssue(true)} className="mt-[10px] mb-[30px] ml-[44px] mr-[44px] border-dashed border-2 border-[#958cae] flex inline-block align-middle justify-center h-[45px] w-5/6 rounded-md items-center border-[#5a5a5b] text-[#5a5a5b] text-m">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                                        </svg>
+
+                                                        <div className="pl-[10px]">
+                                                            add new issue 
+                                                        </div>
+                                                    </button>
+
+                                                )}
+                                            </div>
                                         </div>
-
-                                        <div>
-                                            {addIssue ? (
-                                                <div>
-                                                    <div className="inline-block shadow-lg flex inline-block align-middle  ml-[44px] mr-[44px] h-[45px] rounded-md shadow-inner items-center m-[10px] text-[#5a5a5b] text-xl">
-                                                        <input
-                                                            className="w-full h-full rounded-md pl-[10px] pr-[10px] bg-[#f6e7ff] placeholder-shown:italic"
-                                                            placeholder="Type new issue title"
-                                                            onChange={handleInputChange}
-                                                        />
-                                                    </div>
-
-                                                    <div onClick={() => saveNewIssue()} className="pl-[10px] mt-[20px] mb-[30px] ml-[44px] mr-[44px] flex inline-block align-middle justify-center h-[45px] rounded-md items-center bg-[#ff4295] text-white font-bold text-xl">
-                                                        Save New Issue 
-                                                    </div>
-                                                </div>
-
-                                            ) : (
-
-                                                <button onClick={() => setAddIssue(true)} className="mt-[10px] mb-[30px] ml-[44px] mr-[44px] border-dashed border-2 border-[#958cae] flex inline-block align-middle justify-center h-[45px] w-5/6 rounded-md items-center border-[#5a5a5b] text-[#5a5a5b] text-m">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                                    </svg>
-
-                                                    <div className="pl-[10px]">
-                                                        add new issue 
-                                                    </div>
-                                                </button>
-
-                                            )}
-                                        </div>
-
-                                        </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -488,7 +509,7 @@ export default function AdminHomePage() {
             </div>
             {isLoading ? (
                 <div className="flex h-screen">
-                    <div className="m-auto">
+                    <div className="m-auto z-50">
                         <TailSpin color="#8200B1"></TailSpin>
                     </div>
                 </div>
