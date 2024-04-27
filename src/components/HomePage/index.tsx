@@ -21,6 +21,8 @@ import ShowSubmissionThumbnails from "@/components/HomePage/ShowSubmissionThumbn
 // Import types
 import Submission from "@/types/Submission";
 import Statuses from "@/types/Statuses";
+import UserEditableSubmission from './UserEditableSubmission';
+import SubmissionThumbnail from './SubmissionThumbnail';
 
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Types --------------------------------- */
@@ -48,6 +50,8 @@ type State = {
     allSubmissions: Submission[];
     // Submissions to show on the page
     filteredSubmissions: Submission[];
+    // Submission to show in the edit modal
+    editModalSubmission?: Submission;
     // Whether to show loading spinner
     isLoading: boolean;
 };
@@ -58,6 +62,7 @@ type State = {
 enum ActionType {
     ChangeFilter = "ChangeFilter",
     UpdateAllSubmissions = "UpdateAllSubmissions",
+    ChangeEditModal = "ChangeEditModal",
     ToggleLoadingOn = "ToggleLoadingOn",
     ToggleLoadingOff = "ToggleLoadingOff"
 }
@@ -75,6 +80,12 @@ type Action =
           type: ActionType.UpdateAllSubmissions;
           // Submissions to update to
           newSubmissions: Submission[];
+      }
+    | {
+            // Action type
+            type: ActionType.ChangeEditModal;
+            // Submission to show in modal
+            submission: Submission | undefined;
       }
     | {
           // Action type
@@ -109,6 +120,12 @@ const reducer = (state: State, action: Action): State => {
             return {
                 ...state,
                 allSubmissions: action.newSubmissions
+            };
+        }
+        case ActionType.ChangeEditModal: {
+            return {
+                ...state,
+                editModalSubmission: action.submission,
             };
         }
         case ActionType.ToggleLoadingOn: {
@@ -180,6 +197,7 @@ export default function HomePage() {
         filter: FilterType.None,
         allSubmissions: [],
         filteredSubmissions: [],
+        editModalSubmission: undefined,
         isLoading: false
     };
 
@@ -187,7 +205,13 @@ export default function HomePage() {
     const [state, dispatch] = useReducer(reducer, initialState);
 
     // Destructure common state
-    const { filter, allSubmissions, filteredSubmissions, isLoading } = state;
+    const {
+        filter,
+        allSubmissions,
+        filteredSubmissions,
+        editModalSubmission,
+        isLoading,
+    } = state;
 
     const { user } = useUser();
 
@@ -281,6 +305,9 @@ export default function HomePage() {
     /*----------------------------------------*/
     return (
         <div className="h-screen w-screen flex flex-col gradient-background">
+            {
+                editModalSubmission && <div className="h-screen w-screen absolute bg-black bg-opacity-50 z-40"/>
+            }
             <div className="HomePage-top-bar border-b border-primary-blue">
                 <div className="m-6 mx-5 flex flex-row justify-between">
                     <div className="flex text-2xl lg:text-3xl xl:text-4xl font-bold text-primary-blue">
@@ -347,20 +374,54 @@ export default function HomePage() {
                     </div>
                 </div>
             ) : (
-                <div className="flex item-center justify-center overflow-auto mb-8">
-                    {filteredSubmissions.length == 0 ? (
-                        <div className="relative pt-20">
-                            <div className="box-content border border-primary-blue relative w-full md:w-96 h-56 item-center left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
-                            <br></br>
-                            <div className="text-primary-blue text-center relative left-1/2 bottom-1/12 transform -translate-x-1/2 -translate-y-1/8">
-                                You have no submissions
+                <div>
+                    {editModalSubmission && (
+                        <div className="top-3 bottom-3 justify-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                            <div className="top-0 w-5/6 h-5/6 border-0 rounded-md shadow-lg relative flex flex-col bg-[#dcadff] outline-none focus:outline-none">
+                                <div>
+                                    <UserEditableSubmission 
+                                        initialSubmission={editModalSubmission}
+                                        onClose={() => {
+                                            dispatch({
+                                                type: ActionType.ChangeEditModal,
+                                                submission: undefined
+                                            })
+                                        }}
+                                    />
+                                </div>
                             </div>
                         </div>
-                    ) : (
-                        <ShowSubmissionThumbnails
-                            submissions={filteredSubmissions}
-                        />
                     )}
+                    <div className="flex item-center justify-center overflow-auto mb-8">
+                        {filteredSubmissions.length == 0 ? (
+                            <div className="relative pt-20">
+                                <div className="box-content border border-primary-blue relative w-full md:w-96 h-56 item-center left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                                <br></br>
+                                <div className="text-primary-blue text-center relative left-1/2 bottom-1/12 transform -translate-x-1/2 -translate-y-1/8">
+                                    You have no submissions
+                                </div>
+                            </div>
+                        ) : (
+                            <div className=" flex "> {/* mx-auto */}
+                                <div className="grid gap-3 grid-cols-3 flex m-3 min-auto"> {/*  */}
+                                    {allSubmissions.map(submission => {
+                                        return (
+                                            <SubmissionThumbnail
+                                                key={`${submission.title}|${submission.mainSubmission.imageUrl}|${submission.mainSubmission.contentDriveUrl}`}
+                                                submission={submission}
+                                                onClick={() => {
+                                                    dispatch({
+                                                        type: ActionType.ChangeEditModal,
+                                                        submission: submission
+                                                    });
+                                                }}
+                                            ></SubmissionThumbnail>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             )}
             <div className="p-1.5 ps-20 pe-20 flex justify-between items-center fixed bottom-0 w-full mr-8 text-primary-blue text-base text-sm lg:text-md">

@@ -4,20 +4,16 @@ import Submission from '@/types/Submission';
 import Preview from '@/types/Preview';
 import PreviewType from '@/types/PreviewType';
 import Mediums from '@/types/Mediums';
-import Issues from '@/types/Issues';
-
 
 // Import FontAwesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { error } from 'console';
-import { init } from 'next/dist/compiled/webpack/webpack';
-import { margin } from '@mui/system';
 
 
 type Props = {
-  submission: Submission;
+  initialSubmission: Submission;
+  onClose: () => void;
 };
 
 /**
@@ -29,7 +25,12 @@ type Props = {
    * @param submission Submission to be edited
    */
 
-const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission }) => {
+const UserEditableSubmission: React.FC<Props> = (props) => {
+  const {
+    initialSubmission,
+    onClose,
+  } = props;
+
   const [editOn, setEditOn] = useState<boolean>(false);
 
   type State = {
@@ -270,12 +271,6 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
       }}
     >
       <div className="mt-[5%] w-[70%] ">
-        <button
-          className="text-white px-4 py-2 mb-4 inline-block absolute top-0 left-1"
-          style={{ color: "#395EB9", fontSize: "24px" }}
-        >
-          <FontAwesomeIcon icon={faArrowLeft} /> Back
-        </button>
         <form onSubmit={onSubmit}>
           <div className="title-date flex items-center justify-between mb-4">
             <div className="flex flex-row">
@@ -513,12 +508,31 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
       }}
     >
       <div className="mt-[5%] w-[70%] ">
-        <button
-          className="text-white px-4 py-2 mb-4 inline-block absolute top-0 left-1"
-          style={{ color: "#395EB9", fontSize: "24px" }}
-        >
-          <FontAwesomeIcon icon={faArrowLeft} /> Back
-        </button>
+      <div className=" bottom-0 left-0 w-full flex justify-between my-[10%]">
+          <div className='p-3 flex items-center"'>
+            <button type="button" onClick={(e) => deleteSubmit(state.submission.id, state.submission.title)} className="UserEdit-bottombutton">
+              Delete Submission
+            </button>
+          </div>
+          <div className="bg-pink p-3 flex items-center">
+            <div className="submission-date text-white pr-10">
+              Submitted: {state.submission.date}
+            </div>
+            <button
+              type="button"
+              onClick={handleEdit}
+              className="mr-2 rounded shadow UserEdit-bottombutton">
+              Edit
+            </button>
+            <button
+              type="submit"
+              className="UserEdit-bottombuttonred"
+              onClick={onClose}
+            >
+              Done
+            </button>
+          </div>
+        </div>
         <div className="title-date flex items-center justify-between mb-4 ">
           <div className="flex flex-row">
             <div
@@ -645,30 +659,6 @@ const UserEditableSubmission: React.FC<Props> = ({ submission: initialSubmission
           </div>
           <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
             {state.submission.editor_note}
-          </div>
-        </div>
-
-        <div className=" bottom-0 left-0 w-full flex justify-between my-[10%]">
-          <div className='p-3 flex items-center"'>
-            <button type="button" onClick={(e) => deleteSubmit(state.submission.id, state.submission.title)} className="UserEdit-bottombutton">
-              Delete Submission
-            </button>
-          </div>
-          <div className="bg-pink p-3 flex items-center">
-            <div className="submission-date text-white pr-10">
-              Submitted: {state.submission.date}
-            </div>
-            <button
-              type="button"
-              onClick={handleEdit}
-              className="mr-2 rounded shadow UserEdit-bottombutton">
-              Edit
-            </button>
-            <button
-              type="submit"
-              className="UserEdit-bottombuttonred">
-              Done
-            </button>
           </div>
         </div>
       </div>
