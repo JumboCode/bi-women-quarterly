@@ -8,8 +8,7 @@ import Mediums from '@/types/Mediums';
 // Import FontAwesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-
+import { TailSpin } from 'react-loader-spinner';
 
 type Props = {
   initialSubmission: Submission;
@@ -42,6 +41,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
     submission: Submission;
     additionalRefIndex: number;
     initialAddRefIndex: number;
+    showLoading: boolean;
   }
 
   enum ActionType {
@@ -51,10 +51,10 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
     UpdateMainSubmission = 'UpdateMainSubmission',
     // Update Additional Reference
     UpdateAdditional = 'UpdateAdditional',
-    // // Add an additional reference
-    // AddAdditionalRef = 'AddAdditionalRef',
-    // // Remove an additional reference
-    // RemoveAdditionalRef = 'RemoveAdditionalRef',
+    // Show a loading spinner
+    ShowLoading = 'ShowLoading',
+    // Hide a loading spinner
+    HideLoading = 'HideLoading',
     // Cancel
     Cancel = "Cancel",
   }
@@ -86,16 +86,14 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
       // Value to update to
       value: string;
     }
-    // | {
-    //   // Action type
-    //   type: ActionType.AddAdditionalRef,
-    // }
-    // | {
-    //   // Action type
-    //   type: ActionType.RemoveAdditionalRef,
-    //   // Index of preview to remove
-    //   index: number;
-    // }
+    | {
+      // Action type
+      type: ActionType.ShowLoading,
+    }
+    | {
+      // Action type
+      type: ActionType.HideLoading,
+    }
     | {
       // Action type
       type: ActionType.Cancel,
@@ -131,14 +129,6 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
         };
       }
       case ActionType.UpdateAdditional: {
-        // const newPreviews = state.additionalRef;
-        // newPreviews[action.index] = {
-        //     ...newPreviews[action.index],
-        //     preview: {
-        //         ...newPreviews[action.index].preview,
-        //         [action.field]: action.value,
-        //     },
-        // };
         if (state.submission.additionalReferences != undefined) {
           const newPreviews = [
             ...state.submission.additionalReferences.slice(0, action.index),
@@ -159,36 +149,18 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
           throw Error("Trying to edit when there are no additional references");
         }
       }
-      // case ActionType.AddAdditionalRef: {
-      //     const additionalReferences = state.submission.additionalReferences || [];
-      //     return {
-      //       ...state,
-      //       additionalRefIndex: additionalReferences.length,
-      //       submission: { 
-      //         ...state.submission,
-      //         additionalReferences: [...additionalReferences, {
-      //             type: PreviewType.AdditionalReference,
-      //             title: "",
-      //             description: "",
-      //             thumbnailUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
-      //             contentDriveUrl: "",
-      //         }],
-      //       },
-      //     };
-      // }
-      // case ActionType.RemoveAdditionalRef: {
-      //   if (state.submission.additionalReferences != undefined) { 
-      //     return {
-      //       ...state,
-      //       submission: { 
-      //         ...state.submission,
-      //         additionalReferences: [...state.submission.additionalReferences.slice(0, action.index), ...state.submission.additionalReferences.slice(action.index + 1)]
-      //       }
-      //     };
-      //   } else {
-      //     throw Error("Trying to remove when there are no additional references");
-      //   }
-      // }
+      case ActionType.ShowLoading: {
+        return {
+          ...state,
+          showLoading: true,
+        }
+      }
+      case ActionType.HideLoading: {
+        return {
+          ...state,
+          showLoading: false,
+        }
+      }
       case ActionType.Cancel: {
         return {
           ...state,
@@ -206,9 +178,17 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
       submission: initialSubmission,
       additionalRefIndex: initialSubmission.additionalReferences ?  initialSubmission.additionalReferences.length - 1 : -1,
       initialAddRefIndex: initialSubmission.additionalReferences ?  initialSubmission.additionalReferences.length - 1 : -1,
+      showLoading: false,
   }
 
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  // Destructure state
+  const {
+    submission,
+    additionalRefIndex,
+    showLoading,
+  } = state;
 
   const handleSubmissionChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLSelectElement>) => {
     // setSubmission({ ...submission, [e.target.name]: e.target.value });
@@ -225,6 +205,9 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    dispatch({type: ActionType.ShowLoading});
+    
     try {
       // add submission to database
       await fetch("../api/submissions/edit", {
@@ -236,6 +219,9 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
     } catch (error) {
       console.log(error);
     }
+
+    dispatch({type: ActionType.HideLoading});
+
     handleEdit();
   };
 
@@ -267,246 +253,236 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
   /*----------------------------------------*/
   /* --------------- Main UI -------------- */
   /*----------------------------------------*/
-  const body = editOn ? (
-    <div
-      className="flex flex-row h-screen UserEdit-container m-[0px] justify-around overflow-y-scroll"
-      style={{
-        backgroundImage:
-          "linear-gradient(to bottom right, #FFD3CB, #E7A5FF, #B3C9FF)"
-      }}
-    >
-      <div className="mt-[5%] w-[70%] ">
-        <form onSubmit={onSubmit}>
-          <div className="title-date flex items-center justify-between mb-4">
-            <div className="flex flex-row">
-              <div
-                className="edit-submission-title text-3xl mb-4"
-                style={{
-                  fontSize: "32.73px",
-                  fontWeight: 700,
-                  textAlign: "left",
-                  color: "#395EB9"
-                }}
-              >
-                Edit Submission
+  const body = (
+  <div className="flex flex-row h-100 w-100 UserEdit-container m-[0px] justify-around overflow-y-scroll rounded-lg">
+    {/* Loading Spinner */}
+    {showLoading ? (
+      <div className="flex h-screen">
+        <div className="m-auto">
+            <TailSpin color="#8200B1"></TailSpin>
+        </div>
+      </div>
+    ) : (
+      editOn ? (
+        <div className="mt-2 w-11/12">
+        {/* Editable */}
+      <form onSubmit={onSubmit}>
+      <div className="bottom-0 right-0 w-full flex flex-row justify-end">
+          <div className="bg-pink flex">
+            <button
+              type="button"
+              onClick={handleEdit}
+              className="mr-2 rounded shadow UserEdit-bottombutton font-semibold text-lg"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="UserEdit-bottombuttonred text-lg"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+        <div className="title-date flex items-center justify-between mb-4">
+          <div className="flex flex-row">
+            <button
+              className="bottom-0 mt-6 text-sm UserEdit-bottombutton"
+              style={{ backgroundColor: "#FFFFFF80" }}
+              onClick={e => {
+                e.preventDefault();
+                openInNewTab(state.submission.mainSubmission.contentDriveUrl);
+              }}
+            >
+              <FontAwesomeIcon icon={faLink} /> &nbsp; Google Drive
+            </button>
+          </div>
+          <div className="flex items-center issue-type text font-bold">
+            <div className="UserEdit-selectBox">
+              <div className="UserEdit-blue-box">
+                <label>Issue: </label>
               </div>
-              <button
-                className="ml-[50px] UserEdit-bottombutton"
-                style={{ backgroundColor: "#FFFFFF80" }}
-                onClick={e => {
-                  e.preventDefault();
-                  openInNewTab(state.submission.mainSubmission.contentDriveUrl);
-                }}
-              >
-                <FontAwesomeIcon icon={faLink} /> &nbsp; Google Drive
-              </button>
+              <div>
+                <select
+                  name="issue"
+                  style={{
+                    background: "FFFFFF80",
+                    boxShadow:
+                      "0 2px 4px rgba(0, 0, 0, 0.1)",
+                    padding: "6px"
+                  }}
+                  value={state.submission.issue}
+                  onChange={handleSubmissionChange}
+                >
+                </select>
+              </div>
             </div>
-            <div className="flex items-center issue-type text font-bold">
-              <div className="UserEdit-selectBox">
-                <div className="UserEdit-blue-box">
-                  <label>Issue: </label>
-                </div>
-                <div>
-                  <select
-                    name="issue"
-                    style={{
-                      background: "FFFFFF80",
-                      boxShadow:
-                        "0 2px 4px rgba(0, 0, 0, 0.1)",
-                      padding: "6px"
-                    }}
-                    value={state.submission.issue}
-                    onChange={handleSubmissionChange}
-                  >
-                  </select>
-                </div>
+            <div className="UserEdit-selectBox">
+              <div className="UserEdit-blue-box">
+                <label>Type: </label>
               </div>
-              <div className="UserEdit-selectBox">
-                <div className="UserEdit-blue-box">
-                  <label>Type: </label>
-                </div>
-                <div>
-                  <select
-                    name="medium"
-                    style={{
-                      background: "FFFFFF80",
-                      boxShadow:
-                        "0 2px 4px rgba(0, 0, 0, 0.1)",
-                      padding: "6px"
-                    }}
-                    value={
-                      state.submission.medium
-                    }
-                    onChange={handleSubmissionChange}
-                  >
-                    <option value="Fiction">
-                      {Mediums.Fiction}
-                    </option>
-                    <option value="NonFiction">
-                      {Mediums.Nonfiction}
-                    </option>
-                    <option value="Other">
-                      {Mediums.Other}
-                    </option>
-                    <option value="Poetry">
-                      {Mediums.Poetry}
-                    </option>
-                    <option value="VisArt">
-                      {Mediums.VisualArt}
-                    </option>
-                  </select>
-                </div>
+              <div>
+                <select
+                  name="medium"
+                  style={{
+                    background: "FFFFFF80",
+                    boxShadow:
+                      "0 2px 4px rgba(0, 0, 0, 0.1)",
+                    padding: "6px"
+                  }}
+                  value={
+                    state.submission.medium
+                  }
+                  onChange={handleSubmissionChange}
+                >
+                  <option value="Fiction">
+                    {Mediums.Fiction}
+                  </option>
+                  <option value="NonFiction">
+                    {Mediums.Nonfiction}
+                  </option>
+                  <option value="Other">
+                    {Mediums.Other}
+                  </option>
+                  <option value="Poetry">
+                    {Mediums.Poetry}
+                  </option>
+                  <option value="VisArt">
+                    {Mediums.VisualArt}
+                  </option>
+                </select>
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="flex flex-row w-[100%] justify-between">
-            <div className="UserEdit-image-container flex items-start">
-              <img
-                src={state.submission.mainSubmission.thumbnailUrl}
-                alt="Submission"
-                className="UserEdit-image max-w-[100%] mr-4 rounded-lg"
-              />
+        <div className="flex flex-row w-[100%] justify-between">
+          <div className="UserEdit-image-container flex items-start">
+            <img
+              src={state.submission.mainSubmission.thumbnailUrl}
+              alt="Submission"
+              className="UserEdit-image max-w-[100%] mr-4 rounded-lg"
+            />
+          </div>
+          <div className="flex-col items-center py-2 UserEdit-textbox w-[100%]">
+            <div className="title p-2 text-left">
+              <b style={{ color: "#395EB9" }}>Title</b>
+              <br></br>
+              <input
+                className="UserEdit-inputbox"
+                type="text"
+                name="title"
+                value={
+                  state.submission.mainSubmission.title
+                }
+                onChange={handleMainSubmissionChange}
+              ></input>
             </div>
-            <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
-              <div className="title p-[5%] text-left">
-                <b style={{ color: "#395EB9" }}>Title</b>
-                <br></br>
-                <input
+            <div className="image-description text-black p-2 text-left">
+              <b style={{ color: "#395EB9" }}>Description</b>
+              <br></br>
+              <div>
+                <textarea
                   className="UserEdit-inputbox"
-                  type="text"
-                  name="title"
+                  name="description"
                   value={
-                    state.submission.mainSubmission.title
+                    state.submission.mainSubmission
+                      .description
                   }
                   onChange={handleMainSubmissionChange}
-                ></input>
-              </div>
-              <div className="image-description text-black p-[5%] text-left ">
-                <b style={{ color: "#395EB9" }}>Description</b>
-                <br></br>
-                <div>
-                  <textarea
-                    className="UserEdit-inputbox"
-                    name="description"
-                    value={
-                      state.submission.mainSubmission
-                        .description
-                    }
-                    onChange={handleMainSubmissionChange}
-                  ></textarea>
-                </div>
+                ></textarea>
               </div>
             </div>
           </div>
+        </div>
 
+        <div  className="pt-5">
+          <div className="font-bold UserEdit-header">
+            Artist Statement
+          </div>
+          <div className=" UserEdit-textbox flex-col items-center py-2 p-[50px] max-w-[100%] ">
+            <textarea
+              name="artist_statement"
+              className=" UserEdit-inputbox" 
+              value={state.submission.artist_statement}
+              onChange={handleSubmissionChange}
+            ></textarea>
+          </div>
+        </div>
+        <div>
+          <div className="font-bold UserEdit-header">
+            Note to editor
+          </div>
+          <div className=" UserEdit-textbox">
+            <textarea
+              name="editor_note"
+              className=" UserEdit-inputbox flex-col items-center max-w-[100%] "
+              value={state.submission.editor_note}
+              onChange={handleSubmissionChange}
+            ></textarea>
+          </div>
+        </div>
 
+        {(state.submission.additionalReferences?.length && state.submission.additionalReferences?.length > 0) ? (
           <div
-            className="text-3xl mt-[3%]"
-                style={{
-                  fontSize: "30px",
-                  fontWeight: 700,
-                  lineHeight: "44.57px",
-                  textAlign: "left",
-                  color: "#395EB9"
-                }}
-              >
-                Optional Related Content
+              className="text-2xl mt-[3%] font-semibold"
+                  style={{
+                    lineHeight: "44.57px",
+                    textAlign: "left",
+                    color: "#395EB9"
+                  }}
+                >
+                  Optional Related Content
           </div>
+        ) : null}
 
-          {state.submission.additionalReferences?.map((additionalReference, index) => (
-            <div className="flex flex-row w-full justify-between mt-[5%]" key={index}>
-              <div className="additional-images">
-                <div className="UserEdit-image-container flex items-start">
-                  <img
-                    src={additionalReference.thumbnailUrl}
-                    alt={`Additional Image ${index}`}
-                    className="UserEdit-image max-w-[100%] mr-4 rounded-lg"
-                  />
-                </div>
+        {state.submission.additionalReferences?.map((additionalReference, index) => (
+          <div className="flex flex-row w-full justify-between mt-[5%]" key={index}>
+            <div className="additional-images">
+              <div className="UserEdit-image-container flex items-start">
+                <img
+                  src={additionalReference.thumbnailUrl}
+                  alt={`Additional Image ${index}`}
+                  className="UserEdit-image max-w-[100%] mr-4 rounded-lg"
+                />
               </div>
+            </div>
 
-              <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
-              <div className="title p-[5%] text-left">
-                <b style={{ color: "#395EB9" }}>Title</b>
-                <br></br>
-                <input
+            <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
+            <div className="title p-[5%] text-left">
+              <b style={{ color: "#395EB9" }}>Title</b>
+              <br></br>
+              <input
+                className="UserEdit-inputbox"
+                type="text"
+                name="title"
+                value={additionalReference.title}
+                onChange={(e: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>) => handleUpdateAdditionalRef(index, e)}
+              ></input>
+            </div>
+            <div className="image-description text-black p-[5%] text-left ">
+              <b style={{ color: "#395EB9" }}>Description</b>
+              <br></br>
+              <div>
+                <textarea
                   className="UserEdit-inputbox"
-                  type="text"
-                  name="title"
-                  value={additionalReference.title}
+                  name="description"
+                  value={
+                    additionalReference.description
+                  }
                   onChange={(e: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>) => handleUpdateAdditionalRef(index, e)}
-                ></input>
-              </div>
-              <div className="image-description text-black p-[5%] text-left ">
-                <b style={{ color: "#395EB9" }}>Description</b>
-                <br></br>
-                <div>
-                  <textarea
-                    className="UserEdit-inputbox"
-                    name="description"
-                    value={
-                      additionalReference.description
-                    }
-                    onChange={(e: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>) => handleUpdateAdditionalRef(index, e)}
-                  ></textarea>
-                </div>
+                ></textarea>
               </div>
             </div>
           </div>
-          ))}
+        </div>
+        ))}
 
-
-          <div  className="mt-[10%] ">
-            <div className="font-bold UserEdit-header">
-              Artist Statement
-            </div>
-            <div className=" UserEdit-textbox flex-col items-center py-2 p-[50px] mb-[10%] max-w-[100%] ">
-              <textarea
-                name="artist_statement"
-                className=" UserEdit-inputbox" 
-                value={state.submission.artist_statement}
-                onChange={handleSubmissionChange}
-              ></textarea>
-            </div>
-          </div>
-          <div>
-            <div className="font-bold UserEdit-header">
-              Note to editor
-            </div>
-            <div className=" UserEdit-textbox">
-              <textarea
-                name="editor_note"
-                className=" UserEdit-inputbox flex-col items-center max-w-[100%] "
-                value={state.submission.editor_note}
-                onChange={handleSubmissionChange}
-              ></textarea>
-            </div>
-          </div>
-          <div className="bottom-0 right-0 w-full flex flex-row justify-end my-[10%]">
-            <div className="bg-pink p-3 flex">
-              <button
-                type="button"
-                onClick={handleEdit}
-                className="mr-2 UserEdit-bottombutton"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="UserEdit-bottombuttonred"
-              >
-                Submit
-              </button>
-            </div>
-          </div>
-        </form>
+      </form>
       </div>
-    </div>
   ) : (
-    <div className="flex flex-row h-full w-100 UserEdit-container m-[0px] justify-around overflow-y-scroll rounded-lg">
+    <div className="mt-2 w-11/12">
       {/* View Only */}
-      <div className="mt-2 w-11/12">
       <div className="w-full flex justify-between pb-2">
           <div className="flex items-center">
             <button type="button" onClick={(e) => deleteSubmit(state.submission.id, state.submission.title)} className="text-lg font-semibold UserEdit-bottombutton">
@@ -563,7 +539,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
           </div>
         </div>
 
-        <div className="flex flex-row  w-[100%] justify-between">
+        <div className="flex flex-row w-[100%] justify-between">
           <div className="UserEdit-image-container flex items-start">
             <img
               src={state.submission.mainSubmission.thumbnailUrl}
@@ -645,6 +621,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
             Submitted: {state.submission.date}
           </div>
         </div>
+      ))}
     </div>
   );
 

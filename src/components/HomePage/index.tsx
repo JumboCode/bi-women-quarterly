@@ -377,18 +377,16 @@ export default function HomePage() {
                 <div>
                     {editModalSubmission && (
                         <div className="top-3 bottom-3 justify-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                            <div className="top-0 w-5/6 h-5/6 border-0 rounded-md shadow-lg relative flex flex-col bg-[#dcadff] outline-none focus:outline-none">
-                                <div>
-                                    <UserEditableSubmission 
-                                        initialSubmission={editModalSubmission}
-                                        onClose={() => {
-                                            dispatch({
-                                                type: ActionType.ChangeEditModal,
-                                                submission: undefined
-                                            })
-                                        }}
-                                    />
-                                </div>
+                            <div className="top-0 w-5/6 h-11/12 border-0 rounded-md shadow-lg relative flex flex-col bg-[#dcadff] outline-none focus:outline-none">
+                                <UserEditableSubmission 
+                                    initialSubmission={editModalSubmission}
+                                    onClose={() => {
+                                        dispatch({
+                                            type: ActionType.ChangeEditModal,
+                                            submission: undefined
+                                        })
+                                    }}
+                                />
                             </div>
                         </div>
                     )}
