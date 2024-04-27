@@ -34,6 +34,11 @@ type PreviewRef = {
     filename: string;
 }
 
+type FileData = {
+    name: string;
+    file: File;
+}
+
 /*------------------------------------------------------------------------*/
 /* -------------------------------- State ------------------------------- */
 /*------------------------------------------------------------------------*/
@@ -172,7 +177,8 @@ const reducer = (state: State, action: Action): State => {
             };
         }
         case ActionType.UpdatePreview: {
-            const newPreviews = state.previews;
+            const newPreviews = [...state.previews];
+
             newPreviews[action.index] = {
                 ...newPreviews[action.index],
                 preview: {
@@ -180,6 +186,7 @@ const reducer = (state: State, action: Action): State => {
                     [action.field]: action.value,
                 },
             };
+
             return {
                 ...state,
                 previews: newPreviews,
@@ -286,7 +293,7 @@ export default function SubmissionForm() {
     // To decide whether able to submit
     const [ReqFieldsFilled, setReqFieldsFilled] = useState(false);
     // storing string of file name
-    const [fileArray, setFileArray] = useState<FormData>(new FormData());  
+    const [fileArray, setFileArray] = useState<FileData[]>([]);  
     // storing url of main submission file use this to store submission locally
     const [file, setFile] = useState<File | null>(); 
 
@@ -335,9 +342,14 @@ export default function SubmissionForm() {
         console.log("Submitting: ", updatedSubmission.title);
         console.log("File Array: ", fileArray);
 
+        const formData = new FormData();
+        fileArray.forEach(file => {
+            formData.append(file.name, file.file);
+        });
+
         await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/update`, {
             method: "POST",
-            body: fileArray
+            body: formData,
         })
         .then(async () => {
             await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/upload`)
@@ -384,7 +396,11 @@ export default function SubmissionForm() {
      */
     const handleFileChange = (index : number, event : any) => {
         console.log("appending file: ", event.target.files[0].name, "which is at index: ", index)
-        fileArray.append(event.target.files[0].name, event.target.files[0]);
+
+        fileArray.push({
+            name: event.target.files[0].name,
+            file: event.target.files[0],
+        });
 
         if (index == -1) { // Adding main submission file
             setShowFile(true);
@@ -392,6 +408,7 @@ export default function SubmissionForm() {
             dispatch({type: ActionType.UpdatePreviewRef, index, field: "showImg", value: true});
         }
 
+        // setFileArray({...fileArray});
         setReqFieldsFilled(checkReqFields()) // check if this completes required fieldss
     }
 
@@ -404,9 +421,15 @@ export default function SubmissionForm() {
      * @returns updates fileArray
      */
     const removeFile = (index : number) => {
+        
         const nameToDelete = previews[index].filename
-        fileArray.delete(nameToDelete);
-        setReqFieldsFilled(false); // When remove file, can't submit until they upload replacement or drop that optional element
+        const removeIdx = previews.findIndex((preview) => preview.filename === nameToDelete);
+        console.log("removing file: ", nameToDelete, "which is at index: ", removeIdx)
+
+        setFileArray([...fileArray.slice(0, removeIdx), ...fileArray.slice(removeIdx + 1)]);
+        console.log('length of fileArray after remove:', fileArray.length)
+
+        // setReqFieldsFilled(false); // When remove file, can't submit until they upload replacement or drop that optional element
     }
 
     /*
@@ -417,6 +440,7 @@ export default function SubmissionForm() {
     const checkReqFields = () => {
         console.log("checking required fields")
         console.log("previews length", previews.length)
+        console.log("fileArray length", fileArray.length)
         // check main submission title
         if (submission.mainSubmission.title == "") {
             console.log("no main submision title")
@@ -424,12 +448,12 @@ export default function SubmissionForm() {
         }
 
         // check files filled. FileArray size should equal optional references + 1 for main submission
-        if (previews.length + 1 != Array.from(fileArray.keys()).length) {
+        if (previews.length + 1 != fileArray.length) {
             console.log("not enough uploaded files")
             return false
         } else {
             console.log("previews length + 1", previews.length + 1)
-            console.log("fileArray length:", Array.from(fileArray.keys()).length)
+            console.log("fileArray length:", fileArray.length)
         }
 
         // check artist statement filled
@@ -437,9 +461,12 @@ export default function SubmissionForm() {
             console.log("incomplete artist statement")
             return false
         }
+
+        console.log(`we have ${previews.length} previews`);
         
         // check optional elements titles  
         for (let i = 0; i < previews.length; i++) {
+            console.log(`title is ${previews[i].preview.title}`);
             if (previews[i].preview.title == "") {
                 console.log("incomplete optional photos titles")
                 return false
@@ -447,12 +474,6 @@ export default function SubmissionForm() {
         }
         console.log("good to submit")
         return true
-    }
-
-    const sleep = (delay : number) => new Promise((resolve) => setTimeout(resolve, delay))
-
-    const delaySeconds = async () => {
-        await sleep(5000)
     }
 
     /*------------------------------------------------------------------------*/
@@ -469,11 +490,22 @@ export default function SubmissionForm() {
         })();
     }, [user]);
 
+    /**
+     * Mount
+     * @author Austen Money
+     */
+        useEffect(() => {
+            (() => {
+                setReqFieldsFilled(checkReqFields());
+            })();
+        }, [submission, previews, fileArray]);
+
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
 
     console.log('Submission: ', JSON.stringify(submission, null, 2));
+    console.log('File Array: ', JSON.stringify(fileArray, null, 2));
 
     if (view == "SubmissionGuideline") {
         return (
@@ -572,7 +604,7 @@ export default function SubmissionForm() {
                             <div className="flex  text-justify justify-end text-[#3b60ba]"> 
                                 <button 
                                 onClick={() => {
-                                    setFile(null); 
+                                    removeFile(0);
                                     setShowFile(false);                            
                                     }}>
                                     <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -628,7 +660,6 @@ export default function SubmissionForm() {
                                 name="title"
                                 onChange={(e) => {
                                     dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value})
-                                    setReqFieldsFilled(checkReqFields())
                                 }}
                                 type="text"
                                 id="Title"
@@ -663,8 +694,8 @@ export default function SubmissionForm() {
                                     <button className="absolute right-[80px] flex inline-block bg-[#FFFFFF] items-center justify-center h-[30px] w-[115px] rounded-lg  text-center   "
                                             // className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
                                     onClick={() => {
+                                        removeFile(index);
                                         dispatch({type: ActionType.RemovePreview, index})
-                                        setReqFieldsFilled(checkReqFields())
                                         }}>
                                             <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                             <path fillRule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
@@ -740,7 +771,7 @@ export default function SubmissionForm() {
                                                 name="title"
                                                 onChange={(e) => {
                                                     dispatch({type: ActionType.UpdatePreview, index, field: e.target.name, value: e.target.value})
-                                                    setReqFieldsFilled(checkReqFields())
+                                                    setReqFieldsFilled(checkReqFields());
                                                 }}
                                                 value={preview.preview.title}
                                                 maxLength={400}
@@ -769,9 +800,7 @@ export default function SubmissionForm() {
                         onClick={() => {
                             dispatch({type: ActionType.AddPreview});
                             console.log("before delay")
-                            delaySeconds()
                             console.log("before setReqFields update")
-                            setReqFieldsFilled(checkReqFields());
                             console.log("after setReqFields update")
                         }}
                         className="rounded-lg items-center pt-4 ml-20">
@@ -786,7 +815,6 @@ export default function SubmissionForm() {
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Note*</h3>
                             <input name="artist_statement" onChange={(e) => {
                                 dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})
-                                setReqFieldsFilled(checkReqFields())
                             }} type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Your Artist Statement" maxLength={400} required />
                             <p className="text-xs text-gray-400 pt-1 pb-4"><em>Max 400 Characters</em></p>
                         </div>
