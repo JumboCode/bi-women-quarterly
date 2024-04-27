@@ -13,10 +13,10 @@
 import PreviewType from "./PreviewType";
 
 type Preview = {
-    type: PreviewType;
+    type: PreviewType; 
     title: string;
     description: string;
-    imageUrl: string;
+    thumbnailUrl: string;
     contentDriveUrl: string;
 };
 

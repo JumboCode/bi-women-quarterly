@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { clerkClient, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
+import { clerkClient } from "@clerk/nextjs/server";
 
 import Submission from "@/types/Submission";
 

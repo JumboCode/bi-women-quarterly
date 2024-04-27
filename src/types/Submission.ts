@@ -15,6 +15,8 @@
  * @property {string} notes - The notes associated with the submission.
  * @property {Preview} mainSubmission - The main item being submitted.
  * @property {Preview[]} additionalReferences - Additional items to be submitted.
+ * @property {string} artist_statement - Statement from the artist.
+ * @property {string} editor_note - Note to the editor. 
  */
 
 // Import types
@@ -35,6 +37,10 @@ type Submission = {
     // Submission content
     mainSubmission: Preview;
     additionalReferences?: Preview[];
+
+    // Submission Extra Info 
+    artist_statement: string;
+    editor_note: string;
 
     // Admin only
     tags?: string[];
