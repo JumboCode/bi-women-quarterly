@@ -57,7 +57,6 @@ body {
     background: radial-gradient(100% 196% at 0% 0%, rgba(235, 238, 245, 0.5) 0%, rgba(235, 238, 245, 0) 100%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
     border: 1px solid #FFFFFF;
     box-shadow: 0px 0px 30px 0px #00000040;
-    padding: 24px;
     border-radius: 10px;
     font-size: 16px;
 }
@@ -69,11 +68,9 @@ body {
     padding: 8px 16px 8px 16px;
     border-radius: 10px;
     color: #395EB9;
-    font-size: 20px;
     display: inline-flex;
     align-items: center;
     height: 33px;
-    font-weight: 600
 }
 
 .UserEdit-bottombuttonred {
@@ -82,7 +79,6 @@ body {
     background: #FF4395;
     border: 1px solid #FF4395;
     box-shadow: 0px 0px 10px 0px #00000040;
-    font-size: 20px;
     font-weight:  600;
     height: 33px;
     display: inline-flex;
@@ -97,10 +93,8 @@ body {
 }
 
 .UserEdit-header {
-    font-size: 24px;
-    font-weight: 700;
     color: #395EB9;
-    margin: 30px 0px;
+    padding-bottom: .5rem;
 }
 
 .UserEdit-image-container {

@@ -304,9 +304,9 @@ export default function HomePage() {
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
     return (
-        <div className="h-screen w-screen flex flex-col gradient-background">
+        <div className="h-full w-full flex flex-col gradient-background">
             {
-                editModalSubmission && <div className="h-screen w-screen absolute bg-black bg-opacity-50 z-40"/>
+                editModalSubmission && <div className="h-full w-full fixed bg-black bg-opacity-50 z-40"/>
             }
             <div className="HomePage-top-bar border-b border-primary-blue">
                 <div className="m-6 mx-5 flex flex-row justify-between">

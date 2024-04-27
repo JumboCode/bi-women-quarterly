@@ -16,6 +16,11 @@ type Props = {
   onClose: () => void;
 };
 
+export const openInNewTab = (url: string): void => {
+  const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
+  if (newWindow) newWindow.opener = null
+}
+
 /**
    * Allows the fields of submission to be edited, has very basic css for the 
    * display of the submission
@@ -290,8 +295,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                 style={{ backgroundColor: "#FFFFFF80" }}
                 onClick={e => {
                   e.preventDefault();
-                  window.location.href =
-                    state.submission.mainSubmission.contentDriveUrl;
+                  openInNewTab(state.submission.mainSubmission.contentDriveUrl);
                 }}
               >
                 <FontAwesomeIcon icon={faLink} /> &nbsp; Google Drive
@@ -500,59 +504,39 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
       </div>
     </div>
   ) : (
-    <div
-      className="flex flex-row h-screen UserEdit-container m-[0px] justify-around overflow-y-scroll"
-      style={{
-        backgroundImage:
-          "linear-gradient(to bottom right, #FFD3CB, #E7A5FF, #B3C9FF)"
-      }}
-    >
-      <div className="mt-[5%] w-[70%] ">
-      <div className=" bottom-0 left-0 w-full flex justify-between my-[10%]">
-          <div className='p-3 flex items-center"'>
-            <button type="button" onClick={(e) => deleteSubmit(state.submission.id, state.submission.title)} className="UserEdit-bottombutton">
+    <div className="flex flex-row h-full w-100 UserEdit-container m-[0px] justify-around overflow-y-scroll rounded-lg">
+      {/* View Only */}
+      <div className="mt-2 w-11/12">
+      <div className="w-full flex justify-between pb-2">
+          <div className="flex items-center">
+            <button type="button" onClick={(e) => deleteSubmit(state.submission.id, state.submission.title)} className="text-lg font-semibold UserEdit-bottombutton">
               Delete Submission
             </button>
           </div>
-          <div className="bg-pink p-3 flex items-center">
-            <div className="submission-date text-white pr-10">
-              Submitted: {state.submission.date}
-            </div>
+          <div className="bg-pink flex items-center">
             <button
               type="button"
               onClick={handleEdit}
-              className="mr-2 rounded shadow UserEdit-bottombutton">
+              className="mr-2 rounded shadow UserEdit-bottombutton font-semibold text-lg">
               Edit
             </button>
             <button
               type="submit"
-              className="UserEdit-bottombuttonred"
+              className="UserEdit-bottombuttonred text-lg"
               onClick={onClose}
             >
               Done
             </button>
           </div>
         </div>
-        <div className="title-date flex items-center justify-between mb-4 ">
-          <div className="flex flex-row">
-            <div
-              className="edit-submission-title text-3xl mb-4"
-              style={{
-                fontSize: "32.73px",
-                fontWeight: 700,
-                textAlign: "left",
-                color: "#395EB9"
-              }}
-            >
-              View Submission
-            </div>
+        <div className="title-date flex justify-between mb-4 ">
+          <div className="relative">
             <button
-              className="ml-[50px] UserEdit-bottombutton "
+              className="bottom-0 mt-6 text-sm UserEdit-bottombutton"
               style={{ backgroundColor: "#FFFFFF80" }}
               onClick={e => {
                 e.preventDefault();
-                window.location.href =
-                  state.submission.mainSubmission.contentDriveUrl;
+                openInNewTab(state.submission.mainSubmission.contentDriveUrl);
               }}
             >
               <FontAwesomeIcon icon={faLink} /> &nbsp; Google Drive
@@ -584,16 +568,16 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
             <img
               src={state.submission.mainSubmission.thumbnailUrl}
               alt="Submission"
-              className="max-w-[100%] mr-4 rounded-lg"
+              className="max-w-[100%] mr-1 rounded-lg"
             />
           </div>
-          <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
-            <div className="title p-[5%] text-left">
+          <div className="flex-col items-center py-2 UserEdit-textbox w-[100%]">
+            <div className="title p-2 text-left">
               <b style={{ color: "#395EB9" }}>Title</b>
               <br></br>
-              <span>{state.submission.mainSubmission.title}</span>
+              <span className="font-medium">{state.submission.mainSubmission.title}</span>
             </div>
-            <div className="image-description text-black p-[5%] text-left">
+            <div className="image-description text-black p-2 text-left">
               <b style={{ color: "#395EB9" }}>Description</b>
               <br></br>
               {state.submission.mainSubmission.description}
@@ -601,11 +585,28 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
           </div>
         </div>
 
+        <div className="pt-5">
+          <div className="font-bold UserEdit-header">
+            Artist Statement
+          </div>
+          <div className="flex-col items-center py-2 p-[50px] UserEdit-textbox max-w-[100%] ">
+            {state.submission.artist_statement}
+          </div>
+        </div>
+
+        <div className="pt-5">
+          <div className="font-bold UserEdit-header">
+            Note to editor
+          </div>
+          <div className="flex-col items-center py-2 p-[50px] UserEdit-textbox max-w-[100%] ">
+            {state.submission.editor_note}
+          </div>
+        </div>
+
+      {(state.submission.additionalReferences?.length && state.submission.additionalReferences?.length > 0) ? (
         <div
-            className="text-3xl mt-[3%]"
+            className="text-2xl mt-[3%] font-semibold"
                 style={{
-                  fontSize: "30px",
-                  fontWeight: 700,
                   lineHeight: "44.57px",
                   textAlign: "left",
                   color: "#395EB9"
@@ -613,7 +614,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
               >
                 Optional Related Content
         </div>
-
+      ) : null}
         {state.submission.additionalReferences?.map((additionalReference, index) => ( 
           <div key={index} className="flex flex-row w-[100%] justify-between mt-[5%]">
               <div className="UserEdit-image-container flex items-start">
@@ -639,29 +640,11 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                 </div>
               </div>
             </div>
-
-         
-        
         ))}
-
-        <div className="mt-[10%] ">
-          <div className="font-bold UserEdit-header">
-            Artist Statement
-          </div>
-          <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
-            {state.submission.artist_statement}
+          <div className="text-white text-sm bottom-1 absolute">
+            Submitted: {state.submission.date}
           </div>
         </div>
-
-        <div className="mt-[10%]">
-          <div className="font-bold UserEdit-header">
-            Note to editor
-          </div>
-          <div className="flex-col items-center py-2 p-[50px] mb-[10%] UserEdit-textbox max-w-[100%] ">
-            {state.submission.editor_note}
-          </div>
-        </div>
-      </div>
     </div>
   );
 
