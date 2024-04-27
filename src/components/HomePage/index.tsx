@@ -358,9 +358,7 @@ export default function HomePage() {
                         </div>
                     ) : (
                         <ShowSubmissionThumbnails
-                            previews={filteredSubmissions.map(submission => {
-                                return submission.mainSubmission;
-                            })}
+                            submissions={filteredSubmissions}
                         />
                     )}
                 </div>
