@@ -16,13 +16,12 @@ import Link from "next/link";
 import { UserButton, useUser } from "@clerk/nextjs";
 
 // Import components
-import ShowSubmissionThumbnails from "@/components/HomePage/ShowSubmissionThumbnails";
+import UserEditableSubmission from './UserEditableSubmission';
+import SubmissionThumbnail from './SubmissionThumbnail';
 
 // Import types
 import Submission from "@/types/Submission";
 import Statuses from "@/types/Statuses";
-import UserEditableSubmission from './UserEditableSubmission';
-import SubmissionThumbnail from './SubmissionThumbnail';
 
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Types --------------------------------- */
@@ -215,6 +214,32 @@ export default function HomePage() {
 
     const { user } = useUser();
 
+    const [issues, setIssues] = useState<string[]>([]);
+
+    /*------------------------------------------------------------------------*/
+    /* ------------------------- Component Functions ------------------------ */
+    /*------------------------------------------------------------------------*/
+
+    /**
+     * Fetches the issue themes from the database and sets the issues state
+     * @author Austen Money
+     * @author Walid Nejmi
+     * @param event the event that has been changed
+     */
+    const fetchIssueThemes = async () => {
+        try {
+            await fetch("../api/issues/get", { method: "GET" })
+                .then(response => response.json())
+                .then(res => res.data.map((issue: any) => issue.title))
+                .then(titles => {
+                    setIssues(titles);
+                });
+        } catch (error) {
+            console.error("Error fetching issue themes: ", error);
+            return [];
+        }
+    };
+
     /**
      * Getting submission for user getting onto the webpage
      * @author So Hyun Kim, Avery Hanna
@@ -262,14 +287,19 @@ export default function HomePage() {
         }
     };
 
+    /*------------------------------------------------------------------------*/
+    /* ------------------------- Lifecycle Functions ------------------------ */
+    /*------------------------------------------------------------------------*/
+
     /**
-     * Get submissions when user is loaded or updated
+     * Get submissions and issues when user is loaded or updated
      * @author Avery Hanna, So Hyun Kim
      */
     useEffect(() => {
         (async () => {
             // TODO: fix this hacky way of getting submissions
             await getSubmissions();
+            await fetchIssueThemes();
             await new Promise(r => setTimeout(r, 3000));
             await getSubmissions();
         })();
@@ -304,7 +334,7 @@ export default function HomePage() {
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
     return (
-        <div className="h-full w-full flex flex-col gradient-background">
+        <div className="h-screen w-full flex flex-col gradient-background">
             {
                 editModalSubmission && <div className="h-full w-full fixed bg-black bg-opacity-50 z-40"/>
             }
@@ -380,6 +410,7 @@ export default function HomePage() {
                             <div className="top-0 w-5/6 h-11/12 border-0 rounded-md shadow-lg relative flex flex-col bg-[#dcadff] outline-none focus:outline-none">
                                 <UserEditableSubmission 
                                     initialSubmission={editModalSubmission}
+                                    issues={issues}
                                     onClose={() => {
                                         dispatch({
                                             type: ActionType.ChangeEditModal,

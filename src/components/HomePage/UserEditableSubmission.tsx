@@ -12,12 +12,150 @@ import { TailSpin } from 'react-loader-spinner';
 
 type Props = {
   initialSubmission: Submission;
+  issues: string[];
   onClose: () => void;
 };
 
 export const openInNewTab = (url: string): void => {
   const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
   if (newWindow) newWindow.opener = null
+}
+
+type State = {
+  submission: Submission;
+  additionalRefIndex: number;
+  initialAddRefIndex: number;
+  showLoading: boolean;
+}
+
+enum ActionType {
+  // Update submission object
+  UpdateSubmission = 'UpdateSubmission',
+  // Update main submission
+  UpdateMainSubmission = 'UpdateMainSubmission',
+  // Update Additional Reference
+  UpdateAdditional = 'UpdateAdditional',
+  // Show a loading spinner
+  ShowLoading = 'ShowLoading',
+  // Hide a loading spinner
+  HideLoading = 'HideLoading',
+  // Cancel
+  Cancel = "Cancel",
+}
+
+type Action = (
+  | {
+    // Action type
+    type: ActionType.UpdateSubmission,
+    // Field to update
+    field: string;
+    // Value to update to
+    value: string;
+  }
+  | {
+    // Action type
+    type: ActionType.UpdateMainSubmission,
+    // Field to update
+    field: string;
+    // Value to update to
+    value: string;
+  }
+  | {
+    // Action type
+    type: ActionType.UpdateAdditional,
+    // Index of preview to update
+    index: number;
+    // Field to update
+    field: string;
+    // Value to update to
+    value: string;
+  }
+  | {
+    // Action type
+    type: ActionType.ShowLoading,
+  }
+  | {
+    // Action type
+    type: ActionType.HideLoading,
+  }
+  | {
+    // Action type
+    type: ActionType.Cancel,
+
+    submission: Submission;
+  }
+)
+
+
+/* ------------- Actions ------------ */
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case ActionType.UpdateSubmission: {
+      return {
+        ...state,
+        submission: {
+          ...state.submission,
+          [action.field]: action.value,
+        },
+      };
+    }
+    case ActionType.UpdateMainSubmission: {
+      return {
+        ...state,
+        submission: {
+          ...state.submission,
+          mainSubmission: {
+            ...state.submission.mainSubmission,
+            [action.field]: action.value,
+          },
+        },
+      };
+    }
+    case ActionType.UpdateAdditional: {
+      if (state.submission.additionalReferences != undefined) {
+        const newPreviews = [
+          ...state.submission.additionalReferences.slice(0, action.index),
+          {
+            ...state.submission.additionalReferences[action.index],
+            [action.field]: action.value,
+          },
+          ...state.submission.additionalReferences.slice(action.index + 1)
+        ]
+        return {
+          ...state,
+          submission: {
+            ...state.submission,
+            additionalReferences: newPreviews,
+          }
+        };
+      } else {
+        throw Error("Trying to edit when there are no additional references");
+      }
+    }
+    case ActionType.ShowLoading: {
+      return {
+        ...state,
+        showLoading: true,
+      }
+    }
+    case ActionType.HideLoading: {
+      return {
+        ...state,
+        showLoading: false,
+      }
+    }
+    case ActionType.Cancel: {
+      return {
+        ...state,
+        additionalRefIndex: state.initialAddRefIndex,
+        submission: action.submission,
+      }
+    }
+    default: {
+      return state;
+    }
+  }
 }
 
 /**
@@ -32,147 +170,11 @@ export const openInNewTab = (url: string): void => {
 const UserEditableSubmission: React.FC<Props> = (props) => {
   const {
     initialSubmission,
+    issues,
     onClose,
   } = props;
 
   const [editOn, setEditOn] = useState<boolean>(false);
-
-  type State = {
-    submission: Submission;
-    additionalRefIndex: number;
-    initialAddRefIndex: number;
-    showLoading: boolean;
-  }
-
-  enum ActionType {
-    // Update submission object
-    UpdateSubmission = 'UpdateSubmission',
-    // Update main submission
-    UpdateMainSubmission = 'UpdateMainSubmission',
-    // Update Additional Reference
-    UpdateAdditional = 'UpdateAdditional',
-    // Show a loading spinner
-    ShowLoading = 'ShowLoading',
-    // Hide a loading spinner
-    HideLoading = 'HideLoading',
-    // Cancel
-    Cancel = "Cancel",
-  }
-
-  type Action = (
-    | {
-      // Action type
-      type: ActionType.UpdateSubmission,
-      // Field to update
-      field: string;
-      // Value to update to
-      value: string;
-    }
-    | {
-      // Action type
-      type: ActionType.UpdateMainSubmission,
-      // Field to update
-      field: string;
-      // Value to update to
-      value: string;
-    }
-    | {
-      // Action type
-      type: ActionType.UpdateAdditional,
-      // Index of preview to update
-      index: number;
-      // Field to update
-      field: string;
-      // Value to update to
-      value: string;
-    }
-    | {
-      // Action type
-      type: ActionType.ShowLoading,
-    }
-    | {
-      // Action type
-      type: ActionType.HideLoading,
-    }
-    | {
-      // Action type
-      type: ActionType.Cancel,
-
-      submission: Submission;
-    }
-  )
-
-
-  /* ------------- Actions ------------ */
-
-  const reducer = (state: State, action: Action): State => {
-    switch (action.type) {
-      case ActionType.UpdateSubmission: {
-        return {
-          ...state,
-          submission: {
-            ...state.submission,
-            [action.field]: action.value,
-          },
-        };
-      }
-      case ActionType.UpdateMainSubmission: {
-        return {
-          ...state,
-          submission: {
-            ...state.submission,
-            mainSubmission: {
-              ...state.submission.mainSubmission,
-              [action.field]: action.value,
-            },
-          },
-        };
-      }
-      case ActionType.UpdateAdditional: {
-        if (state.submission.additionalReferences != undefined) {
-          const newPreviews = [
-            ...state.submission.additionalReferences.slice(0, action.index),
-            {
-              ...state.submission.additionalReferences[action.index],
-              [action.field]: action.value,
-            },
-            ...state.submission.additionalReferences.slice(action.index + 1)
-          ]
-          return {
-            ...state,
-            submission: {
-              ...state.submission,
-              additionalReferences: newPreviews,
-            }
-          };
-        } else {
-          throw Error("Trying to edit when there are no additional references");
-        }
-      }
-      case ActionType.ShowLoading: {
-        return {
-          ...state,
-          showLoading: true,
-        }
-      }
-      case ActionType.HideLoading: {
-        return {
-          ...state,
-          showLoading: false,
-        }
-      }
-      case ActionType.Cancel: {
-        return {
-          ...state,
-          additionalRefIndex: state.initialAddRefIndex,
-          submission: action.submission,
-        }
-      }
-      default: {
-        return state;
-      }
-    }
-  }
 
   const initialState = {
       submission: initialSubmission,
@@ -202,11 +204,14 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
   const handleUpdateAdditionalRef = (index: number, e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
     dispatch({type:ActionType.UpdateAdditional, field: e.target.name, value: e.target.value, index: index})
   } 
+  
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     dispatch({type: ActionType.ShowLoading});
+
+    console.log(JSON.stringify(state.submission, null, 2));
     
     try {
       // add submission to database
@@ -314,6 +319,15 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                   value={state.submission.issue}
                   onChange={handleSubmissionChange}
                 >
+                  <option defaultValue="Select Issues">Select Issue</option> 
+                  <option value="Any">Any</option>
+                  {
+                      issues.map((issue) => (
+                          <option key={issue} value={issue}>
+                              {issue}
+                          </option>
+                      ))
+                  }
                 </select>
               </div>
             </div>
@@ -359,7 +373,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
         <div className="flex flex-row w-[100%] justify-between">
           <div className="UserEdit-image-container flex items-start">
             <img
-              src={state.submission.mainSubmission.thumbnailUrl}
+              src={state.submission.mainSubmission.imageUrl}
               alt="Submission"
               className="UserEdit-image max-w-[100%] mr-4 rounded-lg"
             />
@@ -441,7 +455,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
             <div className="additional-images">
               <div className="UserEdit-image-container flex items-start">
                 <img
-                  src={additionalReference.thumbnailUrl}
+                  src={additionalReference.imageUrl}
                   alt={`Additional Image ${index}`}
                   className="UserEdit-image max-w-[100%] mr-4 rounded-lg"
                 />
@@ -533,7 +547,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                 <label>Type: </label>
               </div>
               <div className="UserEdit-selectBoxLabel">
-                {state.submission.medium}
+                {submission.medium}
               </div>
             </div>
           </div>
@@ -542,7 +556,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
         <div className="flex flex-row w-[100%] justify-between">
           <div className="UserEdit-image-container flex items-start">
             <img
-              src={state.submission.mainSubmission.thumbnailUrl}
+              src={submission.mainSubmission.imageUrl}
               alt="Submission"
               className="max-w-[100%] mr-1 rounded-lg"
             />
@@ -551,7 +565,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
             <div className="title p-2 text-left">
               <b style={{ color: "#395EB9" }}>Title</b>
               <br></br>
-              <span className="font-medium">{state.submission.mainSubmission.title}</span>
+              <span className="font-medium">{submission.mainSubmission.title}</span>
             </div>
             <div className="image-description text-black p-2 text-left">
               <b style={{ color: "#395EB9" }}>Description</b>
@@ -595,7 +609,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
           <div key={index} className="flex flex-row w-[100%] justify-between mt-[5%]">
               <div className="UserEdit-image-container flex items-start">
                 <img
-                  src={additionalReference.thumbnailUrl}
+                  src={additionalReference.imageUrl}
                   alt={`Additional Image ${index}`}
                   className="UserEdit-image max-w-[100%] rounded-lg"
                 />
