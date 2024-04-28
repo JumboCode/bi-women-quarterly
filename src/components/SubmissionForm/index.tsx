@@ -694,7 +694,10 @@ export default function SubmissionForm() {
                                     <button className="absolute right-[80px] flex inline-block bg-[#FFFFFF] items-center justify-center h-[30px] w-[115px] rounded-lg  text-center   "
                                             // className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
                                     onClick={() => {
-                                        removeFile(index);
+                                        if (preview.showImg) {
+                                            removeFile(index);
+                                        } 
+                                            
                                         dispatch({type: ActionType.RemovePreview, index})
                                         }}>
                                             <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
