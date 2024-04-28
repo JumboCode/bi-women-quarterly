@@ -436,7 +436,7 @@ export default function HomePage() {
                                     {allSubmissions.map(submission => {
                                         return (
                                             <SubmissionThumbnail
-                                                key={`${submission.title}|${submission.mainSubmission.imageUrl}|${submission.mainSubmission.contentDriveUrl}`}
+                                                key={submission.id}
                                                 submission={submission}
                                                 onClick={() => {
                                                     dispatch({
