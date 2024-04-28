@@ -253,7 +253,8 @@ export default function SubmissionForm() {
         view: 'SubmissionGuideline',
         isGuidelineRead: false,
         submission: {
-            id : user.id,
+            id : "",
+            userId: user.id,
             author : user.fullName ?? "", 
             title : "",
             date: Date().toString(),
@@ -326,6 +327,7 @@ export default function SubmissionForm() {
         // Create a copy of the submission object
         let updatedSubmission: Submission = submission;
         updatedSubmission.title = submission.mainSubmission.title;
+        updatedSubmission.id = `${user.id}|${updatedSubmission.title}|${Date.now()}`;
 
         // Add the previews to the submission
         updatedSubmission.additionalReferences = previews.map(preview => preview.preview);
@@ -518,14 +520,14 @@ export default function SubmissionForm() {
                                 value={submission.issue} 
                                 onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})}>
                             <option defaultValue="Select Issues">Select Issue</option> 
-                                <option value="Any">Any</option>
-                                {
-                                    issues.map((issue) => (
-                                        <option key={issue} value={issue}>
-                                            {issue}
-                                        </option>
-                                    ))
-                                }
+                            <option value="Any">Any</option>
+                            {
+                                issues.map((issue) => (
+                                    <option key={issue} value={issue}>
+                                        {issue}
+                                    </option>
+                                ))
+                            }
                         </select>
                         {/* drop down element for type selection */}
                             <select
@@ -770,7 +772,7 @@ export default function SubmissionForm() {
                             <input name="editor_note" onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})} type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Subject of your Note" required />
                         
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Note</h3>
-                            <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Note to Editor" required />
+                            <input type="text" name="editor_note" onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})} className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Note to Editor" required />
                             <p className="text-xs text-gray-400 pt-1"><em>Max 400 Characters</em></p>
                         </div>
                     </div>

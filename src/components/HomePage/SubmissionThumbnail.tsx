@@ -11,9 +11,15 @@ import React, { useEffect, useState } from "react";
 import Statuses from "@/types/Statuses";
 import Submission from "@/types/Submission";
 
+/*------------------------------------------------------------------------*/
+/* ------------------------------- Types -------------------------------- */
+/*------------------------------------------------------------------------*/
+
+
 // Props definition
 type Props = {
     submission: Submission;
+    onClick: () => void;
 };
 
 /*------------------------------------------------------------------------*/
@@ -39,7 +45,10 @@ const SubmissionThumbnail: React.FC<Props> = props => {
     /* -------------- Props ------------- */
 
     // Destructure all props
-    const { submission } = props;
+    const {
+        submission,
+        onClick,
+    } = props;
 
     const { 
         title,
@@ -56,10 +65,7 @@ const SubmissionThumbnail: React.FC<Props> = props => {
     /*----------------------------------------*/
     return (
         <button
-            onClick={(e) => {
-                e.preventDefault();
-                openInNewTab(contentDriveUrl);
-            }}
+            onClick={onClick}
             className="group block flex flex-col items-start bg-[#ffffff3c] hover:bg-[#385FB8] cursor-pointer p-4 transition-colors rounded-lg hover:text-[#ffffff] w-full"
         >
             <div className="w-full mb-2 object-cover"> {/*max-w-md min-w-min */}

@@ -23,18 +23,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         // get the document to substitute in
         const body = JSON.parse(req.body);
-
+        
         const documentID = body["id"];
         // replaces the old document with the new one by ID
         await collect.replaceOne({ id: documentID }, body);
 
-        // debugging info
-        const collection = await db
-            .collection("Submissions")
-            .find({})
-            .toArray();
-
-        res.status(201).json({ success: true, data: collection });
+        res.status(201).json({ success: true });
     } catch (e) {
         res.status(400).json({ success: false });
     }
