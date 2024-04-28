@@ -6,6 +6,7 @@
 
 // Import types
 import Preview from "@/types/Preview";
+import { useState, useEffect } from "react";
 
 // Props definition
 type Props = {
@@ -27,6 +28,7 @@ const PreviewCard: React.FC<Props> = props => {
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
+    
     return (
         <div>
             <div className="py-6">{type}</div>

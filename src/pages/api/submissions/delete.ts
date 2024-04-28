@@ -1,7 +1,6 @@
 /**
- * Submission upload endpoint for mongoDB Submissions collection
- * @author Alana Sendlakowski
- * @author Vanessa Rose
+ * Submission delete endpoint for mongoDB Submissions collection
+ * @author Austen Money
  */
 
 // Import NextApiRequest and NextApiResponse
@@ -13,15 +12,12 @@ import clientPromise from "@/lib/mongodb";
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const client = await clientPromise;
-        // acesses database BiWomenQuarterly
+
         const db = client.db("BiWomenQuarterly");
-        // acesses collection Submissions
         const collect = db.collection("Submissions");
 
-        // Insert the defined document into the "Submissions" collection
-        const body = JSON.parse(req.body);
-        console.log("NEW SUBMISSION BODY:" + JSON.stringify(body, null, 2));
-        await collect.insertOne(body);
+        // Delete the document with the given user ID and title
+        await collect.deleteOne({ "submission.id": req.query.id, "submission.title": req.query.title })
 
         res.status(201).json({ success: true });
     } catch (e) {
