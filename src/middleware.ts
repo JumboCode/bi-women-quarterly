@@ -10,7 +10,8 @@ export default authMiddleware({
         "/api/submissions/add",
         "/api/submissions/get-by-user",
         "/api/webhook",
-        "/submit"
+        "/submit",
+        "/"
     ]
 });
 

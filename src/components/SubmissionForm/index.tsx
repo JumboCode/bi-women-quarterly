@@ -456,8 +456,8 @@ export default function SubmissionForm() {
             console.log("fileArray length:", fileArray.length)
         }
 
-        // check artist statement filled
-        if (submission.artist_statement == "") {
+        // check artist statement filled if of type Visual Art
+        if ((submission.medium == Mediums.VisualArt) && (submission.artist_statement == "")) {
             console.log("incomplete artist statement")
             return false
         }
@@ -812,7 +812,11 @@ export default function SubmissionForm() {
                 <h1 className="text-1xl font-bold pb-4 mt-3 pt-8 justify=">Artist Statement</h1>
                     <div className="p-6 h-[150px] w-[full] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                         <div>
+                            {submission.medium == Mediums.VisualArt ? (
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Note*</h3>
+                            ) :
+                            <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Note</h3>
+                            }
                             <input name="artist_statement" onChange={(e) => {
                                 dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})
                             }} type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Your Artist Statement" maxLength={400} required />
@@ -827,7 +831,7 @@ export default function SubmissionForm() {
                         <div>
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Subject</h3>
                             <input name="editor_note" onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})} type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Subject of your Note" required />
-                        
+                            
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Note</h3>
                             <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Note to Editor" maxLength={400} required />
                             <p className="text-xs text-gray-400 pt-1"><em>Max 400 Characters</em></p>
