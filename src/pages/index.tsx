@@ -34,7 +34,7 @@ export default function Home() {
         editor_note: "A note to the editor",
                 artist_statement: "I love dogs",
                 id: "use_test",
-                author: "Author",
+                author: "Walid",
                 title: "It's a great title",
                 date: "01/07/24",
                 status: Statuses.Pending,
@@ -63,14 +63,15 @@ export default function Home() {
                         contentDriveUrl: ""
                     }
                 ],
+                tags: ["tag1", "tag2", "tag3"]
     }
     const [submission, setSubmission] = useState<Submission>(initialSubmission);
     
     useEffect(() => {
         (async () => {
             const submission = await getSubmission("use_test");
-            console.log("here", submission[0].submission);
-            setSubmission(submission[0].submission);
+            // console.log("here", submission[0].submission);
+            // setSubmission(submission[0].submission);
         })();
     }, []);
 

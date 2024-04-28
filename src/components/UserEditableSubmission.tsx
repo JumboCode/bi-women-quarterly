@@ -10,6 +10,7 @@ import Issues from "@/types/Issues";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faHouse } from "@fortawesome/free-solid-svg-icons";
 import { error } from "console";
 import { init } from "next/dist/compiled/webpack/webpack";
 import { margin } from "@mui/system";
@@ -314,7 +315,7 @@ const UserEditableSubmission: React.FC<Props> = ({
                     className="text-white px-4 py-2 mb-4 inline-block absolute top-0 left-1"
                     style={{ color: "#395EB9", fontSize: "24px" }}
                 >
-                    <FontAwesomeIcon icon={faArrowLeft} /> Back
+                    <FontAwesomeIcon icon={faHouse} /> Dashboard
                 </button>
                 <form onSubmit={onSubmit}>
                     <div className="title-date flex items-center justify-between mb-4">
@@ -328,7 +329,7 @@ const UserEditableSubmission: React.FC<Props> = ({
                                     color: "#395EB9"
                                 }}
                             >
-                                Edit Submission
+                                {state.submission.author}
                             </div>
                             <button
                                 className="ml-[50px] UserEdit-bottombutton"
@@ -346,7 +347,7 @@ const UserEditableSubmission: React.FC<Props> = ({
                         <div className="flex items-center issue-type text font-bold">
                             <div className="UserEdit-selectBox">
                                 <div className="UserEdit-blue-box">
-                                    <label>Issue: </label>
+                                    <label>Select Issue</label>
                                 </div>
                                 <div>
                                     <select
@@ -364,7 +365,7 @@ const UserEditableSubmission: React.FC<Props> = ({
                             </div>
                             <div className="UserEdit-selectBox">
                                 <div className="UserEdit-blue-box">
-                                    <label>Type: </label>
+                                    <label>Select Type</label>
                                 </div>
                                 <div>
                                     <select
@@ -399,6 +400,36 @@ const UserEditableSubmission: React.FC<Props> = ({
                         </div>
                     </div>
 
+                    <div className="flex mb-4 justify-end">
+                        <div className="UserEdit-inputbox">
+                            <label
+                                className="font-bold"
+                                style={{ color: "#395EB9" }}
+                            >
+                                Add Tag
+                            </label>
+                            <input
+                                type="text"
+                                id="tags"
+                                name="tags"
+                                onChange={handleSubmissionChange}
+                                className="w-full bg-white border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:border-blue-500"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="flex flex-wrap justify-end">
+                        {Array.isArray(state.submission.tags) &&
+                            state.submission.tags.map((tag, index) => (
+                                <div
+                                    key={index}
+                                    className="bg-gray-200 text-gray-700 rounded-full px-3 py-1 m-1"
+                                >
+                                    {tag}
+                                </div>
+                            ))}
+                    </div>
+
                     <div className="flex flex-row w-[100%] justify-between">
                         <div className="flex flex-col items-start">
                             <div className="UserEdit-image-container flex items-start">
@@ -427,8 +458,8 @@ const UserEditableSubmission: React.FC<Props> = ({
                                 </div>
                             </div>
                         </div>
-                        <div className="flex flex-col justify-start max-w-[35%] ml-auto">
-                            <div className="mt-[10%]">
+                        <div className="flex flex-col justify-start max-w-[55%] ml-auto">
+                            <div className="mt-[5%]">
                                 <div className="font-bold UserEdit-header">
                                     Notes to Team
                                 </div>
