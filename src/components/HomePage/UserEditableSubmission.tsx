@@ -212,13 +212,16 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
     dispatch({type: ActionType.ShowLoading});
 
     console.log(JSON.stringify(state.submission, null, 2));
+    submission.additionalReferences?.forEach((preview) => {
+      console.log(JSON.stringify(preview, null, 2));
+    })
     
     try {
       // add submission to database
       await fetch("../api/submissions/edit", {
         method: "POST",
         body: JSON.stringify({
-          submission: state.submission,
+          submission,
         })
       });
     } catch (error) {

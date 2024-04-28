@@ -334,7 +334,7 @@ export default function HomePage() {
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
     return (
-        <div className="h-screen w-full flex flex-col gradient-background">
+        <div className="h-full w-full flex flex-col gradient-background">
             {
                 editModalSubmission && <div className="h-full w-full fixed bg-black bg-opacity-50 z-40"/>
             }
@@ -436,7 +436,7 @@ export default function HomePage() {
                                     {allSubmissions.map(submission => {
                                         return (
                                             <SubmissionThumbnail
-                                                key={`${submission.title}|${submission.mainSubmission.imageUrl}|${submission.mainSubmission.contentDriveUrl}`}
+                                                key={submission.id}
                                                 submission={submission}
                                                 onClick={() => {
                                                     dispatch({
