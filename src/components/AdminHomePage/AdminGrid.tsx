@@ -4,15 +4,16 @@
  * @author Lucien Bao 
  */
 
-import { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
+import { TailSpin } from 'react-loader-spinner';
 
 // Import FontAwesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 
 // Import MUI components
-import { Box, Modal } from '@mui/material'
-import { DataGrid, GridColDef, GridRowParams, GridRowSelectionModel, GridToolbar } from "@mui/x-data-grid";
+import { Box } from '@mui/material'
+import { DataGrid, GridColDef, GridRowParams, GridToolbar } from "@mui/x-data-grid";
 
 // Import next
 import Issues from '@/types/Issues';
@@ -21,11 +22,9 @@ import Issues from '@/types/Issues';
 import Submission from "@/types/Submission";
 import Statuses from '@/types/Statuses';
 import Mediums from '@/types/Mediums';
-import React from 'react';
-import SubmissionThumbnail from '../HomePage/SubmissionThumbnail';
+
+// Import components
 import UserEditableSubmission from '../HomePage/UserEditableSubmission';
-import PreviewType from '@/types/PreviewType';
-import { TailSpin } from 'react-loader-spinner';
 
 type Props = {
     submissionArray: Submission[];
@@ -108,18 +107,6 @@ const reducer = (state: State, action: Action): State => {
             return {
                 ...state,
                 selectedSubmission: action.submission,
-            };
-        }
-        case ActionType.ToggleLoadingOn: {
-            return {
-                ...state,
-                isLoading: true
-            };
-        }
-        case ActionType.ToggleLoadingOff: {
-            return {
-                ...state,
-                isLoading: false
             };
         }
         default: {
@@ -398,6 +385,9 @@ const AdminGrid: React.FC<Props> = (properties) => {
                 },
             }}
         >
+            {
+             selectedSubmission && <div className="h-full w-full top-0 left-0 absolute bg-black bg-opacity-50 z-40"/>
+            }
             <DataGrid
                 rows={rows}
                 columns={columns}
@@ -430,6 +420,10 @@ const AdminGrid: React.FC<Props> = (properties) => {
                         paddingBlock: "45px",
                         margin: 'auto',
                         textAlign: 'center',
+                    },
+                        // pointer cursor on ALL rows
+                    '& .MuiDataGrid-row:hover': {
+                        cursor: 'pointer'
                     }
                 }}
             />
