@@ -467,7 +467,7 @@ const SubmissionForm: React.FC<Props> = (props) => {
 
     if (view == "SubmissionGuideline") {
         return (
-            <div className="p-8 h-screen bg-[#ecf0f6] tile col-span-3 row-span-6">
+            <div className="p-8 h-full bg-[#ecf0f6] tile col-span-3 row-span-6">
                 <div>
                     <button className="rounded-lg h-[40px] w-[90px] items-center "
                         onClick={goBack}
@@ -516,7 +516,7 @@ const SubmissionForm: React.FC<Props> = (props) => {
         )
     } else {
         return (
-            <div className="p-8 mx-10 mb-5 h-screen bg-[#ecf0f6]">
+            <div className="p-8 mx-10 mb-5 min-h-screen bg-[#ecf0f6]">
                 <div>
                     <button className="rounded-lg h-[40px] w-[90px] items-center "
                             onClick={goBack}>
