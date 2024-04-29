@@ -750,12 +750,11 @@ const SubmissionForm: React.FC<Props> = (props) => {
                                             <h3 className="flex grow text-left justify-start text-lg font-bold pt-1 ">Title*</h3>
                                             <input 
                                                 name="title"
-                                                onChange={(e) => dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value})}
                                                 type="text"
                                                 id="Title"
-                                                name="title"
                                                 onChange={(e) => {
-                                                    dispatch({type: ActionType.UpdatePreview, index, field: e.target.name, value: e.target.value})
+                                                    dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value});
+                                                    dispatch({type: ActionType.UpdatePreview, index, field: e.target.name, value: e.target.value});
                                                     setReqFieldsFilled(checkReqFields());
                                                 }}
                                                 value={preview.preview.title}
