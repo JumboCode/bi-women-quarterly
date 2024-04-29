@@ -31,7 +31,7 @@ type UserInfo = {
     authorName: string, // required
     pronouns?: string,
     bio: string,  // required
-    birthday?: string,
+    yearOfBirth?: string,
     raceEthnicity?: RaceEthnicity,
     gender?: Gender,
     country?: string,
@@ -55,7 +55,7 @@ const PLACEHOLDERS: UserInfo = {
     authorName: 'No author name given',
     pronouns: 'No pronouns given',
     bio: 'No bio given',
-    birthday: '01/01/1999',
+    yearOfBirth: (new Date()).getFullYear().toString(),
     raceEthnicity: RaceEthnicity.Other,
     gender: Gender.Other,
     country: 'No country given',
@@ -161,7 +161,7 @@ const ProfileReview: React.FC<{}> = () => {
             authorName: '',
             pronouns: '',
             bio: '',
-            birthday: '',
+            yearOfBirth: '',
             raceEthnicity: undefined,
             gender: undefined,
             country: '',
@@ -232,7 +232,7 @@ const ProfileReview: React.FC<{}> = () => {
                 authorName: userProps.authorName as string ?? '',
                 pronouns: userProps.pronouns as string ?? '',
                 bio: userProps.bio as string ?? '',
-                birthday: userProps.birthday as string,
+                yearOfBirth: userProps.yearOfBirth as string,
                 raceEthnicity: userProps.raceEthnicity as RaceEthnicity ?? '',
                 gender: userProps.gender as Gender ?? '',
                 country: userProps.country as string ?? '',
@@ -545,8 +545,8 @@ const ProfileReview: React.FC<{}> = () => {
 
                     <div className="grid md:grid-cols-3 grid-cols-2 lg:pr-96">
                         <div>
-                            <div className="font-bold text-primary-blue">Birthday</div>
-                            <div className="py-4">{userInfo!.birthday}</div>
+                            <div className="font-bold text-primary-blue">Year of Birth</div>
+                            <div className="py-4">{userInfo!.yearOfBirth}</div>
                         </div>
 
                         <div>
@@ -733,14 +733,15 @@ const ProfileReview: React.FC<{}> = () => {
                     <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 xl:pr-96">
                         <div>
                             <label className="font-bold text-primary-blue"
-                                htmlFor="birthday">Birthday</label><br />
+                                htmlFor="yearOfBirth">Year of Birth</label><br />
                             <input
                                 className={"border-b-2 my-4 w-48 border-b-2" +
-                                    " border-primary-blue bg-transparent cursor-pointer"}
-                                type="date"
-                                id="birthday"
-                                defaultValue="01/01/1999"
-                                onChange={(e) => handleChange('birthday', e.target.value)}
+                                    " border-primary-blue bg-transparent"}
+                                placeholder={PLACEHOLDERS.yearOfBirth}
+                                defaultValue={(new Date()).getFullYear().toString()}
+                                type="text"
+                                id="yearOfBirth"
+                                onChange={(e) => handleChange('yearOfBirth', e.target.value)}
                             />
                         </div>
 
