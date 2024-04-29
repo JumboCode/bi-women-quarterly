@@ -1,6 +1,6 @@
 /**
  * Type of a Submission's medium
- * @author Austen Money
+ * @author Austen Money, Lydia Chen
  */
 
 enum Mediums {
@@ -8,6 +8,9 @@ enum Mediums {
     Nonfiction = "Nonfiction",
     Poetry = "Poetry",
     VisualArt = "Visual Art",
+    Review = "Review",
+    Research = "Research", 
+    World = "World",
     Other = "Other",
     None = "None"
 }
