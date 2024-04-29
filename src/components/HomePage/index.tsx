@@ -22,7 +22,7 @@ import SubmissionThumbnail from './SubmissionThumbnail';
 // Import types
 import Submission from "@/types/Submission";
 import Statuses from "@/types/Statuses";
-import ProfileReview from "../ProfileReview";
+import ProfileReview from "../SubmissionForm/ProfileReview";
 
 export default function HomePage() {
     return (
