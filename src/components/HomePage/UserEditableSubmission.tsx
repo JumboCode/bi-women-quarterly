@@ -410,6 +410,19 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                 ></textarea>
               </div>
             </div>
+            <div className="photo-credit p-2 text-left">
+              <b style={{ color: "#395EB9" }}>Photo Credit</b>
+              <br></br>
+              <input
+                className="UserEdit-inputbox"
+                type="text"
+                name="photoCredit"
+                value={
+                  state.submission.mainSubmission.photoCredit
+                }
+                onChange={handleMainSubmissionChange}
+              ></input>
+            </div>
           </div>
         </div>
 
@@ -574,6 +587,11 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
               <b style={{ color: "#395EB9" }}>Description</b>
               <br></br>
               {state.submission.mainSubmission.description}
+            </div>
+            <div className="photo-credit text-black p-2 text-left">
+              <b style={{ color: "#395EB9" }}>Photo Credit</b>
+              <br></br>
+              {state.submission.mainSubmission.photoCredit}
             </div>
           </div>
         </div>
