@@ -1,18 +1,13 @@
-import { authMiddleware } from "@clerk/nextjs";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export default authMiddleware({
-    publicRoutes: [],
-    ignoredRoutes: [
-        "/api/submissions/get",
-        "/api/issues/get",
-        "/undefined/upload",
-        "/undefined/update",
-        "/api/submissions/add",
-        "/api/submissions/get-by-user",
-        "/api/webhook",
-        "/submit",
-        "/"
-    ]
+const isProtectedRoute = createRouteMatcher([
+    "/", "/(.*)"
+]);
+
+export default clerkMiddleware((auth, request) => {
+    if (isProtectedRoute(request)) {
+        auth().protect();
+    }
 });
 
 export const config = {

@@ -218,7 +218,7 @@ const reducer = (state: State, action: Action): State => {
                         type: PreviewType.AdditionalReference,
                         title: "",
                         description: "",
-                        imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
+                        thumbnailUrl: "",
                         contentDriveUrl: "",
                     },
                 }],
@@ -283,7 +283,7 @@ const SubmissionForm: React.FC<Props> = props => {
                 type: PreviewType.Submission,
                 title: "",
                 description: "",
-                imageUrl: "https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png",
+                thumbnailUrl: "",
                 contentDriveUrl: "",
             },
         },
@@ -371,13 +371,13 @@ const SubmissionForm: React.FC<Props> = props => {
                 // Update main submission with drive info
                 if (responses[0]) {
                     updatedSubmission.mainSubmission.contentDriveUrl = `https://drive.google.com/file/d/${responses[0].id}`;
-                    updatedSubmission.mainSubmission.imageUrl = responses[0].thumbnail;
+                    updatedSubmission.mainSubmission.thumbnailUrl = responses[0].thumbnailUrl;
                 }
                 // Update additional references with drive info
                 if (updatedSubmission.additionalReferences && responses.length > 1) {
                     for (let i = 1; i < responses.length; i++) {
                         updatedSubmission.additionalReferences[i - 1].contentDriveUrl = `https://drive.google.com/file/d/${responses[i].id}`;
-                        updatedSubmission.additionalReferences[i - 1].imageUrl = responses[i].thumbnail;
+                        updatedSubmission.additionalReferences[i - 1].thumbnailUrl = responses[i].thumbnailUrl;
                     }
                 }
             })
