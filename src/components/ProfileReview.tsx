@@ -717,7 +717,7 @@ const ProfileReview: React.FC<{}> = () => {
                         </div>
                     </div>
 
-                    <div className="xl:pr-96">
+                    <div className="xl:pr-96 pb-4">
                         <label className="font-bold text-primary-blue"
                             htmlFor="bio">Bio*</label><br />
                         <textarea className={"border-b my-4 w-full bg-transparent"
@@ -726,6 +726,8 @@ const ProfileReview: React.FC<{}> = () => {
                             placeholder="Tell us about yourself!"
                             defaultValue={userInfo.bio}
                             onChange={(e) => handleChange('bio', e.target.value)} required />
+                        <label className="text-primary-blue text-sm">
+                            Please write in third person.</label>
                     </div>
 
                     <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 xl:pr-96">
