@@ -20,6 +20,9 @@ import { Tooltip } from "react-tooltip";
 import Preview from '@/types/Preview';
 import Statuses from '@/types/Statuses';
 import ImagePreview from '@/components/SubmissionForm/ImagePreview'
+import ProfileReview from './ProfileReview';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 
 /*------------------------------------------------------------------------*/
@@ -52,7 +55,7 @@ type Props = {
 type State = (
 | {
     // Submission Guideline view
-    view: "SubmissionGuideline" | "NewSubmission";
+    view: "SubmissionGuideline" | "NewSubmission" | "ProfileReview";
     // Whether guidelines have been reviewed
     isGuidelineRead: boolean;
     // Submission object to add
@@ -90,7 +93,7 @@ type Action = (
     // Switch view from Submission Guideline to New Submission 
     type: ActionType.SwitchView; 
     // New view to change to 
-    newView: "SubmissionGuideline" | "NewSubmission"; //payload
+    newView: "SubmissionGuideline" | "NewSubmission" | "ProfileReview"; //payload
 }
 | {
     // Action type
@@ -471,14 +474,17 @@ const SubmissionForm: React.FC<Props> = (props) => {
         return (
             <div className="p-8 h-full bg-[#ecf0f6] tile col-span-3 row-span-6">
                 <div>
-                    <button className="rounded-lg h-[40px] w-[90px] items-center "
+                    <button className="rounded-lg h-11 w-11 left-3 absolute items-center "
                         onClick={goBack}
                     >
-                        &larr; Back
+                        <FontAwesomeIcon
+                            icon={faArrowLeft}
+                            className="text-primary-blue text-2xl"
+                        />
                     </button>
                 </div>
                 {/* // Title */}
-                <h1 className="text-2xl font-bold pb-8 mt-3 ml-24">Submission Guidelines</h1>
+                <h1 className="text-2xl text-primary-blue font-bold pb-8 mt-1.5 ml-12">Submission Guidelines</h1>
                 {/* // Submission instructions */}
                 <div className="mb-20 ml-24">
                     Please review the {' '}
@@ -516,19 +522,24 @@ const SubmissionForm: React.FC<Props> = (props) => {
                     </div>
             </div>
         )
-    } else {
+    } else if (view == "NewSubmission") {
         return (
-            <div className="p-8 mx-10 mb-5 min-h-screen bg-[#ecf0f6]">
-                <div>
-                    <button className="rounded-lg h-[40px] w-[90px] items-center "
-                            onClick={goBack}>
-                        &larr; Back
-                    </button>
-                </div>
+            <div className="p-8 mb-5 min-h-screen bg-[#ecf0f6]">
             {/* // Creates a form to retrieve title, issue, and name information */}
                 <div className="grid grid-cols-2 gap-4">
                     {/* drop down element for issue selection */}
-                    <h1 className="text-2xl font-bold pb-8 mt-3 justify=">New Submission</h1>
+                    <button className="rounded-lg h-11 w-11 left-3 absolute items-center "
+                        onClick={() => {
+                            dispatch({type: ActionType.ToggleGuidelineRead});
+                            dispatch({type: ActionType.SwitchView, newView: "SubmissionGuideline"});
+                        }}
+                    >
+                        <FontAwesomeIcon
+                            icon={faArrowLeft}
+                            className="text-primary-blue text-2xl"
+                        />
+                    </button>
+                    <h1 className="text-2xl font-bold text-primary-blue pb-8 mt-1 ml-12 justify=">New Submission</h1>
                     <div className="flex md:flex md:flex-grow flex-row justify-end space-x-1 px-[20px] py-[10px]">
                         <select name="issue" className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
                                 value={submission.issue} 
@@ -753,11 +764,6 @@ const SubmissionForm: React.FC<Props> = (props) => {
                                                 onChange={(e) => dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value})}
                                                 type="text"
                                                 id="Title"
-                                                name="title"
-                                                onChange={(e) => {
-                                                    dispatch({type: ActionType.UpdatePreview, index, field: e.target.name, value: e.target.value})
-                                                    setReqFieldsFilled(checkReqFields());
-                                                }}
                                                 value={preview.preview.title}
                                                 maxLength={400}
                                                 className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Title of your piece" required />
@@ -844,22 +850,30 @@ const SubmissionForm: React.FC<Props> = (props) => {
                         data-tooltip-place="top-end"
                         
                         onClick={() => {
-                            onSubmit();
+                            dispatch({
+                                type: ActionType.SwitchView,
+                                newView: "ProfileReview"
+                            });
                         }} 
                         className={`absolute right-[64px] mt-[70px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!ReqFieldsFilled ? "bg-opacity-50" : ""}`}
                         // className={`absolute rounded-lg mt-5 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!isGuidelineRead ? "bg-opacity-50" : ""}`}
                         disabled={!ReqFieldsFilled}>
-                            Submit
+                            Next
                         </button>
 
                 <div className="mt-[150px] space-y-[100px] text-black text-opacity-0 ">
                       .
                 </div>
             </div>
-
-        )
+        );
+    } else {
+        return (
+            <ProfileReview
+                onBack={() => {dispatch({type: ActionType.SwitchView, newView: "NewSubmission"})}}
+                onSubmit={onSubmit}
+            />
+        );
     }
-    
 }
 
 export default SubmissionForm;
