@@ -38,10 +38,10 @@ body {
 }
 
 .HomePage-top-bar {
-    display: inline-block
-        /* hugs content */
-        /* height: 7rem; */
-        /* background-color: rgb(237, 239, 244); */
+    display: inline-block; /* hugs content */
+    z-index: 30;
+    /* height: 7rem; */
+    /* background-color: rgb(237, 239, 244); */
 }
 
 .submission_type {
@@ -120,7 +120,7 @@ body {
     height: auto; 
 }
   
-UserEdit-image {
+.UserEdit-image {
     width: 100%;
     height: auto;
 }

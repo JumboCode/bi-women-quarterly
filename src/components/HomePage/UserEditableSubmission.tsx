@@ -212,13 +212,16 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
     dispatch({type: ActionType.ShowLoading});
 
     console.log(JSON.stringify(state.submission, null, 2));
+    submission.additionalReferences?.forEach((preview) => {
+      console.log(JSON.stringify(preview, null, 2));
+    })
     
     try {
       // add submission to database
       await fetch("../api/submissions/edit", {
         method: "POST",
         body: JSON.stringify({
-          submission: state.submission,
+          submission,
         })
       });
     } catch (error) {
@@ -231,6 +234,9 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
   };
 
   const deleteSubmit = async (id: string, title: string) => {
+    // Show loading spinner
+    dispatch({type: ActionType.ShowLoading});
+
     try {
       await fetch(`../api/submissions/delete?id=${id}&title=${title}`, {
         method: "DELETE",
@@ -238,6 +244,12 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
     } catch (error) {
       console.log(error);
     }
+
+    // Hide loading spinner
+    dispatch({type: ActionType.HideLoading});
+
+    // go to homepage
+    onClose();
   }
 
   const handleEdit = () => {
@@ -407,6 +419,19 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                 ></textarea>
               </div>
             </div>
+            <div className="photo-credit p-2 text-left">
+              <b style={{ color: "#395EB9" }}>Photo Credit</b>
+              <br></br>
+              <input
+                className="UserEdit-inputbox"
+                type="text"
+                name="photoCredit"
+                value={
+                  state.submission.mainSubmission.photoCredit
+                }
+                onChange={handleMainSubmissionChange}
+              ></input>
+            </div>
           </div>
         </div>
 
@@ -571,6 +596,11 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
               <b style={{ color: "#395EB9" }}>Description</b>
               <br></br>
               {state.submission.mainSubmission.description}
+            </div>
+            <div className="photo-credit text-black p-2 text-left">
+              <b style={{ color: "#395EB9" }}>Photo Credit</b>
+              <br></br>
+              {state.submission.mainSubmission.photoCredit}
             </div>
           </div>
         </div>
