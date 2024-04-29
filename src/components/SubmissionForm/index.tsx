@@ -300,12 +300,6 @@ const SubmissionForm: React.FC<Props> = (props) => {
 
     // Initialize state
     const [state, dispatch] = useReducer(reducer, initialState);
-
-    const [type, setType] = useState(PreviewType.Submission); 
-    // second box 
-    const [title, setTitle] = useState(""); 
-    const [description, setDescription] = useState("");
- 
     // To decide whether to render   
     const [showFile, setShowFile] = useState(false);
     // To decide whether able to submit
@@ -761,9 +755,12 @@ const SubmissionForm: React.FC<Props> = (props) => {
                                             <h3 className="flex grow text-left justify-start text-lg font-bold pt-1 ">Title*</h3>
                                             <input 
                                                 name="title"
-                                                onChange={(e) => dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value})}
                                                 type="text"
                                                 id="Title"
+                                                onChange={(e) => {
+                                                    dispatch({type: ActionType.UpdatePreview, index, field: e.target.name, value: e.target.value});
+                                                    setReqFieldsFilled(checkReqFields());
+                                                }}
                                                 value={preview.preview.title}
                                                 maxLength={400}
                                                 className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Title of your piece" required />
