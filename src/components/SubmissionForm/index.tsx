@@ -39,8 +39,8 @@ type FileData = {
 
 // Props definition
 type Props = {
-    finishSubmit: (body: FormData, submission: Submission) => void,
-    goBack: () => void,
+    finishSubmit?: (body: FormData, submission: Submission) => void,
+    goBack?: () => void,
 };
 
 /*------------------------------------------------------------------------*/
