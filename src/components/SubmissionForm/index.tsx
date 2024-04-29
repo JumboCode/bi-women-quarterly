@@ -507,7 +507,7 @@ export default function SubmissionForm() {
         )
     } else {
         return (
-            <div className="p-8 mx-10 h-screen bg-[#ecf0f6]">
+            <div className="p-8 mx-10 h-full bg-[#ecf0f6]">
                 <div>
                     <button className="rounded-lg h-[40px] w-[90px] items-center ">
                         <Link href="/"> &larr; Back</Link>

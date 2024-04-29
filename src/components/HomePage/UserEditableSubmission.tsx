@@ -234,6 +234,9 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
   };
 
   const deleteSubmit = async (id: string, title: string) => {
+    // Show loading spinner
+    dispatch({type: ActionType.ShowLoading});
+
     try {
       await fetch(`../api/submissions/delete?id=${id}&title=${title}`, {
         method: "DELETE",
@@ -241,6 +244,12 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
     } catch (error) {
       console.log(error);
     }
+
+    // Hide loading spinner
+    dispatch({type: ActionType.HideLoading});
+
+    // go to homepage
+    onClose();
   }
 
   const handleEdit = () => {

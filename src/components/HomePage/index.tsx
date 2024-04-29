@@ -411,7 +411,9 @@ export default function HomePage() {
                                 <UserEditableSubmission 
                                     initialSubmission={editModalSubmission}
                                     issues={issues}
-                                    onClose={() => {
+                                    onClose={async () => {
+                                        await getSubmissions();
+
                                         dispatch({
                                             type: ActionType.ChangeEditModal,
                                             submission: undefined
