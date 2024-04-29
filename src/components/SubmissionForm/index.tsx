@@ -39,6 +39,11 @@ type FileData = {
     file: File;
 }
 
+// Props definition
+type Props = {
+    postSubmit: () => void
+};
+
 /*------------------------------------------------------------------------*/
 /* -------------------------------- State ------------------------------- */
 /*------------------------------------------------------------------------*/
@@ -241,13 +246,18 @@ const reducer = (state: State, action: Action): State => {
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
 
-export default function SubmissionForm() {
+const SubmissionForm: React.FC<Props> = props => {
     /*------------------------------------------------------------------------*/
     const { user } = useUser();
 
     if (!user) {
         return null;
     }
+
+    /* -------------- Props ------------- */
+
+    // Destructure all props
+    const { postSubmit } = props;
 
     /*------------------------------------------------------------------------*/
     /* -------------------------------- Setup ------------------------------- */
@@ -511,8 +521,11 @@ export default function SubmissionForm() {
         return (
             <div className="p-8 h-screen bg-[#ecf0f6] tile col-span-3 row-span-6">
                 <div>
-                    <button className="rounded-lg h-[40px] w-[90px] items-center ">
-                        <Link href="/"> &larr; Back</Link>
+                    <button className="rounded-lg h-[40px] w-[90px] items-center "
+                            onClick={() => {
+                                postSubmit();
+                            }}>
+                        &larr; Back
                     </button>
                 </div>
                 {/* // Title */}
@@ -558,8 +571,11 @@ export default function SubmissionForm() {
         return (
             <div className="p-8 mx-10 mb-5 h-screen bg-[#ecf0f6]">
                 <div>
-                    <button className="rounded-lg h-[40px] w-[90px] items-center ">
-                        <Link href="/"> &larr; Back</Link>
+                    <button className="rounded-lg h-[40px] w-[90px] items-center "
+                            onClick={() => {
+                                postSubmit();
+                            }}>
+                        &larr; Back
                     </button>
                 </div>
             {/* // Creates a form to retrieve title, issue, and name information */}
@@ -841,12 +857,14 @@ export default function SubmissionForm() {
                         </div>
                     </div>
                 </div>
-                    <Link href="/">
-                    <button className="absolute right-[176px] mt-[70px] rounded-lg bg-white m-6 h-[40px] w-[200px]  items-center shadow-lg">
+
+                    <button className="absolute right-[176px] mt-[70px] rounded-lg bg-white m-6 h-[40px] w-[200px]  items-center shadow-lg"
+                            onClick={() => {
+                                postSubmit();
+                            }}>
                             Discard
                         </button>
-                    </Link>
-                    <Link href="/">
+
                         <Tooltip id="my-tooltip"/>
                     
                         <button 
@@ -854,13 +872,16 @@ export default function SubmissionForm() {
                         data-tooltip-content="Please complete all required fields before submitting"
                         data-tooltip-place="top-end"
                         
-                        onClick={onSubmit} 
+                        onClick={() => {
+                            onSubmit();
+                            postSubmit();
+                        }} 
                         className={`absolute right-[64px] mt-[70px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!ReqFieldsFilled ? "bg-opacity-50" : ""}`}
                         // className={`absolute rounded-lg mt-5 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!isGuidelineRead ? "bg-opacity-50" : ""}`}
                         disabled={!ReqFieldsFilled}>
                             Submit
                         </button>
-                </Link>
+
                 <div className="mt-[150px] space-y-[100px] text-black text-opacity-0 ">
                       .
                 </div>
@@ -870,3 +891,5 @@ export default function SubmissionForm() {
     }
     
 }
+
+export default SubmissionForm;
