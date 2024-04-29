@@ -11,8 +11,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 
 // Import MUI components
-import { Box } from '@mui/material'
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { Box, Modal } from '@mui/material'
+import { DataGrid, GridColDef, GridRowParams, GridRowSelectionModel, GridToolbar } from "@mui/x-data-grid";
 
 // Import next
 import Issues from '@/types/Issues';
@@ -21,6 +21,7 @@ import Issues from '@/types/Issues';
 import Submission from "@/types/Submission";
 import Statuses from '@/types/Statuses';
 import Mediums from '@/types/Mediums';
+import React from 'react';
 
 type Props = {
     submissionArray: Submission[];
@@ -122,7 +123,8 @@ const AdminGrid: React.FC<Props> = (properties) => {
 
     // Initialize state
     const [state, dispatch] = useReducer(reducer, initialState);
-
+    // const [submissionModal, setSubmissionModal] = React.useState<GridRowSelectionModel>([])
+    // const [modalOpen, setModalOpen] = useState(false);
     // Destructure common state
     const {
         issues,
@@ -159,6 +161,24 @@ const AdminGrid: React.FC<Props> = (properties) => {
         console.log(JSON.stringify(row, null, 2));
     }
     );
+
+    const handleRowSelectionModal = (newSubmissionModel: GridRowSelectionModel) => {
+        setSubmissionModal(newSubmissionModel);
+
+        const selectedRowData = rows.find(row => row.id === newSubmissionModel[0]);
+        if (selectedRowData) {
+            openModal(selectedRowData);
+        }
+    }
+
+    const openModal = (data: any) => {
+        setModalData(data);
+        setModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
 
     const columns: GridColDef[] = [
         {
@@ -357,6 +377,9 @@ const AdminGrid: React.FC<Props> = (properties) => {
                 rows={rows}
                 columns={columns}
                 getRowId={(row: any) => `${row.authorName}|${row.title}|${row.date}`}
+                isRowSelectable={(params: GridRowParams) => params.row.issue}
+                // onRowSelectionModelChange={handleRowSelectionModal}
+                // rowSelectionModel={submissionModal}
                 slots={{
                     toolbar: GridToolbar,
                     noResultsOverlay: CustomNoRowsOverlay,
@@ -387,7 +410,7 @@ const AdminGrid: React.FC<Props> = (properties) => {
                     }
                 }}
             />
-        </Box>
+        </Box >
     );
 }
 
