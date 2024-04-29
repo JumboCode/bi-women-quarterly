@@ -26,7 +26,8 @@ import Statuses from "./Statuses";
 
 type Submission = {
     // Submission metadata
-    id: string; // "author|title|date"
+    id: string; // "userId|title|date"
+    userId: string;
     author: string;
     title: string;
     date: string;

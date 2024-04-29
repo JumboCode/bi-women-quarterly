@@ -22,6 +22,7 @@ import { useUser } from "@clerk/nextjs";
 // Import components
 import Preview from '@/types/Preview';
 import Statuses from '@/types/Statuses';
+import ImagePreview from '@/components/SubmissionForm/ImagePreview'
 
 
 /*------------------------------------------------------------------------*/
@@ -218,7 +219,7 @@ const reducer = (state: State, action: Action): State => {
                         type: PreviewType.AdditionalReference,
                         title: "",
                         description: "",
-                        thumbnailUrl: "",
+                        imageUrl: "",
                         contentDriveUrl: "",
                     },
                 }],
@@ -270,7 +271,8 @@ const SubmissionForm: React.FC<Props> = props => {
         view: 'SubmissionGuideline',
         isGuidelineRead: false,
         submission: {
-            id : user.id,
+            id : "",
+            userId: user.id,
             author : user.fullName ?? "", 
             title : "",
             date: Date().toString(),
@@ -283,7 +285,7 @@ const SubmissionForm: React.FC<Props> = props => {
                 type: PreviewType.Submission,
                 title: "",
                 description: "",
-                thumbnailUrl: "",
+                imageUrl: "",
                 contentDriveUrl: "",
             },
         },
@@ -305,7 +307,7 @@ const SubmissionForm: React.FC<Props> = props => {
     // storing string of file name
     const [fileArray, setFileArray] = useState<FileData[]>([]);  
     // storing url of main submission file use this to store submission locally
-    const [file, setFile] = useState<File | null>(); 
+    const [file, setFile] = useState<File | null>(null); 
 
     // Destructure common state
     const {
@@ -345,6 +347,7 @@ const SubmissionForm: React.FC<Props> = props => {
         // Create a copy of the submission object
         let updatedSubmission: Submission = submission;
         updatedSubmission.title = submission.mainSubmission.title;
+        updatedSubmission.id = `${user.id}|${updatedSubmission.title}|${Date.now()}`;
 
         // Add the previews to the submission
         updatedSubmission.additionalReferences = previews.map(preview => preview.preview);
@@ -371,13 +374,13 @@ const SubmissionForm: React.FC<Props> = props => {
                 // Update main submission with drive info
                 if (responses[0]) {
                     updatedSubmission.mainSubmission.contentDriveUrl = `https://drive.google.com/file/d/${responses[0].id}`;
-                    updatedSubmission.mainSubmission.thumbnailUrl = responses[0].thumbnailUrl;
+                    updatedSubmission.mainSubmission.imageUrl = responses[0].imageUrl;
                 }
                 // Update additional references with drive info
                 if (updatedSubmission.additionalReferences && responses.length > 1) {
                     for (let i = 1; i < responses.length; i++) {
                         updatedSubmission.additionalReferences[i - 1].contentDriveUrl = `https://drive.google.com/file/d/${responses[i].id}`;
-                        updatedSubmission.additionalReferences[i - 1].thumbnailUrl = responses[i].thumbnailUrl;
+                        updatedSubmission.additionalReferences[i - 1].imageUrl = responses[i].imageUrl;
                     }
                 }
             })
@@ -414,8 +417,11 @@ const SubmissionForm: React.FC<Props> = props => {
 
         if (index == -1) { // Adding main submission file
             setShowFile(true);
+            setFile(event.target.files[0]);
         } else { // Adding optional reference
             dispatch({type: ActionType.UpdatePreviewRef, index, field: "showImg", value: true});
+            dispatch({type: ActionType.UpdatePreviewRef, index, field: "filename", value: event.target.files[0].name});
+            console.log(previews);
         }
 
         // setFileArray({...fileArray});
@@ -587,14 +593,14 @@ const SubmissionForm: React.FC<Props> = props => {
                                 value={submission.issue} 
                                 onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})}>
                             <option defaultValue="Select Issues">Select Issue</option> 
-                                <option value="Any">Any</option>
-                                {
-                                    issues.map((issue) => (
-                                        <option key={issue} value={issue}>
-                                            {issue}
-                                        </option>
-                                    ))
-                                }
+                            <option value="Any">Any</option>
+                            {
+                                issues.map((issue) => (
+                                    <option key={issue} value={issue}>
+                                        {issue}
+                                    </option>
+                                ))
+                            }
                         </select>
                         {/* drop down element for type selection */}
                             <select
@@ -615,7 +621,7 @@ const SubmissionForm: React.FC<Props> = props => {
                 {/* Submission Boxes */}
                 <div className="flex flex-cols-2 gap-4">
                     {/* Submission Box 1 */}
-                    {showFile? (
+                    {showFile ? (
                         <div className=" resize p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">                     
                             <div className="flex  text-justify justify-end text-[#3b60ba]"> 
                                 <button 
@@ -629,7 +635,10 @@ const SubmissionForm: React.FC<Props> = props => {
                                     </button>
                             </div> 
                             <div className="flex items-center justify-center ">
-                                <img className="h-[150px]" src="https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png"></img>
+                                <ImagePreview
+                                    file={file}
+                                    fallbackImageUrl="https://mailmeteor.com/logos/assets/PNG/Google_Docs_Logo_512px.png"
+                                />
                             </div>
                         </div> 
                     ) : 
@@ -739,7 +748,10 @@ const SubmissionForm: React.FC<Props> = props => {
                                                 </button>
                                         </div> 
                                         <div className="flex items-center justify-center ">
-                                            <img className="h-[150px]" src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Picture_icon_BLACK.svg"></img>
+                                            <ImagePreview
+                                                file={fileArray.get(preview.filename) as File}
+                                                fallbackImageUrl="https://upload.wikimedia.org/wikipedia/commons/6/6b/Picture_icon_BLACK.svg"
+                                            />
                                         </div>
                                         </div> 
                                     ) :
@@ -823,7 +835,8 @@ const SubmissionForm: React.FC<Props> = props => {
                             console.log("after setReqFields update")
                         }}
                         className="rounded-lg items-center pt-4 ml-20">
-                        <Link href="/submit">+ Additional Photos</Link>
+                        + Additional Photos
+                        {/* <Link>+ Additional Photos</Link> */}
                     </button>
                 </div>
                 {/* Artist Statement */}
@@ -849,7 +862,7 @@ const SubmissionForm: React.FC<Props> = props => {
                     <div className="p-6 h-[250px] w-[full] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                         <div>
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Subject</h3>
-                            <input name="editor_note" onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})} type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Subject of your Note" required />
+                            <input type="text" id="Title" name="editor_note" onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})}  className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Subject of your Note" required />
                             
                             <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Note</h3>
                             <input type="text" id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-full" placeholder="Note to Editor" maxLength={400} required />

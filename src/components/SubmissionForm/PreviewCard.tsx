@@ -23,7 +23,7 @@ const PreviewCard: React.FC<Props> = props => {
     // Destructure all props
     const { preview } = props;
 
-    const { type, thumbnailUrl, title, description } = preview;
+    const { type, imageUrl, title, description } = preview;
 
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
@@ -35,7 +35,7 @@ const PreviewCard: React.FC<Props> = props => {
 
             <div className="flex">
                 <div className="max-w-xl min-w-min w-1/3 bg-gray-200">
-                    <img src={thumbnailUrl} className="max-w-full"></img>
+                    <img src={imageUrl} className="max-w-full"></img>
                 </div>
 
                 <div className="ps-12">
