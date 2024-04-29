@@ -22,7 +22,8 @@ body {
 }
 
 .HomePage-top-bar {
-    display: inline-block /* hugs content */
+    display: inline-block; /* hugs content */
+    z-index: 30;
     /* height: 7rem; */
     /* background-color: rgb(237, 239, 244); */
 }

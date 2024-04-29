@@ -8,6 +8,7 @@
  * @property {string} description - The description of the submission
  * @property {string} imageUrl - The preview image of the submission
  * @property {string} contentDriveUrl - The content of the submission in Drive
+ * @property {string} photoCredit - The credit for the photo submission
  */
 
 import PreviewType from "./PreviewType";
@@ -18,6 +19,7 @@ type Preview = {
     description: string;
     imageUrl: string;
     contentDriveUrl: string;
+    photoCredit: string;
 };
 
 export default Preview;
