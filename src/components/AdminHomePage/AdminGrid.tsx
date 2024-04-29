@@ -4,7 +4,8 @@
  * @author Lucien Bao 
  */
 
-import { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
+import { TailSpin } from 'react-loader-spinner';
 
 // Import FontAwesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,7 +13,7 @@ import { faLink } from '@fortawesome/free-solid-svg-icons';
 
 // Import MUI components
 import { Box } from '@mui/material'
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRowParams, GridToolbar } from "@mui/x-data-grid";
 
 // Import next
 import Issues from '@/types/Issues';
@@ -21,6 +22,9 @@ import Issues from '@/types/Issues';
 import Submission from "@/types/Submission";
 import Statuses from '@/types/Statuses';
 import Mediums from '@/types/Mediums';
+
+// Import components
+import UserEditableSubmission from '../HomePage/UserEditableSubmission';
 
 type Props = {
     submissionArray: Submission[];
@@ -58,6 +62,8 @@ const nameStyle = {
 type State = {
     // Issues of the publication to be displayed
     issues: Issues[];
+    selectedSubmission?: Submission;
+    isLoading: boolean;
 };
 
 /* ------------- Actions ------------ */
@@ -66,6 +72,7 @@ type State = {
 enum ActionType {
     // Set issues
     setIssues = 'setIssues',
+    editSubmissionModal = "editSubmissionModal"
 }
 
 // Action definitions
@@ -74,11 +81,16 @@ type Action = {
     type: ActionType.setIssues,
     // New issues to set 
     newIssues: Issues[];
+} | {
+    // Action type
+    type: ActionType.editSubmissionModal;
+    // Submission to show in modal
+    submission: Submission | undefined;
 };
 
 /**
  * Reducer that executes actions
- * @author Austen Money
+ * @author Austen Money, Lydia Chen
  * @param state current state
  * @param action action to execute
  * @returns updated state
@@ -89,6 +101,12 @@ const reducer = (state: State, action: Action): State => {
             return {
                 ...state,
                 issues: action.newIssues,
+            };
+        }
+        case ActionType.editSubmissionModal: {
+            return {
+                ...state,
+                selectedSubmission: action.submission,
             };
         }
         default: {
@@ -115,17 +133,22 @@ const AdminGrid: React.FC<Props> = (properties) => {
 
     /* -------------- State ------------- */
 
+    const [modalOpen, setModalOpen] = useState(false);
+
     // Initial state
     const initialState: State = {
         issues: [],
+        selectedSubmission: undefined,
+        isLoading: false
     };
 
     // Initialize state
     const [state, dispatch] = useReducer(reducer, initialState);
-
     // Destructure common state
     const {
         issues,
+        selectedSubmission, 
+        isLoading
     } = state;
 
     /*------------------------------------------------------------------------*/
@@ -159,6 +182,15 @@ const AdminGrid: React.FC<Props> = (properties) => {
         console.log(JSON.stringify(row, null, 2));
     }
     );
+
+    const handleRowClick = (params: GridRowParams) => {
+        const selectedRowData = params.row;
+
+        dispatch({
+            type: ActionType.editSubmissionModal,
+            submission: selectedRowData || undefined,
+        })
+    }
 
     const columns: GridColDef[] = [
         {
@@ -353,10 +385,14 @@ const AdminGrid: React.FC<Props> = (properties) => {
                 },
             }}
         >
+            {
+             selectedSubmission && <div className="h-full w-full top-0 left-0 absolute bg-black bg-opacity-50 z-40"/>
+            }
             <DataGrid
                 rows={rows}
                 columns={columns}
                 getRowId={(row: any) => `${row.authorName}|${row.title}|${row.date}`}
+                onRowClick={(params) => handleRowClick(params)}
                 slots={{
                     toolbar: GridToolbar,
                     noResultsOverlay: CustomNoRowsOverlay,
@@ -384,11 +420,42 @@ const AdminGrid: React.FC<Props> = (properties) => {
                         paddingBlock: "45px",
                         margin: 'auto',
                         textAlign: 'center',
+                    },
+                        // pointer cursor on ALL rows
+                    '& .MuiDataGrid-row:hover': {
+                        cursor: 'pointer'
                     }
                 }}
             />
+            {isLoading ? (
+                <div className="flex h-screen">
+                    <div className="m-auto">
+                        <TailSpin color="#8200B1"></TailSpin>
+                    </div>
+                </div>
+            ) : (
+                <div>
+                    {selectedSubmission && (
+                        <div className="top-3 bottom-3 justify-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                            <div className="top-0 w-5/6 h-11/12 border-0 rounded-md shadow-lg relative flex flex-col bg-[#dcadff] outline-none focus:outline-none">
+                                <UserEditableSubmission
+                                    initialSubmission={selectedSubmission}
+                                    issues={issues}
+                                    onClose={() => {
+                                        dispatch({
+                                            type: ActionType.editSubmissionModal,
+                                            submission: undefined
+                                        })
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
         </Box>
     );
 }
 
 export default AdminGrid;
+
