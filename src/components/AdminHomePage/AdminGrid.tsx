@@ -4,7 +4,7 @@
  * @author Lucien Bao 
  */
 
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 
 // Import FontAwesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -22,6 +22,10 @@ import Submission from "@/types/Submission";
 import Statuses from '@/types/Statuses';
 import Mediums from '@/types/Mediums';
 import React from 'react';
+import SubmissionThumbnail from '../HomePage/SubmissionThumbnail';
+import UserEditableSubmission from '../HomePage/UserEditableSubmission';
+import PreviewType from '@/types/PreviewType';
+import { TailSpin } from 'react-loader-spinner';
 
 type Props = {
     submissionArray: Submission[];
@@ -59,6 +63,8 @@ const nameStyle = {
 type State = {
     // Issues of the publication to be displayed
     issues: Issues[];
+    selectedSubmission?: Submission;
+    isLoading: boolean;
 };
 
 /* ------------- Actions ------------ */
@@ -67,6 +73,7 @@ type State = {
 enum ActionType {
     // Set issues
     setIssues = 'setIssues',
+    editSubmissionModal = "editSubmissionModal"
 }
 
 // Action definitions
@@ -75,11 +82,16 @@ type Action = {
     type: ActionType.setIssues,
     // New issues to set 
     newIssues: Issues[];
+} | {
+    // Action type
+    type: ActionType.editSubmissionModal;
+    // Submission to show in modal
+    submission: Submission | undefined;
 };
 
 /**
  * Reducer that executes actions
- * @author Austen Money
+ * @author Austen Money, Lydia Chen
  * @param state current state
  * @param action action to execute
  * @returns updated state
@@ -90,6 +102,24 @@ const reducer = (state: State, action: Action): State => {
             return {
                 ...state,
                 issues: action.newIssues,
+            };
+        }
+        case ActionType.editSubmissionModal: {
+            return {
+                ...state,
+                selectedSubmission: action.submission,
+            };
+        }
+        case ActionType.ToggleLoadingOn: {
+            return {
+                ...state,
+                isLoading: true
+            };
+        }
+        case ActionType.ToggleLoadingOff: {
+            return {
+                ...state,
+                isLoading: false
             };
         }
         default: {
@@ -116,18 +146,22 @@ const AdminGrid: React.FC<Props> = (properties) => {
 
     /* -------------- State ------------- */
 
+    const [modalOpen, setModalOpen] = useState(false);
+
     // Initial state
     const initialState: State = {
         issues: [],
+        selectedSubmission: undefined,
+        isLoading: false
     };
 
     // Initialize state
     const [state, dispatch] = useReducer(reducer, initialState);
-    // const [submissionModal, setSubmissionModal] = React.useState<GridRowSelectionModel>([])
-    // const [modalOpen, setModalOpen] = useState(false);
     // Destructure common state
     const {
         issues,
+        selectedSubmission, 
+        isLoading
     } = state;
 
     /*------------------------------------------------------------------------*/
@@ -162,23 +196,14 @@ const AdminGrid: React.FC<Props> = (properties) => {
     }
     );
 
-    const handleRowSelectionModal = (newSubmissionModel: GridRowSelectionModel) => {
-        setSubmissionModal(newSubmissionModel);
+    const handleRowClick = (params: GridRowParams) => {
+        const selectedRowData = params.row;
 
-        const selectedRowData = rows.find(row => row.id === newSubmissionModel[0]);
-        if (selectedRowData) {
-            openModal(selectedRowData);
-        }
+        dispatch({
+            type: ActionType.editSubmissionModal,
+            submission: selectedRowData || undefined,
+        })
     }
-
-    const openModal = (data: any) => {
-        setModalData(data);
-        setModalOpen(true);
-    };
-
-    const handleCloseModal = () => {
-        setModalOpen(false);
-    };
 
     const columns: GridColDef[] = [
         {
@@ -377,9 +402,7 @@ const AdminGrid: React.FC<Props> = (properties) => {
                 rows={rows}
                 columns={columns}
                 getRowId={(row: any) => `${row.authorName}|${row.title}|${row.date}`}
-                isRowSelectable={(params: GridRowParams) => params.row.issue}
-                // onRowSelectionModelChange={handleRowSelectionModal}
-                // rowSelectionModel={submissionModal}
+                onRowClick={(params) => handleRowClick(params)}
                 slots={{
                     toolbar: GridToolbar,
                     noResultsOverlay: CustomNoRowsOverlay,
@@ -410,8 +433,35 @@ const AdminGrid: React.FC<Props> = (properties) => {
                     }
                 }}
             />
-        </Box >
+            {isLoading ? (
+                <div className="flex h-screen">
+                    <div className="m-auto">
+                        <TailSpin color="#8200B1"></TailSpin>
+                    </div>
+                </div>
+            ) : (
+                <div>
+                    {selectedSubmission && (
+                        <div className="top-3 bottom-3 justify-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                            <div className="top-0 w-5/6 h-11/12 border-0 rounded-md shadow-lg relative flex flex-col bg-[#dcadff] outline-none focus:outline-none">
+                                <UserEditableSubmission
+                                    initialSubmission={selectedSubmission}
+                                    issues={issues}
+                                    onClose={() => {
+                                        dispatch({
+                                            type: ActionType.editSubmissionModal,
+                                            submission: undefined
+                                        })
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
+        </Box>
     );
 }
 
 export default AdminGrid;
+
