@@ -13,8 +13,11 @@ import React, { useReducer, useEffect, useRef } from 'react';
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import { TailSpin } from 'react-loader-spinner';
 
-import RaceEthnicity from "@/types/RaceEthnicity";
-import Gender from "@/types/Gender";
+// Import FontAwesome
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+
+// Import types
 import SocialMedias from "@/types/SocialMedias";
 
 /*------------------------------------------------------------------------*/
@@ -41,6 +44,11 @@ type UserInfo = {
     // NOTE: for socialMedias to be optional means that the
     // strings it contains are allowed to be empty
     socialMedias: SocialMedias
+};
+
+type Props = {
+    onBack: () => void,
+    onSubmit: () => void,
 };
 
 /*------------------------------------------------------------------------*/
@@ -142,11 +150,14 @@ const reducer = (state: State, action: Action): State => {
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
 
-const ProfileReview: React.FC<{}> = () => {
+const ProfileReview: React.FC<Props> = (props) => {
 
     /*------------------------------------------------------------------------*/
     /* -------------------------------- Setup ------------------------------- */
     /*------------------------------------------------------------------------*/
+
+    /* -------------- Props ------------- */
+    const { onSubmit, onBack } = props;
 
     /* -------------- State ------------- */
     const { user, isLoaded } = useUser();
@@ -453,19 +464,36 @@ const ProfileReview: React.FC<{}> = () => {
             <div className="p-10 px-20 gradient-background flex flex-col gap-3">
                 {/* Header portion */}
                 <div className="flex justify-end">
+                    <button className="rounded-lg h-11 w-11 left-3 absolute items-center "
+                        onClick={onBack}
+                    >
+                        <FontAwesomeIcon
+                            icon={faArrowLeft}
+                            className="text-primary-blue text-2xl"
+                        />
+                    </button>
                     <h1 className="text-4xl text-primary-blue font-bold pb-3 flex-1">
                         Review Profile
                     </h1>
                     <div className={"text-center h-10 leading-10 h-10"
-                        + " rounded-md outline outline-primary-blue outline-1"
+                        + " rounded-md "
                         + " cursor-pointer alpha-gradient-background-hover"
                         + " shadow shadow-md shadow-blue justify-end"
                         + " inset-highlight"}
                         onClick={switchToEdit}>
                         <p className="px-4 text-primary-blue">
-                            <strong>🖉 Edit</strong>
+                            <strong> 🖉 Edit</strong>
                         </p>
                     </div>
+                    <button
+                        type="submit"
+                        onClick={onSubmit}
+                        className={"bg-[#FF4395] shadow shadow-md shadow-blue"
+                            + " hover:shadow-lg text-white font-bold py-2 px-4"
+                            + " rounded h-10 hover:bg-[#f04090] justify-end ml-5"}
+                    >
+                        Submit
+                    </button>
                 </div>
 
                 {/* Biographical info */}
