@@ -8,7 +8,7 @@ export default function Home() {
         user?.organizationMemberships && user?.organizationMemberships.length > 0;
 
     return (
-        <div>
+        <div className="h-screen w-screen">
             {isAdmin 
                 ? <AdminHomePage></AdminHomePage>
                 : <HomePage></HomePage>

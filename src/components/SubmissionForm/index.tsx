@@ -12,14 +12,11 @@ import Submission from "@/types/Submission";
 import PreviewType from "@/types/PreviewType";
 import Mediums from "@/types/Mediums";
 
-// Import Next
-import Link from "next/link";
-import { Tooltip } from "react-tooltip";
-
 // Import clerk
 import { useUser } from "@clerk/nextjs";
 
 // Import components
+import { Tooltip } from "react-tooltip";
 import Preview from '@/types/Preview';
 import Statuses from '@/types/Statuses';
 import ImagePreview from '@/components/SubmissionForm/ImagePreview'
@@ -42,7 +39,8 @@ type FileData = {
 
 // Props definition
 type Props = {
-    postSubmit: () => void
+    finishSubmit: (body: FormData, submission: Submission) => void,
+    goBack: () => void,
 };
 
 /*------------------------------------------------------------------------*/
@@ -247,7 +245,7 @@ const reducer = (state: State, action: Action): State => {
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
 
-const SubmissionForm: React.FC<Props> = props => {
+const SubmissionForm: React.FC<Props> = (props) => {
     /*------------------------------------------------------------------------*/
     const { user } = useUser();
 
@@ -258,7 +256,10 @@ const SubmissionForm: React.FC<Props> = props => {
     /* -------------- Props ------------- */
 
     // Destructure all props
-    const { postSubmit } = props;
+    const {
+        finishSubmit,
+        goBack,
+    } = props;
 
     /*------------------------------------------------------------------------*/
     /* -------------------------------- Setup ------------------------------- */
@@ -352,53 +353,12 @@ const SubmissionForm: React.FC<Props> = props => {
         // Add the previews to the submission
         updatedSubmission.additionalReferences = previews.map(preview => preview.preview);
 
-        console.log("Submitting: ", updatedSubmission.title);
-        console.log("File Array: ", fileArray);
-
         const formData = new FormData();
         fileArray.forEach(file => {
             formData.append(file.name, file.file);
         });
 
-        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/update`, {
-            method: "POST",
-            body: formData,
-        })
-        .then(async () => {
-            await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/upload`)
-            .then(res => res.json())
-            .then(res => res.body)
-            .then(responses => {
-                console.log(`response length: ${responses.length}`);
-                console.log(responses);
-                // Update main submission with drive info
-                if (responses[0]) {
-                    updatedSubmission.mainSubmission.contentDriveUrl = `https://drive.google.com/file/d/${responses[0].id}`;
-                    updatedSubmission.mainSubmission.imageUrl = responses[0].imageUrl;
-                }
-                // Update additional references with drive info
-                if (updatedSubmission.additionalReferences && responses.length > 1) {
-                    for (let i = 1; i < responses.length; i++) {
-                        updatedSubmission.additionalReferences[i - 1].contentDriveUrl = `https://drive.google.com/file/d/${responses[i].id}`;
-                        updatedSubmission.additionalReferences[i - 1].imageUrl = responses[i].imageUrl;
-                    }
-                }
-            })
-        })
-        .then(async () => {
-            try {
-                // add submission to database
-                await fetch("../api/submissions/add", {
-                    method: "POST",
-                    body: JSON.stringify({
-                        submission: updatedSubmission
-                    })
-                });
-            } catch (error) {
-                console.log(error);
-            }
-        })
-        .catch(err => console.error(err));
+        finishSubmit(formData, updatedSubmission);
     };
 
     /**
@@ -408,8 +368,6 @@ const SubmissionForm: React.FC<Props> = props => {
      * @returns updates fileArray
      */
     const handleFileChange = (index : number, event : any) => {
-        console.log("appending file: ", event.target.files[0].name, "which is at index: ", index)
-
         fileArray.push({
             name: event.target.files[0].name,
             file: event.target.files[0],
@@ -421,7 +379,6 @@ const SubmissionForm: React.FC<Props> = props => {
         } else { // Adding optional reference
             dispatch({type: ActionType.UpdatePreviewRef, index, field: "showImg", value: true});
             dispatch({type: ActionType.UpdatePreviewRef, index, field: "filename", value: event.target.files[0].name});
-            console.log(previews);
         }
 
         // setFileArray({...fileArray});
@@ -437,15 +394,16 @@ const SubmissionForm: React.FC<Props> = props => {
      * @returns updates fileArray
      */
     const removeFile = (index : number) => {
-        
+        if (index == -1) { // Removing main submission file
+            setShowFile(false);
+            setFile(null);
+            return;
+        }
+
         const nameToDelete = previews[index].filename
         const removeIdx = previews.findIndex((preview) => preview.filename === nameToDelete);
-        console.log("removing file: ", nameToDelete, "which is at index: ", removeIdx)
 
         setFileArray([...fileArray.slice(0, removeIdx), ...fileArray.slice(removeIdx + 1)]);
-        console.log('length of fileArray after remove:', fileArray.length)
-
-        // setReqFieldsFilled(false); // When remove file, can't submit until they upload replacement or drop that optional element
     }
 
     /*
@@ -454,41 +412,28 @@ const SubmissionForm: React.FC<Props> = props => {
      * @returns value to update ReqFieldsFilled to
      */
     const checkReqFields = () => {
-        console.log("checking required fields")
-        console.log("previews length", previews.length)
-        console.log("fileArray length", fileArray.length)
         // check main submission title
         if (submission.mainSubmission.title == "") {
-            console.log("no main submision title")
             return false
         }
 
         // check files filled. FileArray size should equal optional references + 1 for main submission
         if (previews.length + 1 != fileArray.length) {
-            console.log("not enough uploaded files")
             return false
-        } else {
-            console.log("previews length + 1", previews.length + 1)
-            console.log("fileArray length:", fileArray.length)
         }
 
         // check artist statement filled if of type Visual Art
         if ((submission.medium == Mediums.VisualArt) && (submission.artist_statement == "")) {
-            console.log("incomplete artist statement")
             return false
         }
 
-        console.log(`we have ${previews.length} previews`);
-        
         // check optional elements titles  
         for (let i = 0; i < previews.length; i++) {
-            console.log(`title is ${previews[i].preview.title}`);
             if (previews[i].preview.title == "") {
-                console.log("incomplete optional photos titles")
                 return false
             }
         }
-        console.log("good to submit")
+
         return true
     }
 
@@ -520,17 +465,13 @@ const SubmissionForm: React.FC<Props> = props => {
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
 
-    console.log('Submission: ', JSON.stringify(submission, null, 2));
-    console.log('File Array: ', JSON.stringify(fileArray, null, 2));
-
     if (view == "SubmissionGuideline") {
         return (
             <div className="p-8 h-screen bg-[#ecf0f6] tile col-span-3 row-span-6">
                 <div>
                     <button className="rounded-lg h-[40px] w-[90px] items-center "
-                            onClick={() => {
-                                postSubmit();
-                            }}>
+                        onClick={goBack}
+                    >
                         &larr; Back
                     </button>
                 </div>
@@ -578,9 +519,7 @@ const SubmissionForm: React.FC<Props> = props => {
             <div className="p-8 mx-10 mb-5 h-screen bg-[#ecf0f6]">
                 <div>
                     <button className="rounded-lg h-[40px] w-[90px] items-center "
-                            onClick={() => {
-                                postSubmit();
-                            }}>
+                            onClick={goBack}>
                         &larr; Back
                     </button>
                 </div>
@@ -626,7 +565,7 @@ const SubmissionForm: React.FC<Props> = props => {
                             <div className="flex  text-justify justify-end text-[#3b60ba]"> 
                                 <button 
                                 onClick={() => {
-                                    removeFile(0);
+                                    removeFile(-1);
                                     setShowFile(false);                            
                                     }}>
                                     <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -735,8 +674,8 @@ const SubmissionForm: React.FC<Props> = props => {
                                 <div className="flex flex-cols-2 gap-4">
                                     {/* Submission Box 1 */}
                                     {preview.showImg ? (
-                                        <div className=" resize p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">                     
-                                        <div className="flex  text-justify justify-end text-[#3b60ba]"> 
+                                        <div className="resize p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">                     
+                                        <div className="flex  text-justify justify-end text-[#3b60ba] "> 
                                             <button 
                                             onClick={() => {
                                                 removeFile(index); 
@@ -747,9 +686,9 @@ const SubmissionForm: React.FC<Props> = props => {
                                                 </svg>
                                                 </button>
                                         </div> 
-                                        <div className="flex items-center justify-center ">
+                                        <div className="flex items-center justify-center">
                                             <ImagePreview
-                                                file={fileArray.get(preview.filename) as File}
+                                                file={fileArray[index + 1].file}
                                                 fallbackImageUrl="https://upload.wikimedia.org/wikipedia/commons/6/6b/Picture_icon_BLACK.svg"
                                             />
                                         </div>
@@ -830,13 +769,9 @@ const SubmissionForm: React.FC<Props> = props => {
                     <button 
                         onClick={() => {
                             dispatch({type: ActionType.AddPreview});
-                            console.log("before delay")
-                            console.log("before setReqFields update")
-                            console.log("after setReqFields update")
                         }}
                         className="rounded-lg items-center pt-4 ml-20">
                         + Additional Photos
-                        {/* <Link>+ Additional Photos</Link> */}
                     </button>
                 </div>
                 {/* Artist Statement */}
@@ -872,9 +807,7 @@ const SubmissionForm: React.FC<Props> = props => {
                 </div>
 
                     <button className="absolute right-[176px] mt-[70px] rounded-lg bg-white m-6 h-[40px] w-[200px]  items-center shadow-lg"
-                            onClick={() => {
-                                postSubmit();
-                            }}>
+                            onClick={goBack}>
                             Discard
                         </button>
 
@@ -887,7 +820,6 @@ const SubmissionForm: React.FC<Props> = props => {
                         
                         onClick={() => {
                             onSubmit();
-                            postSubmit();
                         }} 
                         className={`absolute right-[64px] mt-[70px] rounded-lg m-6 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!ReqFieldsFilled ? "bg-opacity-50" : ""}`}
                         // className={`absolute rounded-lg mt-5 h-[40px] w-[90px] items-center text-white bg-[#ec4899] shadow-lg ${!isGuidelineRead ? "bg-opacity-50" : ""}`}

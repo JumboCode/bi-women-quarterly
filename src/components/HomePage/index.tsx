@@ -16,13 +16,15 @@ import Link from "next/link";
 import { UserButton, useUser } from "@clerk/nextjs";
 
 // Import components
-import SubmissionForm from "../SubmissionForm/index";
+import SubmissionForm from '../SubmissionForm';
 import UserEditableSubmission from './UserEditableSubmission';
 import SubmissionThumbnail from './SubmissionThumbnail';
 
 // Import types
 import Submission from "@/types/Submission";
 import Statuses from "@/types/Statuses";
+import Preview from '@/types/Preview';
+import { get } from 'http';
 
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Types --------------------------------- */
@@ -283,7 +285,6 @@ export default function HomePage() {
                 .then(res => res.json())
                 .then(res => {
                     if (res.success) {
-                        console.log("Successfully connected to database");
                         dispatch({
                             type: ActionType.UpdateAllSubmissions,
                             newSubmissions: res.data
@@ -291,7 +292,7 @@ export default function HomePage() {
                                 .map((data: any) => data.submission)
                         });
                     } else {
-                        console.log("Failed to connect to database");
+                        console.error("Failed to connect to database");
                     }
                 })
                 .then(() => {
@@ -301,14 +302,64 @@ export default function HomePage() {
                     });
                 });
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
 
-    const postSubmit = () => {
+    const finishSubmit = async (body: FormData, submission: Submission) => {
+        // Switch view back to homepage
         dispatch({
             type: ActionType.SwitchView,
             newView: "Homepage"
+        });
+        dispatch({
+            type: ActionType.ToggleLoadingOn
+        })
+
+        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/update`, {
+            method: "POST",
+            body,
+        })
+        .then(async () => {
+            await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/upload`)
+            .then(res => res.json())
+            .then(res => res.body)
+            .then(responses => {
+                // Update main submission with drive info
+                if (responses[0]) {
+                    submission.mainSubmission.contentDriveUrl = `https://drive.google.com/file/d/${responses[0].id}`;
+                    submission.mainSubmission.imageUrl = responses[0].imageUrl;
+                }
+                // Update additional references with drive info
+                if (submission.additionalReferences && responses.length > 1) {
+                    for (let i = 1; i < responses.length; i++) {
+                        submission.additionalReferences[i - 1].contentDriveUrl = `https://drive.google.com/file/d/${responses[i].id}`;
+                        submission.additionalReferences[i - 1].imageUrl = responses[i].imageUrl;
+                    }
+                }
+            })
+        })
+        .then(async () => {
+            try {
+                // add submission to database
+                await fetch("../api/submissions/add", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        submission: submission,
+                    })
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        })
+        .catch(err => console.error(err));
+
+        // Update submissions
+        await getSubmissions();
+
+        // Hide loading spinner
+        dispatch({
+            type: ActionType.ToggleLoadingOff
         });
     }
     /*------------------------------------------------------------------------*/
@@ -324,8 +375,6 @@ export default function HomePage() {
             // TODO: fix this hacky way of getting submissions
             await getSubmissions();
             await fetchIssueThemes();
-            await new Promise(r => setTimeout(r, 3000));
-            await getSubmissions();
         })();
     }, [user]);
 
@@ -357,13 +406,16 @@ export default function HomePage() {
     /*----------------------------------------*/
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
-    if (view == "Submission") {
-            console.log("Submission");
-            return (<SubmissionForm
-                postSubmit={postSubmit}/>)
+    if (view === "Submission") {
+            return (
+                <SubmissionForm
+                    finishSubmit={finishSubmit}
+                    goBack={() => {dispatch({type: ActionType.SwitchView, newView: "Homepage"})}}
+                />
+            );
     } else {
     return (
-        <div className="h-screen w-full flex flex-col gradient-background">
+        <div className="min-h-screen w-full flex flex-col gradient-background">
             {
                 editModalSubmission && <div className="h-full w-full fixed bg-black bg-opacity-50 z-40"/>
             }
