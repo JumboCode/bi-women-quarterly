@@ -6,8 +6,24 @@ body {
     background-color: white;
     margin: 0;
 }
+
 .gradient-background {
     background-image: linear-gradient(to bottom right, #FFD3CB, #E7A5FF, #B3C9FF);
+}
+
+@layer utilities {
+    .alpha-gradient-background-hover:hover {
+        background-image: linear-gradient(to bottom right, #FFFFFF60, #FFFFFF00);
+    }
+}
+
+.inset-highlight {
+    /* background: rgba(255, 255, 255, 0.378); */
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+}
+
+.alpha-gradient-background {
+    background-image: linear-gradient(to bottom right, #FFFFFF60, #FFFFFF00);
 }
 
 .HomePage-submit-button {
@@ -15,7 +31,7 @@ body {
     padding-right: 5%;
     width: 10rem;
     height: 2rem;
-    background-color: rgb(255, 63, 169);
+    background-color: rgb(255, 67, 149);
     border-radius: 0.25rem;
     color: white;
     /* font-weight: bold; */
@@ -29,24 +45,25 @@ body {
 }
 
 .submission_type {
-    display:flex;
+    display: flex;
 }
 
 .submission_type_mobile {
-    display:none;
+    display: none;
 }
 
 @media (max-width:750px) {
     .submission_type {
-        display:none;
+        display: none;
     }
+
     .submission_type.is-open {
-        display:block;
+        display: block;
         background-color: aquamarine;
     }
 
     .submission_type_mobile {
-        display:block;
+        display: block;
     }
 }
 

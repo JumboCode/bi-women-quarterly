@@ -31,9 +31,9 @@ type UserInfo = {
     authorName: string, // required
     pronouns?: string,
     bio: string,  // required
-    birthday?: string,
-    raceEthnicity?: RaceEthnicity,
-    gender?: Gender,
+    yearOfBirth?: string,
+    raceEthnicity?: string,
+    gender?: string,
     country?: string,
     stateProvince?: string,
     cityTown?: string,
@@ -55,9 +55,9 @@ const PLACEHOLDERS: UserInfo = {
     authorName: 'No author name given',
     pronouns: 'No pronouns given',
     bio: 'No bio given',
-    birthday: '01/01/1999',
-    raceEthnicity: RaceEthnicity.Other,
-    gender: Gender.Other,
+    yearOfBirth: (new Date()).getFullYear().toString(),
+    raceEthnicity: 'No race/ethnicity given',
+    gender: 'No gender given',
     country: 'No country given',
     stateProvince: 'No state/province given',
     cityTown: 'No city/town given',
@@ -161,9 +161,9 @@ const ProfileReview: React.FC<{}> = () => {
             authorName: '',
             pronouns: '',
             bio: '',
-            birthday: '',
-            raceEthnicity: undefined,
-            gender: undefined,
+            yearOfBirth: '',
+            raceEthnicity: '',
+            gender: '',
             country: '',
             stateProvince: '',
             cityTown: '',
@@ -232,9 +232,9 @@ const ProfileReview: React.FC<{}> = () => {
                 authorName: userProps.authorName as string ?? '',
                 pronouns: userProps.pronouns as string ?? '',
                 bio: userProps.bio as string ?? '',
-                birthday: userProps.birthday as string,
-                raceEthnicity: userProps.raceEthnicity as RaceEthnicity ?? '',
-                gender: userProps.gender as Gender ?? '',
+                yearOfBirth: userProps.yearOfBirth as string,
+                raceEthnicity: userProps.raceEthnicity as string ?? '',
+                gender: userProps.gender as string ?? '',
                 country: userProps.country as string ?? '',
                 stateProvince: userProps.stateProvince as string ?? '',
                 cityTown: userProps.cityTown as string ?? '',
@@ -259,41 +259,6 @@ const ProfileReview: React.FC<{}> = () => {
      */
     const switchToEdit = (event: any) => {
         dispatch({ type: ActionType.ToggleView });
-    }
-
-
-    /**
-     * Select race/ethnicity
-     * @author Lydia Chen
-     * @param value The new race/ethnicity value.
-     */
-    const selectRaceEthnicity = (value: string) => {
-        const deepCopy = JSON.parse(JSON.stringify(userInfo));
-
-        dispatch({
-            type: ActionType.UpdateUserInfo,
-            updatedUserInfo: {
-                ...deepCopy,
-                raceEthnicity: value
-            },
-        });
-    }
-
-    /**
-     * Select gender preferences.
-     * @author Lydia Chen
-     * @param value the new gender value.
-     */
-    const selectGender = (value: string) => {
-        const deepCopy = JSON.parse(JSON.stringify(userInfo));
-
-        dispatch({
-            type: ActionType.UpdateUserInfo,
-            updatedUserInfo: {
-                ...deepCopy,
-                gender: value
-            }
-        })
     }
 
     /**
@@ -464,6 +429,8 @@ const ProfileReview: React.FC<{}> = () => {
     const country = userInfo!.country;
     const stateProvince = userInfo!.stateProvince;
 
+    console.log('profile picture: ', userInfo!.profilePicture)
+
     // No current user
     if (!isLoaded) {
         body = (
@@ -483,18 +450,12 @@ const ProfileReview: React.FC<{}> = () => {
     // Preview mode //
     else if (view == View.Preview) {
         body = (
-            <div className="p-10 px-20 gradient-background flex flex-col gap-6">
-                <h1 className="text-4xl text-primary-blue font-bold pb-8">
-                    Review Profile
-                </h1>
+            <div className="p-10 px-20 gradient-background flex flex-col gap-3">
                 {/* Header portion */}
-                <div className="flex items-center gap-8">
-                    <img className="rounded-full bg-gray-500 w-24 h-24"
-                        src={userInfo!.profilePicture as string}
-                        alt="Your profile picture" onError={(e) => {
-                            (e.target as HTMLImageElement).onerror = null;
-                            (e.target as HTMLImageElement).src = "defaultpfp.png";
-                        }} />
+                <div className="flex justify-end">
+                    <h1 className="text-4xl text-primary-blue font-bold pb-3 flex-1">
+                        Review Profile
+                    </h1>
                     <div className={"text-center h-10 leading-10 h-10"
                         + " rounded-md outline outline-primary-blue outline-1"
                         + " cursor-pointer alpha-gradient-background-hover"
@@ -508,6 +469,9 @@ const ProfileReview: React.FC<{}> = () => {
                 </div>
 
                 {/* Biographical info */}
+                <div className="text-xl text-primary-blue font-bold pl-5 ">
+                     Personal
+                </div>
                 <div className={"border border-solid brder-white"
                     + " rounded-xl mb-5 p-5 alpha-gradient-background"
                     + " shadow shadow-lg shadow-blue"} >
@@ -543,20 +507,28 @@ const ProfileReview: React.FC<{}> = () => {
                     <div className="font-bold text-primary-blue">Bio</div>
                     <div className="py-4">{userInfo!.bio}</div>
 
+                </div>
+
+                <div className="text-xl text-primary-blue font-bold pl-5 ">
+                     Demographics (for editor use only)
+                </div>
+                <div className={"border border-solid brder-white"
+                    + " rounded-xl mb-5 p-5 alpha-gradient-background"
+                    + " shadow shadow-lg shadow-blue"}>
                     <div className="grid md:grid-cols-3 grid-cols-2 lg:pr-96">
                         <div>
-                            <div className="font-bold text-primary-blue">Birthday</div>
-                            <div className="py-4">{userInfo!.birthday}</div>
+                            <div className="font-bold text-primary-blue">Year of Birth</div>
+                            <div className="py-4">{userInfo!.yearOfBirth}</div>
                         </div>
 
                         <div>
                             <div className="font-bold text-primary-blue">Race/Ethnicity</div>
-                            <div className="py-4">{userInfo?.raceEthnicity?.toLowerCase() === "default" ? "" : userInfo?.raceEthnicity?.toLowerCase()}</div>
+                            <div className="py-4">{userInfo?.raceEthnicity}</div>
                         </div>
 
                         <div>
                             <div className="font-bold text-primary-blue">Gender</div>
-                            <div className="py-4">{userInfo?.gender?.toLowerCase() === "" ? "" : userInfo?.gender}</div>
+                            <div className="py-4">{userInfo?.gender}</div>
                         </div>
 
                         <div>
@@ -577,10 +549,12 @@ const ProfileReview: React.FC<{}> = () => {
                 </div>
 
                 {/* Social media */}
+                <div className="text-xl text-primary-blue font-bold pl-5 ">
+                     Socials
+                </div>
                 <div className="border border-solid border-white \
                 rounded-xl p-5 alpha-gradient-background \
                 shadow shadow-lg shadow-blue">
-                    <label className="font-bold text-primary-blue">Socials</label>
 
                     <div className="grid md:grid-cols-2 grid-cols-1">
                         <div className="py-4">
@@ -612,41 +586,26 @@ const ProfileReview: React.FC<{}> = () => {
     else {
         body = (
             <form id="profileEdit" className={"p-10 px-20 gradient-background"
-                + " flex flex-col gap-6"}>
-                <h1 className="text-4xl text-primary-blue font-bold pb-8">
-                    Edit Profile
-                </h1>
-                {/* Header portion */}
-                <div className="flex flex-col-4 items-center gap-5">
-                    <img className="rounded-full bg-gray-500 w-24 h-24" src={userInfo!.profilePicture as string} alt="Your profile picture" onError={(e) => {
-                        (e.target as HTMLImageElement).onerror = null;
-                        (e.target as HTMLImageElement).src = "defaultpfp.png";       // Add src link to default img
-                    }} />
-
-                    <input
-                        type="file"
-                        accept="image/*"
-                        ref={fileInputRef}
-                        onChange={uploadPicture}
-                        className={"file:bg-transparent file:text-primary-blue"
-                            + " file:font-bold file:border-0 rounded-md"
-                            + " border border-primary-blue py-2 px-4"
-                            + " alpha-gradient-background-hover cursor-pointer"
-                        }
-                    />
-                    {/* <button type="button" onClick={() => fileInputRef.current?.click()} className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded h-10">Upload Photo</button> */}
+                + " flex flex-col gap-3"}>
+                <div className="flex justify-end">
+                    <h1 className="text-4xl text-primary-blue font-bold pb-3 flex-1">
+                        Edit Profile
+                    </h1>
                     <button
-                        type="button"
-                        onClick={deletePicture}
-                        className={"bg-transparent border border-primary-blue"
-                            + " text-primary-blue font-bold py-2 px-4"
-                            + " rounded-md cursor-pointer"
-                            + " alpha-gradient-background-hover"}>
-                        Delete
+                        type="submit"
+                        onClick={updateClerk}
+                        className={"bg-[#FF4395] shadow shadow-md shadow-blue"
+                            + " hover:shadow-lg text-white font-bold py-2 px-4"
+                            + " rounded h-10 hover:bg-[#f04090] justify-end"}
+                    >
+                        Save
                     </button>
                 </div>
 
                 {/* Biographical info */}
+                <div className="text-xl text-primary-blue font-bold pl-5 ">
+                     Personal
+                </div>
                 <div className={"border border-solid brder-white"
                     + " rounded-xl mb-5 p-5 alpha-gradient-background"
                     + " shadow shadow-lg shadow-blue"}>
@@ -717,7 +676,7 @@ const ProfileReview: React.FC<{}> = () => {
                         </div>
                     </div>
 
-                    <div className="xl:pr-96">
+                    <div className="xl:pr-96 pb-4">
                         <label className="font-bold text-primary-blue"
                             htmlFor="bio">Bio*</label><br />
                         <textarea className={"border-b my-4 w-full bg-transparent"
@@ -726,60 +685,56 @@ const ProfileReview: React.FC<{}> = () => {
                             placeholder="Tell us about yourself!"
                             defaultValue={userInfo.bio}
                             onChange={(e) => handleChange('bio', e.target.value)} required />
+                        <label className="text-primary-blue text-sm">
+                            Please write in third person.</label>
                     </div>
-
+                </div>
+                <div className="text-xl text-primary-blue font-bold pl-5 ">
+                     Personal
+                </div>
+                <div className={"border border-solid brder-white"
+                    + " rounded-xl mb-5 p-5 alpha-gradient-background"
+                    + " shadow shadow-lg shadow-blue"}>
                     <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 xl:pr-96">
                         <div>
                             <label className="font-bold text-primary-blue"
-                                htmlFor="birthday">Birthday</label><br />
+                                htmlFor="yearOfBirth">Year of Birth</label><br />
                             <input
                                 className={"border-b-2 my-4 w-48 border-b-2" +
-                                    " border-primary-blue bg-transparent cursor-pointer"}
-                                type="date"
-                                id="birthday"
-                                defaultValue="01/01/1999"
-                                onChange={(e) => handleChange('birthday', e.target.value)}
+                                    " border-primary-blue bg-transparent"}
+                                placeholder={PLACEHOLDERS.yearOfBirth}
+                                defaultValue={(new Date()).getFullYear().toString()}
+                                type="text"
+                                id="yearOfBirth"
+                                onChange={(e) => handleChange('yearOfBirth', e.target.value)}
                             />
                         </div>
 
                         <div>
                             <label className="font-bold text-primary-blue"
                                 htmlFor="raceEthnicity">Race/Ethnicity</label><br />
-                            <select className={"my-4 border-b-2 border-primary-blue"
-                                + " rounded w-48 bg-transparent cursor-pointer"}
-                                form="profileEdit"
-                                name="profileEdit"
+                            <input
+                                className={"border-b-2 my-4 w-48 border-b-2" +
+                                    " border-primary-blue bg-transparent"}
+                                placeholder={PLACEHOLDERS.raceEthnicity}
+                                defaultValue={userInfo?.raceEthnicity}
+                                type="text"
                                 id="raceEthnicity"
-                                defaultValue={userInfo?.raceEthnicity?.toLowerCase()}
-                                onChange={(e) => selectRaceEthnicity(e.target.value)}>
-
-                                <option value="default">Select</option>
-                                <option value="american indian or alaskan native">{RaceEthnicity.AmericanIndian}</option>
-                                <option value="asian">{RaceEthnicity.Asian}</option>
-                                <option value="black or african american">{RaceEthnicity.Black}</option>
-                                <option value="native hawaiian or pacific islander">{RaceEthnicity.NativeHawaiian}</option>
-                                <option value="white or caucasian">{RaceEthnicity.White}</option>
-                                <option value="other or prefer not to say">{RaceEthnicity.Other}</option>
-                            </select>
+                                onChange={(e) => handleChange(e.target.id, e.target.value)}
+                            />
                         </div>
 
                         <div>
                             <label className="font-bold text-primary-blue" htmlFor="gender">Gender</label><br />
-                            <select
-                                className={"my-4 border-b-2 border-primary-blue" +
-                                    " rounded w-48 bg-transparent cursor-pointer"}
-                                form="profileEdit"
-                                name="profileEdit"
+                            <input
+                                className={"border-b-2 my-4 w-48 border-b-2" +
+                                    " border-primary-blue bg-transparent"}
+                                placeholder={PLACEHOLDERS.gender}
+                                defaultValue={userInfo?.gender}
+                                type="text"
                                 id="gender"
-                                defaultValue={userInfo?.gender?.toLowerCase()}
-                                onChange={(e) => selectGender(e.target.value)}>
-
-                                <option value="">Select</option>
-                                <option value="female">{Gender.Female}</option>
-                                <option value="male">{Gender.Male}</option>
-                                <option value="non-binary">{Gender.Nonbinary}</option>
-                                <option value="other or prefer not to say">{Gender.Other}</option>
-                            </select>
+                                onChange={(e) => handleChange(e.target.id, e.target.value)}
+                            />
                         </div>
 
                         <div>
@@ -825,11 +780,12 @@ const ProfileReview: React.FC<{}> = () => {
                 </div>
 
                 {/* Social media */}
+                <div className="text-xl text-primary-blue font-bold pl-5 ">
+                     Socials
+                </div>
                 <div className={"border border-solid brder-white"
                     + " rounded-xl mb-5 p-5 alpha-gradient-background"
                     + " shadow shadow-lg shadow-blue"}>
-                    <label className="font-bold text-primary-blue">Socials</label>
-
                     <div className="grid lg:grid-cols-10 items-baseline">
                         <label className="font-bold text-primary-blue pr-4" htmlFor="linkedin">LinkedIn</label>
                         <input placeholder={PLACEHOLDERS.socialMedias.LinkedIn} className={"border-b my-4 w-5/6 lg:w-80 bg-transparent col-span-4"
@@ -845,15 +801,6 @@ const ProfileReview: React.FC<{}> = () => {
                             + " border-primary-blue"} type="text" id="facebook" defaultValue={userInfo?.socialMedias.Facebook} onChange={(e) => updateSocialMedia('Facebook', e.target.value)} />
                     </div>
 
-                </div>
-                <div className="flex justify-end">
-                    <button
-                        type="submit"
-                        onClick={updateClerk}
-                        className={"bg-[#FF4395] shadow shadow-md shadow-blue"
-                            + " hover:shadow-lg text-white font-bold py-2 px-4"
-                            + " rounded h-10 hover:bg-[#f04090]"}
-                    >Save</button>
                 </div>
             </form>
         );
