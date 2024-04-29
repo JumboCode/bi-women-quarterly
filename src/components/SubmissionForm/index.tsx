@@ -219,6 +219,7 @@ const reducer = (state: State, action: Action): State => {
                         description: "",
                         imageUrl: "",
                         contentDriveUrl: "",
+                        photoCredit: "",
                     },
                 }],
             };
@@ -288,6 +289,7 @@ const SubmissionForm: React.FC<Props> = (props) => {
                 description: "",
                 imageUrl: "",
                 contentDriveUrl: "",
+                photoCredit: "",
             },
         },
         previews: [],
@@ -617,9 +619,9 @@ const SubmissionForm: React.FC<Props> = (props) => {
                     </div>
                     }
                     {/* Submission Box 2 */}
-                    <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
+                    <div className="resize pt-2 pl-6 pr-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                         <div>
-                            <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-1 ">Title*</h3>
+                            <h3 className="flex grow text-left justify-start text-lg font-bold pt-1 ">Title*</h3>
                             <input 
                                 name="title"
                                 onChange={(e) => {
@@ -627,21 +629,32 @@ const SubmissionForm: React.FC<Props> = (props) => {
                                 }}
                                 type="text"
                                 id="Title"
-                                className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12"
+                                className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12"
                                 placeholder="Title of your piece"
                                 required />
                             <div>
-                                <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Description</h3>
+                                <h3 className="flex grow text-left justify-start text-lg font-bold pt-5">Description</h3>
                                 <input
                                     name="description"
                                     onChange={(e) => dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value})}
                                     type="text"
                                     id="Description"
-                                    className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12"
+                                    className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12"
                                     placeholder="Describe your piece"
                                     maxLength={400}
                                     required />
                                 <p className="text-xs text-gray-400 pt-1"><em>Max 400 Characters</em></p>
+                            </div>
+                            <div>
+                                <div className="flex grow text-left justify-start text-sm font-bold pt-4">Photo Credit</div>
+                                <input
+                                    name="photoCredit"
+                                    onChange={(e) => dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value})}
+                                    type="text"
+                                    id="PhotoCredit"
+                                    className="text-sm bg-transparent border-b-2 border-blue-500 text-gray-900 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12"
+                                    placeholder="Any necessary photo credits"
+                                />
                             </div>
                         </div>
                     </div>
@@ -732,10 +745,12 @@ const SubmissionForm: React.FC<Props> = (props) => {
                                     
 
                                     {/* Submission Box 2 */}
-                                    <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
+                                    <div className="resize pt-2 pl-6 pr-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                                         <div>
-                                            <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-1 ">Title*</h3>
-                                            <input
+                                            <h3 className="flex grow text-left justify-start text-lg font-bold pt-1 ">Title*</h3>
+                                            <input 
+                                                name="title"
+                                                onChange={(e) => dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value})}
                                                 type="text"
                                                 id="Title"
                                                 name="title"
@@ -747,15 +762,25 @@ const SubmissionForm: React.FC<Props> = (props) => {
                                                 maxLength={400}
                                                 className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Title of your piece" required />
                                             <div>
-                                                <h3 className="flex grow text-left justify-start text-l font-bold pb-1 pt-7">Description</h3>
-                                                <input 
-                                                    type="text"
+                                                <h3 className="flex grow text-left justify-start text-lg font-bold pt-5">Description</h3>
+                                                <input
                                                     name="description"
                                                     onChange={(e) => dispatch({type: ActionType.UpdatePreview, index, field: e.target.name, value: e.target.value})}
                                                     value={preview.preview.description}
                                                     maxLength={400}
                                                     id="Title" className="bg-transparent border-b-2 border-blue-500 text-gray-900 pt-1.5 pb-1.5 text-sm block w-11/12 outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12" placeholder="Describe your piece" required />
                                                 <p className="text-xs text-gray-400 pt-1"><em>Max 400 Characters</em></p>
+                                            </div>
+                                            <div>
+                                                <div className="flex grow text-left justify-start text-sm font-bold pt-4">Photo Credit</div>
+                                                <input
+                                                    name="photoCredit"
+                                                    onChange={(e) => dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value})}
+                                                    type="text"
+                                                    id="PhotoCredit"
+                                                    className="text-sm bg-transparent border-b-2 border-blue-500 text-gray-900 pb-1.5 text-sm block w-full outline outline-0 transition-all after:absolute after:bottom-2 after:block after:w-11/12"
+                                                    placeholder="Any necessary photo credits"
+                                                />
                                             </div>
                                         </div>
                                     </div>
