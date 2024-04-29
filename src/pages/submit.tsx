@@ -6,7 +6,9 @@ type Props = {
     goBack: () => void,
 };
 
-export const FileUploadForm: React.FC<Props> = props => {
+const FileUploadForm: React.FC<Props> = props => {
     const { finishSubmit, goBack } = props;
     return <SubmissionForm finishSubmit={finishSubmit} goBack={goBack}/>;
 }
+
+export default FileUploadForm;
