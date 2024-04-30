@@ -250,7 +250,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
         }
 
         getUserInfo();
-    });
+    }, []);
 
     const handleSubmissionChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLSelectElement>) => {
         // setSubmission({ ...submission, [e.target.name]: e.target.value });
