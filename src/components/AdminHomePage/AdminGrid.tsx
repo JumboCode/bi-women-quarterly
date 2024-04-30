@@ -25,6 +25,7 @@ import Mediums from '@/types/Mediums';
 
 // Import components
 import UserEditableSubmission from '../HomePage/UserEditableSubmission';
+import { openInNewTab } from '../HomePage/UserEditableSubmission';
 
 type Props = {
     submissionArray: Submission[];
@@ -206,7 +207,7 @@ const AdminGrid: React.FC<Props> = (properties) => {
                     <button
                         onClick={(e) => {
                             e.preventDefault();
-                            window.location.href = cellValues.row.mainSubmission.contentDriveUrl;
+                            openInNewTab(cellValues.row.mainSubmission.contentDriveUrl);
                         }}
                         style={linkStyle}
                     >
