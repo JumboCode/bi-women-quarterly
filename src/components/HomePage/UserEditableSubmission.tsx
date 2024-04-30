@@ -737,7 +737,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                                     <div className="UserEdit-blue-box">
                                         <label>Issue: </label>
                                     </div>
-                                    <div className="UserEdit-selectBoxLabel">
+                                    <div className="UserEdit-selectBoxLabel truncate">
                                         {state.submission.issue}
                                     </div>
                                 </div>
