@@ -501,9 +501,6 @@ export default function AdminHomePage() {
                             <div onClick={() => setupIssueModal()}>Update Issues</div>
                             
                         </button>
-                        <button className="HomePage-submit-button lg:text-lg shadow-md">
-                            <Link href="/submit">Submit Work</Link>
-                        </button>
                         <div className="ml-4">
                             <UserButton afterSignOutUrl="/" />
                         </div>
