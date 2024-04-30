@@ -23,8 +23,6 @@ import SubmissionThumbnail from './SubmissionThumbnail';
 // Import types
 import Submission from "@/types/Submission";
 import Statuses from "@/types/Statuses";
-import Preview from '@/types/Preview';
-import { get } from 'http';
 
 /*------------------------------------------------------------------------*/
 /* ------------------------------ Types --------------------------------- */
@@ -121,6 +119,7 @@ const reducer = (state: State, action: Action): State => {
                 state.allSubmissions,
                 action.newFilter
             );
+            console.log('len:', filteredSubmissions.length);
             return {
                 ...state,
                 filter: action.newFilter,
@@ -173,7 +172,7 @@ const fetchCurrentIssue = async () => {
             .then(response => response.json())
             .then(res => res.data.map((issue: any) => [issue.status, issue.title]))
             .then(issues => issues.filter((issue: [string, string]) => issue[0] === "Current"))
-            .then(issue => issue[1]);
+            .then(issue => issue[0][1]);
     } catch (error) {
         console.error("Error fetching issue themes: ", error);
     }
@@ -197,8 +196,8 @@ const filterSubmissions = (
             });
         }
         case FilterType.Current: {
-            return submissions.filter(async submission => {
-                return submission.issue === await fetchCurrentIssue();
+            return submissions.filter(submission => {
+                return submission.issue === "Summer 2024: More Than One Letter";
             });
         }
         case FilterType.None: {
@@ -401,7 +400,7 @@ export default function HomePage() {
                 newFilter: filter
             });
         })();
-    }, [allSubmissions]);
+    }, [filter, allSubmissions]);
 
     /*------------------------------------------------------------------------*/
     /* ------------------------- Component Functions ------------------------ */
@@ -534,7 +533,7 @@ export default function HomePage() {
                         ) : (
                             <div className=" flex "> {/* mx-auto */}
                                 <div className="grid gap-3 grid-cols-3 flex m-3 min-auto"> {/*  */}
-                                    {allSubmissions.map(submission => {
+                                    {filteredSubmissions.map(submission => {
                                         return (
                                             <SubmissionThumbnail
                                                 key={submission.id}

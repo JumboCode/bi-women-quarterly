@@ -72,7 +72,7 @@ const SubmissionThumbnail: React.FC<Props> = props => {
                 <img src={imageUrl} className="max-h-96 rounded-lg"></img>
             </div>
             <div className="w-full flex min-w-min justify-between">
-                <div className="text-[#385FB8] font-bold md:text-xl lg:text-2xl xl:text-2xl group-hover:text-white">{title}</div>
+                <div className="text-[#385FB8] font-bold md:text-xl lg:text-2xl xl:text-2xl group-hover:text-white pr-2">{title}</div>
                 <div className={`max-h-7 h-auto text-[#385FB8] text-xs font-bold border-2 border-[#385FB8] rounded-xl p-1  ${status === Statuses.Approved
                 ? "bg-[#ffffff] group-hover:text-[#385FB8]"
                 : "group-hover:text-white group-hover:border-white"
