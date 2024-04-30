@@ -24,7 +24,8 @@ import Statuses from '@/types/Statuses';
 import Mediums from '@/types/Mediums';
 
 // Import components
-import UserEditableSubmission from '../HomePage/UserEditableSubmission';
+import { openInNewTab } from '../HomePage/UserEditableSubmission';
+import AdminViewSubmission from './AdminViewSubmission';
 
 type Props = {
     submissionArray: Submission[];
@@ -206,7 +207,7 @@ const AdminGrid: React.FC<Props> = (properties) => {
                     <button
                         onClick={(e) => {
                             e.preventDefault();
-                            window.location.href = cellValues.row.mainSubmission.contentDriveUrl;
+                            openInNewTab(cellValues.row.mainSubmission.contentDriveUrl);
                         }}
                         style={linkStyle}
                     >
@@ -438,7 +439,7 @@ const AdminGrid: React.FC<Props> = (properties) => {
                     {selectedSubmission && (
                         <div className="top-3 bottom-3 justify-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                             <div className="top-0 w-5/6 h-11/12 border-0 rounded-md shadow-lg relative flex flex-col bg-[#dcadff] outline-none focus:outline-none">
-                                <UserEditableSubmission
+                                <AdminViewSubmission
                                     initialSubmission={selectedSubmission}
                                     issues={issues}
                                     onClose={() => {

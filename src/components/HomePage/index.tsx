@@ -167,6 +167,18 @@ const reducer = (state: State, action: Action): State => {
 /* --------------------------- Static Helpers --------------------------- */
 /*------------------------------------------------------------------------*/
 
+const fetchCurrentIssue = async () => {
+    try {
+        return await fetch("../api/issues/get", { method: "GET" })
+            .then(response => response.json())
+            .then(res => res.data.map((issue: any) => [issue.status, issue.title]))
+            .then(issues => issues.filter((issue: [string, string]) => issue[0] === "Current"))
+            .then(issue => issue[1]);
+    } catch (error) {
+        console.error("Error fetching issue themes: ", error);
+    }
+};
+
 /**
  * Filters given Submission array to just the given type.
  * @author Austen Money
@@ -185,8 +197,8 @@ const filterSubmissions = (
             });
         }
         case FilterType.Current: {
-            return submissions.filter(submission => {
-                return submission.issue === "Spring 2024: letters to self"; //TODO: connect to backend
+            return submissions.filter(async submission => {
+                return submission.issue === await fetchCurrentIssue();
             });
         }
         case FilterType.None: {
