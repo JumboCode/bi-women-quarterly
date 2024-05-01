@@ -25,7 +25,7 @@ import Mediums from '@/types/Mediums';
 
 // Import components
 import { openInNewTab } from '../HomePage/UserEditableSubmission';
-import AdminViewSubmission from './AdminViewSubmission';
+import AdminViewSubmission from './AdminEditableSubmission';
 
 type Props = {
     submissionArray: Submission[];
@@ -311,12 +311,9 @@ const AdminGrid: React.FC<Props> = (properties) => {
             headerClassName: "tags-header",
             renderCell: (cellValues) => {
                 return (
-                    cellValues.row.tags &&
-                    cellValues.row.tags.map((tag: string) =>
-                        <div style={tagStyle}>
-                            {tag}
-                        </div>
-                    )
+                    <div style={tagStyle}>
+                        {cellValues.row.tags}
+                    </div>
                 );
             }
         },
