@@ -2,24 +2,20 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 // Import clientPromise
-import clientPromise from "@/lib/mongodb";
+import { clerkClient } from "@clerk/nextjs/server";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const client = await clientPromise;
-        // acesses database BiWomenQuarterly
-        const db = client.db("BiWomenQuarterly");
-        // acesses collection Submissions
-        const collect = db.collection("Users");
+        const newUserParams = req.query as { unsafeMetadata: any };
 
-        // Insert the defined document into the "Submissions" collection
-        const body = JSON.parse(req.body);
-        await collect.insertOne(body);
+        const newUser = await clerkClient.users.createUser({
+            unsafeMetadata: newUserParams.unsafeMetadata,
+        });
 
-        // accesses collection to verify that everything was inserted correct
-        const collection = await db.collection("Users").find({}).toArray();
+        console.log(`New User: ${newUser}`);
+        console.log(`New User ID: ${newUser.id}`);
 
-        res.status(201).json({ success: true, data: collection });
+        res.status(201).json({ success: true, id: newUser.id });
     } catch (e) {
         res.status(400).json({ success: false });
     }

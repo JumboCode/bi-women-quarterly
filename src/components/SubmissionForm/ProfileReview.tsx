@@ -48,7 +48,8 @@ type UserInfo = {
 
 type Props = {
     onBack: () => void,
-    onSubmit: () => void,
+    onSubmit: (userId?: string) => void,
+    useBlankUser?: boolean
 };
 
 /*------------------------------------------------------------------------*/
@@ -89,6 +90,8 @@ type State = {
     view: View;
     // Info about the current user
     userInfo: UserInfo;
+    // ID of the user
+    userId: string;
 };
 
 /* ----------- View Definition ------------- */
@@ -104,7 +107,8 @@ enum View {
 // Types of actions
 enum ActionType {
     ToggleView = "ToggleView",
-    UpdateUserInfo = "UpdateUserInfo"
+    UpdateUserInfo = "UpdateUserInfo",
+    UpdateUserId = "UpdateUserId",
 }
 
 // Action definitions
@@ -115,6 +119,10 @@ type Action = (
     | {
         type: ActionType.UpdateUserInfo,
         updatedUserInfo: UserInfo
+    }
+    | {
+        type: ActionType.UpdateUserId,
+        newId: string
     }
 )
 
@@ -140,6 +148,12 @@ const reducer = (state: State, action: Action): State => {
                 userInfo: action.updatedUserInfo,
             };
         }
+        case ActionType.UpdateUserId: {
+            return {
+                ...state,
+                userId: action.newId,
+            };
+        }
         default: {
             return state;
         }
@@ -157,7 +171,11 @@ const ProfileReview: React.FC<Props> = (props) => {
     /*------------------------------------------------------------------------*/
 
     /* -------------- Props ------------- */
-    const { onSubmit, onBack } = props;
+    const {
+        onSubmit,
+        onBack,
+        useBlankUser,
+    } = props;
 
     /* -------------- State ------------- */
     const { user, isLoaded } = useUser();
@@ -185,14 +203,16 @@ const ProfileReview: React.FC<Props> = (props) => {
                 X: '',
                 TikTok: '',
             }
-        }
+        },
+        userId: '',
     };
 
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const {
         view,
-        userInfo
+        userInfo,
+        userId,
     } = state;
 
     /*------------------------------------------------------------------------*/
@@ -221,7 +241,7 @@ const ProfileReview: React.FC<Props> = (props) => {
             // and we control anything that might change.)      
         })();
 
-        if (!isLoaded || !user) {
+        if (!isLoaded || !user || useBlankUser) {
             return;
         }
 
@@ -393,33 +413,55 @@ const ProfileReview: React.FC<Props> = (props) => {
     const updateClerk = async (event: any) => {
         event.preventDefault();
 
-        if (userInfo.primaryEmailAddress === '') {
-            alert("Please provide a valid email address.");
-            return;
-        }
+        if (useBlankUser) {
+            try {
+                const body = JSON.stringify(userInfo);
 
-        if (userInfo.authorName === '') {
-            alert("Please provide an author name.");
-            return;
-        }
+                const newId = await fetch(
+                    `../api/users/add`,
+                    { 
+                        method: "POST",
+                        body,
+                    }
+                )
+                .then(response => response.json())
 
-        if (userInfo.bio === '') {
-            alert("Please provide an author bio.");
-            return;
-        }
+                dispatch({ type: ActionType.UpdateUserId, newId});
 
-        const deepCopy = JSON.parse(JSON.stringify(userInfo));
+                console.log("User created successfully");
+                dispatch({ type: ActionType.ToggleView });
+            } catch (error) {
+                console.log("Error creating user", error);
+            }
+        } else {
+            if (userInfo.primaryEmailAddress === '') {
+                alert("Please provide a valid email address.");
+                return;
+            }
 
-        try {
-            await user?.update({
-                unsafeMetadata: {
-                    ...deepCopy,
-                },
-            });
-            console.log("User updated successfully");
-            dispatch({ type: ActionType.ToggleView });
-        } catch (error) {
-            console.log("Error updating user", error);
+            if (userInfo.authorName === '') {
+                alert("Please provide an author name.");
+                return;
+            }
+
+            if (userInfo.bio === '') {
+                alert("Please provide an author bio.");
+                return;
+            }
+
+            const deepCopy = JSON.parse(JSON.stringify(userInfo));
+
+            try {
+                await user?.update({
+                    unsafeMetadata: {
+                        ...deepCopy,
+                    },
+                });
+                console.log("User updated successfully");
+                dispatch({ type: ActionType.ToggleView });
+            } catch (error) {
+                console.log("Error updating user", error);
+            }
         }
     }
 
@@ -473,7 +515,7 @@ const ProfileReview: React.FC<Props> = (props) => {
                         />
                     </button>
                     <h1 className="text-4xl text-primary-blue font-bold pb-3 flex-1">
-                        Review Profile
+                        {useBlankUser ? "Create" : "Review"} Profile
                     </h1>
                     <div className={"text-center h-10 leading-10 h-10"
                         + " rounded-md "
@@ -487,7 +529,7 @@ const ProfileReview: React.FC<Props> = (props) => {
                     </div>
                     <button
                         type="submit"
-                        onClick={onSubmit}
+                        onClick={useBlankUser ? () => onSubmit(userId) : () => onSubmit()}
                         className={"bg-[#FF4395] shadow shadow-md shadow-blue"
                             + " hover:shadow-lg text-white font-bold py-2 px-4"
                             + " rounded h-10 hover:bg-[#f04090] justify-end ml-5"}

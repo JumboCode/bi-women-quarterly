@@ -44,6 +44,7 @@ type FileData = {
 type Props = {
     finishSubmit: (body: FormData, submission: Submission) => void,
     goBack: () => void,
+    useBlankUser?: boolean,
 };
 
 /*------------------------------------------------------------------------*/
@@ -263,6 +264,7 @@ const SubmissionForm: React.FC<Props> = (props) => {
     const {
         finishSubmit,
         goBack,
+        useBlankUser,
     } = props;
 
     /*------------------------------------------------------------------------*/
@@ -343,11 +345,14 @@ const SubmissionForm: React.FC<Props> = (props) => {
         }
     };
 
-    const onSubmit = async () => {
+    const onSubmit = async (userId?: string) => {
+        const currUserId = userId ?? user.id;
+
         // Create a copy of the submission object
         let updatedSubmission: Submission = submission;
         updatedSubmission.title = submission.mainSubmission.title;
-        updatedSubmission.id = `${user.id}|${updatedSubmission.title}|${Date.now()}`;
+        updatedSubmission.id = `${userId}|${updatedSubmission.title}|${Date.now()}`;
+        updatedSubmission.userId = currUserId;
 
         // Add the previews to the submission
         updatedSubmission.additionalReferences = previews.map(preview => preview.preview);
@@ -868,6 +873,7 @@ const SubmissionForm: React.FC<Props> = (props) => {
             <ProfileReview
                 onBack={() => {dispatch({type: ActionType.SwitchView, newView: "NewSubmission"})}}
                 onSubmit={onSubmit}
+                useBlankUser={useBlankUser}
             />
         );
     }

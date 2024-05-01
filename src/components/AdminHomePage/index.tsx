@@ -17,6 +17,7 @@ import AdminGrid from "@/components/AdminHomePage/AdminGrid";
 import Link from 'next/link';
 import React, { useEffect, useReducer, useState } from 'react';
 import { TailSpin } from 'react-loader-spinner';
+import SubmissionForm from '../SubmissionForm';
 
 /*------------------------------------------------------------------------*/
 /* -------------------------------- State ------------------------------- */
@@ -29,6 +30,10 @@ type State = {
     allSubmissions: Submission[];
     // Whether to show loading spinner
     isLoading: boolean;
+    // Either display as homepage or submission form 
+    view: "Homepage" | "Submission";
+    // Submission to show in the edit modal
+    editModalSubmission?: Submission;
 };
 
 /* ------------- Actions ------------ */
@@ -37,7 +42,9 @@ type State = {
 enum ActionType {
     UpdateAllSubmissions = "UpdateAllSubmissions",
     ToggleLoadingOn = "ToggleLoadingOn",
-    ToggleLoadingOff = "ToggleLoadingOff"
+    ToggleLoadingOff = "ToggleLoadingOff",
+    SwitchView = 'SwitchView',
+    ChangeEditModal = "ChangeEditModal",
 }
 
 // Action definitions
@@ -49,13 +56,25 @@ type Action =
           newSubmissions: Submission[];
       }
     | {
-          // Action type
-          type: ActionType.ToggleLoadingOn;
-      }
+        // Action type
+        type: ActionType.ChangeEditModal;
+        // Submission to show in modal
+        submission: Submission | undefined;
+    }
     | {
-          // Action type
-          type: ActionType.ToggleLoadingOff;
-      };
+        // Action type
+        type: ActionType.ToggleLoadingOn;
+    }
+    | {
+        // Action type
+        type: ActionType.ToggleLoadingOff;
+    }
+    | {
+        // Action type
+        type: ActionType.SwitchView; 
+        // New view to change to 
+        newView: "Homepage" | "Submission"; //payload
+    };
 
 /**
  * Reducer that executes actions
@@ -72,6 +91,12 @@ const reducer = (state: State, action: Action): State => {
                 allSubmissions: action.newSubmissions
             };
         }
+        case ActionType.ChangeEditModal: {
+            return {
+                ...state,
+                editModalSubmission: action.submission,
+            };
+        }
         case ActionType.ToggleLoadingOn: {
             return {
                 ...state,
@@ -82,6 +107,12 @@ const reducer = (state: State, action: Action): State => {
             return {
                 ...state,
                 isLoading: false
+            };
+        }
+        case ActionType.SwitchView: {
+            return {
+                ...state,
+                view: action.newView,
             };
         }
         default: {
@@ -105,7 +136,9 @@ export default function AdminHomePage() {
     // Initial state
     const initialState: State = {
         allSubmissions: [],
-        isLoading: false
+        editModalSubmission: undefined,
+        isLoading: false,
+        view: "Homepage"
     };
 
     // Initialize state
@@ -114,7 +147,9 @@ export default function AdminHomePage() {
     // Destructure common state
     const {
         allSubmissions,
-        isLoading 
+        isLoading,
+        view,
+        editModalSubmission,
     } = state;
 
     // Initialize state
@@ -125,6 +160,64 @@ export default function AdminHomePage() {
     /*------------------------------------------------------------------------*/
     /* ------------------------------ Functions ----------------------------- */
     /*------------------------------------------------------------------------*/
+
+    const finishSubmit = async (body: FormData, submission: Submission) => {
+        // Switch view back to homepage
+        dispatch({
+            type: ActionType.SwitchView,
+            newView: "Homepage"
+        });
+        dispatch({
+            type: ActionType.ToggleLoadingOn
+        })
+
+        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/update`, {
+            method: "POST",
+            body,
+        })
+        .then(async () => {
+            await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/upload`)
+            .then(res => res.json())
+            .then(res => res.body)
+            .then(responses => {
+                // Update main submission with drive info
+                if (responses[0]) {
+                    submission.mainSubmission.contentDriveUrl = `https://drive.google.com/file/d/${responses[0].id}`;
+                    submission.mainSubmission.imageUrl = responses[0].imageUrl;
+                }
+                // Update additional references with drive info
+                if (submission.additionalReferences && responses.length > 1) {
+                    for (let i = 1; i < responses.length; i++) {
+                        submission.additionalReferences[i - 1].contentDriveUrl = `https://drive.google.com/file/d/${responses[i].id}`;
+                        submission.additionalReferences[i - 1].imageUrl = responses[i].imageUrl;
+                    }
+                }
+            })
+        })
+        .then(async () => {
+            try {
+                // add submission to database
+                await fetch("../api/submissions/add", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        submission: submission,
+                    })
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        })
+        .catch(err => console.error(err));
+
+        // Update submissions
+        await getSubmissions();
+
+        // Hide loading spinner
+        dispatch({
+            type: ActionType.ToggleLoadingOff
+        });
+    }
+
 
     /**
      * Getting submission for user getting onto the webpage
@@ -178,9 +271,6 @@ export default function AdminHomePage() {
      */
     useEffect(() => {
         (async () => {
-            // TODO: fix this hacky way of getting submissions
-            await getSubmissions();
-            await new Promise(r => setTimeout(r, 2000));
             await getSubmissions();
         })();
     }, []);
@@ -483,41 +573,64 @@ export default function AdminHomePage() {
     /* ------------------------------ Rendering ----------------------------- */
     /*------------------------------------------------------------------------*/
 
-    return (
-        <div className="h-screen w-screen flex flex-col gradient-background">
-            <div className="HomePage-top-bar">
-                <div className="m-6 mx-5 flex flex-row justify-between">
-                    <div className="ms-4 flex text-2xl lg:text-3xl xl:text-4xl font-bold text-primary-blue">
-                        Submissions
-                    </div>
-                    <div>
-                        {" "}
-                        {showModal ? (
-                            <IssueModal/>
-                        ) : null}{" "}
-                    </div>
-                    <li className="flex items-center space-x-4">
-                        <button className="HomePage-submit-button lg:text-lg shadow-md">
-                            <div onClick={() => setupIssueModal()}>Update Issues</div>
-                            
-                        </button>
-                        <div className="ml-4">
-                            <UserButton afterSignOutUrl="/" />
+    if (view === "Submission") {
+        return (
+            <SubmissionForm
+                finishSubmit={finishSubmit}
+                goBack={() => {dispatch({type: ActionType.SwitchView, newView: "Homepage"})}}
+                useBlankUser={true}
+            />
+        );
+    } else {
+        return (
+            <div className="h-screen w-screen flex flex-col gradient-background">
+                <div className="HomePage-top-bar">
+                    <div className="m-6 mx-5 flex flex-row justify-between">
+                        <div className="ms-4 flex text-2xl lg:text-3xl xl:text-4xl font-bold text-primary-blue">
+                            Submissions
                         </div>
-                    </li>
-                </div>
-            </div>
-            {isLoading ? (
-                <div className="flex h-screen">
-                    <div className="m-auto z-50">
-                        <TailSpin color="#8200B1"></TailSpin>
+                        <div>
+                            {" "}
+                            {showModal ? (
+                                <IssueModal/>
+                            ) : null}{" "}
+                        </div>
+                        <li className="flex items-center space-x-4">
+                            <button className="HomePage-submit-button lg:text-lg shadow-md"
+                                    onClick={() => {
+                                        dispatch({
+                                            type: ActionType.SwitchView,
+                                            newView: "Submission"
+                                        });
+                                    }}
+                            >
+                                Submit Work
+                            </button>
+                            <button className="HomePage-submit-button lg:text-lg shadow-md">
+                                <div onClick={() => setupIssueModal()}>Update Issues</div>
+                            </button>
+                            <div className="ml-4">
+                                <UserButton afterSignOutUrl="/" />
+                            </div>
+                        </li>
                     </div>
                 </div>
-            ) : (
-                <div className="overflow-scroll">
-                    <AdminGrid submissionArray={allSubmissions}></AdminGrid>
-                </div>
-            )}
-        </div>
-    );
+                {isLoading ? (
+                    <div className="flex h-screen">
+                        <div className="m-auto z-50">
+                            <TailSpin color="#8200B1"></TailSpin>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="overflow-scroll">
+                        <AdminGrid 
+                            submissionArray={allSubmissions}
+                            onSave={() => getSubmissions()}
+                        >
+                        </AdminGrid>
+                    </div>
+                )}
+            </div>
+        );
+    }
 }

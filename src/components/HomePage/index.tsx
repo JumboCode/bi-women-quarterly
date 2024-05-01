@@ -119,7 +119,7 @@ const reducer = (state: State, action: Action): State => {
                 state.allSubmissions,
                 action.newFilter
             );
-            console.log('len:', filteredSubmissions.length);
+
             return {
                 ...state,
                 filter: action.newFilter,

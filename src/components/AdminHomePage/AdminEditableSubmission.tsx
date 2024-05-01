@@ -38,12 +38,12 @@ type State = {
 
 type UserInfo = {
     profilePicture?: string;
-    primaryEmailAddress: string, // required
+    primaryEmailAddress?: string, // required
     firstName?: string,
     lastName?: string,
     authorName: string, // required
     pronouns?: string,
-    bio: string,  // required
+    bio?: string,  // required
     yearOfBirth?: string,
     raceEthnicity?: string,
     gender?: string,
@@ -508,7 +508,7 @@ const AdminEditableSubmission: React.FC<Props> = (props) => {
                         + " shadow shadow-lg shadow-blue"} >
                         <div>
                             <label className="font-bold text-primary-blue">Email</label>
-                            <div className="py-4">{userInfo!.primaryEmailAddress}</div>
+                            <div className="py-4">{userInfo!.primaryEmailAddress!}</div>
                         </div>
 
                         <div className="grid grid-cols-2 lg:pr-96">
