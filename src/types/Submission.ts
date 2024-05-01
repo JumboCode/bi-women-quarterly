@@ -44,7 +44,7 @@ type Submission = {
     editor_note: string;
 
     // Admin only
-    tags?: string[];
+    tags?: string;
     rating?: number;
     notes?: string;
 };

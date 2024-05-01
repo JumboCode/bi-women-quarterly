@@ -178,9 +178,6 @@ export default function AdminHomePage() {
      */
     useEffect(() => {
         (async () => {
-            // TODO: fix this hacky way of getting submissions
-            await getSubmissions();
-            await new Promise(r => setTimeout(r, 2000));
             await getSubmissions();
         })();
     }, []);
@@ -515,7 +512,10 @@ export default function AdminHomePage() {
                 </div>
             ) : (
                 <div className="overflow-scroll">
-                    <AdminGrid submissionArray={allSubmissions}></AdminGrid>
+                    <AdminGrid
+                        submissionArray={allSubmissions}
+                        onSave={() => getSubmissions()}
+                    ></AdminGrid>
                 </div>
             )}
         </div>

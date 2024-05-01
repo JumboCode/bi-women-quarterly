@@ -25,10 +25,11 @@ import Mediums from '@/types/Mediums';
 
 // Import components
 import { openInNewTab } from '../HomePage/UserEditableSubmission';
-import AdminViewSubmission from './AdminViewSubmission';
+import AdminViewSubmission from './AdminEditableSubmission';
 
 type Props = {
     submissionArray: Submission[];
+    onSave: () => void;
 }
 
 const tagStyle = {
@@ -130,6 +131,7 @@ const AdminGrid: React.FC<Props> = (properties) => {
     // Destructure all props
     const {
         submissionArray,
+        onSave,
     } = properties;
 
     /* -------------- State ------------- */
@@ -311,12 +313,9 @@ const AdminGrid: React.FC<Props> = (properties) => {
             headerClassName: "tags-header",
             renderCell: (cellValues) => {
                 return (
-                    cellValues.row.tags &&
-                    cellValues.row.tags.map((tag: string) =>
-                        <div style={tagStyle}>
-                            {tag}
-                        </div>
-                    )
+                    <div style={tagStyle}>
+                        {cellValues.row.tags}
+                    </div>
                 );
             }
         },
@@ -447,6 +446,7 @@ const AdminGrid: React.FC<Props> = (properties) => {
                                             type: ActionType.editSubmissionModal,
                                             submission: undefined
                                         })
+                                        onSave();
                                     }}
                                 />
                             </div>

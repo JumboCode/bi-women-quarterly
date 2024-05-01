@@ -1,16 +1,23 @@
+/**
+ * Modal that allows users to view and edit their submission.
+ * @author Austen Money
+ * @author Walid Nejmi
+ * @author Allison Zhang
+ */
+
 // ... other imports
 import React, { useState, ChangeEvent, useEffect, useReducer, } from 'react';
+
+// Import types
 import Submission from '@/types/Submission';
-import Preview from '@/types/Preview';
-import PreviewType from '@/types/PreviewType';
 import Mediums from '@/types/Mediums';
+import SocialMedias from '@/types/SocialMedias';
 
 // Import FontAwesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { TailSpin } from 'react-loader-spinner';
 
-import SocialMedias from '@/types/SocialMedias';
 
 type Props = {
     initialSubmission: Submission;
@@ -446,7 +453,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                             </div>
 
                             <div className="flex flex-row w-[100%] justify-between">
-                                <div className="UserEdit-image-container flex items-start">
+                                <div className="UserEdit-image-container pr-4 flex items-start">
                                     <img
                                         src={state.submission.mainSubmission.imageUrl}
                                         alt="Submission"
