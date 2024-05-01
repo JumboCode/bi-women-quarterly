@@ -6,11 +6,9 @@ import { clerkClient } from "@clerk/nextjs/server";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const newUserParams = req.query as { unsafeMetadata: any };
-
         const newUser = await clerkClient.users.createUser({
-            unsafeMetadata: newUserParams.unsafeMetadata,
-        });
+            unsafeMetadata: req.body,
+          })
 
         console.log(`New User: ${newUser}`);
         console.log(`New User ID: ${newUser.id}`);

@@ -348,6 +348,8 @@ const SubmissionForm: React.FC<Props> = (props) => {
     const onSubmit = async (userId?: string) => {
         const currUserId = userId ?? user.id;
 
+        console.log(`Submitting for user ${currUserId}...`)
+
         // Create a copy of the submission object
         let updatedSubmission: Submission = submission;
         updatedSubmission.title = submission.mainSubmission.title;
