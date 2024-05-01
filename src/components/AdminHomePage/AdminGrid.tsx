@@ -29,6 +29,7 @@ import AdminViewSubmission from './AdminEditableSubmission';
 
 type Props = {
     submissionArray: Submission[];
+    onSave: () => void;
 }
 
 const tagStyle = {
@@ -130,6 +131,7 @@ const AdminGrid: React.FC<Props> = (properties) => {
     // Destructure all props
     const {
         submissionArray,
+        onSave,
     } = properties;
 
     /* -------------- State ------------- */
@@ -444,6 +446,7 @@ const AdminGrid: React.FC<Props> = (properties) => {
                                             type: ActionType.editSubmissionModal,
                                             submission: undefined
                                         })
+                                        onSave();
                                     }}
                                 />
                             </div>
