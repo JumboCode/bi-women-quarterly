@@ -453,7 +453,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                             </div>
 
                             <div className="flex flex-row w-[100%] justify-between">
-                                <div className="UserEdit-image-container flex items-start">
+                                <div className="UserEdit-image-container pr-4 flex items-start">
                                     <img
                                         src={state.submission.mainSubmission.imageUrl}
                                         alt="Submission"
