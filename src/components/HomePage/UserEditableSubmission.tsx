@@ -431,21 +431,11 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                                                 }
                                                 onChange={handleSubmissionChange}
                                             >
-                                                <option value="Fiction">
-                                                    {Mediums.Fiction}
-                                                </option>
-                                                <option value="NonFiction">
-                                                    {Mediums.Nonfiction}
-                                                </option>
-                                                <option value="Other">
-                                                    {Mediums.Other}
-                                                </option>
-                                                <option value="Poetry">
-                                                    {Mediums.Poetry}
-                                                </option>
-                                                <option value="VisArt">
-                                                    {Mediums.VisualArt}
-                                                </option>
+                                                {(Object.keys(Mediums) as Array<keyof typeof Mediums>).map((key) => (
+                                                    <option key={key} value={Mediums[key]}>
+                                                        {Mediums[key]}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
                                     </div>
