@@ -461,7 +461,10 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                                             value={
                                                 state.submission.mainSubmission.title
                                             }
-                                            onChange={handleMainSubmissionChange}
+                                            onChange={(e) => {
+                                                handleMainSubmissionChange(e);
+                                                handleSubmissionChange(e);
+                                            }}
                                         ></input>
                                     </div>
                                     <div className="image-description text-black p-2 text-left">
@@ -512,7 +515,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                                 <div className="font-bold UserEdit-header">
                                     Note to editor
                                 </div>
-                                <div className=" UserEdit-textbox">
+                                <div className="UserEdit-textbox flex-col items-center py-2 p-[50px] max-w-[100%] ">
                                     <textarea
                                         name="editor_note"
                                         className=" UserEdit-inputbox flex-col items-center max-w-[100%] "

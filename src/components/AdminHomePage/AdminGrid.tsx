@@ -180,7 +180,6 @@ const AdminGrid: React.FC<Props> = (properties) => {
 
     const rows: Submission[] = submissionArray;
 
-    console.log("Rows: ");
     rows.forEach((row) => {
         console.log(JSON.stringify(row, null, 2));
     }
