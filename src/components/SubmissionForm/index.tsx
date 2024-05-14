@@ -534,24 +534,31 @@ const SubmissionForm: React.FC<Props> = (props) => {
                         />
                     </button>
                     <h1 className="text-2xl font-bold text-primary-blue pb-8 mt-1 ml-12 justify=">New Submission</h1>
-                    <div className="flex md:flex md:flex-grow flex-row justify-end space-x-1 px-[20px] py-[10px]">
-                        <select name="issue" className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
-                                value={submission.issue} 
-                                onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})}>
-                            <option defaultValue="Select Issues">Select Issue</option> 
-                            <option value="Any">Any</option>
-                            {
-                                issues.map((issue) => (
-                                    <option key={issue} value={issue}>
-                                        {issue}
-                                    </option>
-                                ))
-                            }
-                        </select>
+                    <div className="flex flex-row">
+                        {/* drop down element for issue selection */}
+                        <div className="flex h-7 pl-1 font-bold">
+                            Issue:
+                            <select name="issue"  
+                                    className="text-m text-white rounded-lg bg-primary-blue font-normal w-32 ml-2"
+                                    value={submission.issue} 
+                                    onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})}>
+                                <option defaultValue="Select Issues">Select Issue</option> 
+                                <option value="Any">Any</option>
+                                {
+                                    issues.map((issue) => (
+                                        <option key={issue} value={issue}>
+                                            {issue}
+                                        </option>
+                                    ))
+                                }
+                            </select>
+                        </div>
                         {/* drop down element for type selection */}
+                        <div className="flex h-7 pl-4 font-bold">
+                            Medium:
                             <select
                                 name="medium" 
-                                className="absolute right-[80px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg"
+                                className="pl-1 text-m text-white rounded-lg bg-primary-blue font-normal w-32 ml-2"
                                 value={submission.medium}
                                 onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})}
                             >
@@ -560,6 +567,7 @@ const SubmissionForm: React.FC<Props> = (props) => {
                                     <option key={key} value={Mediums[key]}>{key}</option>
                                 )}
                             </select>
+                        </div>
                     </div>
                 </div>
                 {/* Submission Boxes */}
@@ -615,7 +623,7 @@ const SubmissionForm: React.FC<Props> = (props) => {
                     </div>
                     }
                     {/* Submission Box 2 */}
-                    <div className="resize pt-2 pl-6 pr-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
+                    <div className="resize pt-2 pl-6 pr-6 h-[250px] flex-1 bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                         <div>
                             <h3 className="flex grow text-left justify-start text-lg font-bold pt-1 ">Title*</h3>
                             <input 
@@ -741,7 +749,7 @@ const SubmissionForm: React.FC<Props> = (props) => {
                                     
 
                                     {/* Submission Box 2 */}
-                                    <div className="resize pt-2 pl-6 pr-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
+                                    <div className="resize pt-2 pl-6 pr-6 h-[250px] flex-1 bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                                         <div>
                                             <h3 className="flex grow text-left justify-start text-lg font-bold pt-1 ">Title*</h3>
                                             <input 
@@ -824,7 +832,6 @@ const SubmissionForm: React.FC<Props> = (props) => {
                         </div>
                     </div>
                 </div>
-
                     <button className="absolute right-[176px] mt-[70px] rounded-lg bg-white m-6 h-[40px] w-[200px]  items-center shadow-lg"
                             onClick={goBack}>
                             Discard
