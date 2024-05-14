@@ -606,20 +606,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                                 </button>
                             </div>
                         </div>
-                        <div className="title-date flex justify-between mb-4 ">
-                            <div className="relative">
-                                <button
-                                    className="bottom-0 mt-6 text-sm UserEdit-bottombutton"
-                                    style={{ backgroundColor: "#FFFFFF80" }}
-                                    onClick={e => {
-                                        e.preventDefault();
-                                        openInNewTab(state.submission.mainSubmission.contentDriveUrl);
-                                    }}
-                                >
-                                    <FontAwesomeIcon icon={faLink} /> &nbsp; Google Drive
-                                </button>
-                            </div>
-
+                        <div className="title-date flex justify-end mb-4 ">
                             <div className="flex items-center issue-type text font-bold">
                                 <div className="UserEdit-selectBox">
                                     <div className="UserEdit-blue-box">

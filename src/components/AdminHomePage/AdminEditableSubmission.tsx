@@ -425,10 +425,9 @@ const AdminEditableSubmission: React.FC<Props> = (props) => {
                                             value={submission.status}
                                             onChange={(e) => dispatch({ type: ActionType.UpdateSubmission, field: "status", value: e.target.value })}
                                         >
-                                            <option defaultValue={Statuses.Pending}>{Statuses.Pending}</option>
-                                            <option value={Statuses.Approved}>{Statuses.Approved}</option>
-                                            <option value={Statuses.Waitlisted}>{Statuses.Waitlisted}</option>
-                                            <option value={Statuses.Declined}>{Statuses.Declined}</option>
+                                            {Object.keys(Statuses).map((status) => (
+                                                <option key={status} value={status}>{status}</option>
+                                            ))}
                                         </select>
                                     </div>
                                 </div>
