@@ -562,7 +562,7 @@ const SubmissionForm: React.FC<Props> = (props) => {
                                 value={submission.medium}
                                 onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})}
                             >
-                                <option defaultValue="Select Type">Select Type</option>
+                                <option defaultValue="Select Medium">Select Medium</option>
                                 {(Object.keys(Mediums) as Array<keyof typeof Mediums>).map((key) => 
                                     <option key={key} value={Mediums[key]}>{key}</option>
                                 )}
