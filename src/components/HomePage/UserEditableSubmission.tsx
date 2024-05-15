@@ -539,18 +539,16 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                             ) : null}
 
                             {state.submission.additionalReferences?.map((additionalReference, index) => (
-                                <div className="flex flex-row w-full justify-between mt-[5%]" key={index}>
-                                    <div className="additional-images">
-                                        <div className="UserEdit-image-container flex items-start">
-                                            <img
-                                                src={additionalReference.imageUrl}
-                                                alt={`Additional Image ${index}`}
-                                                className="UserEdit-image max-w-[100%] mr-4 rounded-lg"
-                                            />
-                                        </div>
+                                <div className="flex flex-row w-full mt-[5%]" key={index}>
+                                    <div className="UserEdit-image-container flex items-start mr-4">
+                                        <img
+                                            src={additionalReference.imageUrl}
+                                            alt={`Additional Image ${index}`}
+                                            className="UserEdit-image max-w-[100%] mr-4 rounded-lg"
+                                        />
                                     </div>
 
-                                    <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
+                                    <div className="flex-col items-center py-2 UserEdit-textbox w-[100%]">
                                         <div className="title p-[5%] text-left">
                                             <b style={{ color: "#395EB9" }}>Title</b>
                                             <br></br>
@@ -685,8 +683,8 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                             </div>
                         ) : null}
                         {state.submission.additionalReferences?.map((additionalReference, index) => (
-                            <div key={index} className="flex flex-row w-[100%] justify-between mt-[5%]">
-                                <div className="UserEdit-image-container flex items-start">
+                            <div key={index} className="flex flex-row w-[100%] mt-[5%]">
+                                <div className="UserEdit-image-container flex items-start mr-4">
                                     <img
                                         src={additionalReference.imageUrl}
                                         alt={`Additional Image ${index}`}
@@ -694,7 +692,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                                     />
                                 </div>
 
-                                <div className="flex-col items-center py-2 UserEdit-textbox max-w-[55%] w-[100%]">
+                                <div className="flex-col items-center py-2 UserEdit-textbox w-[100%]">
                                     <div className="title p-[5%] text-left">
                                         <b style={{ color: "#395EB9" }}>Title</b>
                                         <br></br>

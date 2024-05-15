@@ -623,8 +623,8 @@ const SubmissionForm: React.FC<Props> = (props) => {
                             </div>
                         </div> 
                     ) : 
-                    <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">
-                        <div className="flex items-center justify-center">
+                    <div className="p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px] flex flex-col justify-center">
+                        <div className="flex grow text-center items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3b60ba" className="mx-auto flex h-20 w-20 items-center justify-center">
                                 <path fillRule="evenodd" d="M10.5 3.75a6 6 0 00-5.98 6.496A5.25 5.25 0 006.75 20.25H18a4.5 4.5 0 002.206-8.423 3.75 3.75 0 00-4.133-4.303A6.001 6.001 0 0010.5 3.75zm2.03 5.47a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72v4.94a.75.75 0 001.5 0v-4.94l1.72 1.72a.75.75 0 101.06-1.06l-3-3z" clipRule="evenodd" />
                             </svg>
@@ -740,7 +740,7 @@ const SubmissionForm: React.FC<Props> = (props) => {
                                         </div>
                                         </div> 
                                     ) :
-                                        <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">
+                                        <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px] flex flex-col justify-center">
                                         <div className="break-normal">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3b60ba" className="mx-auto flex h-20 w-20 items-center justify-center">
                                                 <path fillRule="evenodd" d="M10.5 3.75a6 6 0 00-5.98 6.496A5.25 5.25 0 006.75 20.25H18a4.5 4.5 0 002.206-8.423 3.75 3.75 0 00-4.133-4.303A6.001 6.001 0 0010.5 3.75zm2.03 5.47a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72v4.94a.75.75 0 001.5 0v-4.94l1.72 1.72a.75.75 0 101.06-1.06l-3-3z" clipRule="evenodd" />
@@ -749,30 +749,23 @@ const SubmissionForm: React.FC<Props> = (props) => {
                             
                                         <h1 className="flex grow text-center justify-center text-l font-bold pb-1 pt-1">Drag & Drop Files Here</h1>
                                         <h1 className="flex grow text-center justify-center text-m pb-1 pt-1">or</h1>
-                                        
-                                        <div className="flex grid grid-cols-2 gap-4 pt-[20px]">
-                                        <div className="flex grow text-justify justify-center text-[#3b60ba]">
-                                            <form>
-                                                <div>
-                                                    <label className="resize inline-block h-[30px] w-[115px] pt-[3px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]">
-                                                        <input
-                                                            type="file"
-                                                            name="files"
-                                                            id="inputFile"
-                                                            className="hidden"
-                                                            onChange={(e) => (handleFileChange(index, e))}
-                                                        />{" "}
-                                                        Local File
-                                                    </label>
-                                                </div>
-                                            </form>
-                                    </div>
-                                        <div className="flex  text-justify justify-center text-[#3b60ba]">
-                                            <button  type="submit" className="inline-block h-[30px] w-[115px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]">
-                                                Google Drive
-                                            </button>
+                                            <div className="flex pt-[20px]">
+                                            <div className="flex grow text-justify justify-center text-[#3b60ba]">       
+                                                <form>
+                                                        <label className="resize inline-block h-[30px] w-[115px] pt-[3px] rounded-sm  text-center  outline outline-[#5072c0] outline-offset-[3px]">
+                                                            <input
+                                                                type="file"
+                                                                name="files"
+                                                                id="inputFile"
+                                                                className="hidden"
+                                                                onChange={(e) => handleFileChange(index, e)}
+                                                            />{" "}
+                                                            Select File
+                                                        </label>
+                                                </form>                                
+                                            </div>
                                         </div>
-                                        </div>
+                            
                                     </div>
                                     }
                                     
