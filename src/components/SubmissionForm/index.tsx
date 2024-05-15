@@ -320,6 +320,33 @@ const SubmissionForm: React.FC<Props> = (props) => {
     const [issues, setIssues] = useState<string[]>([]);
 
     /*------------------------------------------------------------------------*/
+    /* ------------------------- Back Button Warning ------------------------ */
+    /*------------------------------------------------------------------------*/
+
+    const [finishStatus, setfinishStatus] = useState(false);
+
+    const onBackButtonEvent = (e: any) => {
+        e.preventDefault();
+        if (!finishStatus) {
+            if (window.confirm("Are you sure you want to go back? Your submission will not be saved.")) {
+                setfinishStatus(true)
+                goBack();
+            } else {
+                window.history.pushState(null, '', window.location.pathname);
+                setfinishStatus(false)
+            }
+        }
+    }
+    
+    useEffect(() => {
+    window.history.pushState(null, '', window.location.pathname);
+    window.addEventListener('popstate', onBackButtonEvent);
+    return () => {
+        window.removeEventListener('popstate', onBackButtonEvent);  
+    };
+    }, []);
+
+    /*------------------------------------------------------------------------*/
     /* ------------------------- Component Functions ------------------------ */
     /*------------------------------------------------------------------------*/
 
@@ -520,7 +547,7 @@ const SubmissionForm: React.FC<Props> = (props) => {
         return (
             <div className="p-8 mb-5 min-h-screen bg-[#ecf0f6]">
             {/* // Creates a form to retrieve title, issue, and name information */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-row mb-6">
                     {/* drop down element for issue selection */}
                     <button className="rounded-lg h-11 w-11 left-3 absolute items-center "
                         onClick={() => {
@@ -533,8 +560,10 @@ const SubmissionForm: React.FC<Props> = (props) => {
                             className="text-primary-blue text-2xl"
                         />
                     </button>
-                    <h1 className="text-2xl font-bold text-primary-blue pb-8 mt-1 ml-12 justify=">New Submission</h1>
-                    <div className="flex flex-row">
+                    <h1 className="flex text-2xl font-bold text-primary-blue ml-12 mt-1">
+                        New Submission
+                    </h1>
+                    <div className="flex mt-2 ml-auto">
                         {/* drop down element for issue selection */}
                         <div className="flex h-7 pl-1 font-bold">
                             Issue:
@@ -668,22 +697,22 @@ const SubmissionForm: React.FC<Props> = (props) => {
                     previews.map((preview, index) => {
                         return (
                             <div>
-                                <div className=" grid grid-cols-2 gap-4 " >
-                                    <h1 className="text-1xl font-bold pb-4 mt-3 pt-8 justify=">Optional Related Photo</h1>
-                                    {/* <button className="inline-block h-[30px] w-[115px] rounded-sm  text-center  outline outline-[#5072c0] outline-offset-[3px]" */}
-                                    <div className="flex md:flex md:flex-grow flex-row  justify-end space-x-1 px-[20px] py-[40px]">
-                                    <button className="absolute right-[80px] flex inline-block bg-[#FFFFFF] items-center justify-center h-[30px] w-[115px] rounded-lg  text-center   "
-                                            // className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
-                                    onClick={() => {
-                                        if (preview.showImg) {
-                                            removeFile(index);
-                                        } 
-                                            
-                                        dispatch({type: ActionType.RemovePreview, index})
-                                        }}>
-                                            <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                            <path fillRule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
-                                        </svg> Delete</button>    
+                                <div className="flex flex-row pt-8" >
+                                    <h1 className="text-1xl font-bold pb-4 mt-2 justify=">Optional Related Photo</h1>
+                                    <div className="flex flex-row justify-end ml-auto">
+                                    <button className="flex inline-block bg-primary-blue text-white font-semibold items-center justify-center h-[30px] w-[115px] rounded-lg  text-center   "
+                                        onClick={() => {
+                                            if (preview.showImg) {
+                                                removeFile(index);
+                                            } 
+                                                
+                                            dispatch({type: ActionType.RemovePreview, index})
+                                            }}>
+                                            <svg className="w-6 h-6 text-white mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                                <path fillRule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
+                                            </svg>
+                                            Delete
+                                        </button>    
                                     </div> 
                                 </div>
 
@@ -797,7 +826,7 @@ const SubmissionForm: React.FC<Props> = (props) => {
                         onClick={() => {
                             dispatch({type: ActionType.AddPreview});
                         }}
-                        className="rounded-lg items-center pt-4 ml-20">
+                        className="rounded-lg items-center pt-4 ml-20 font-semibold">
                         + Additional Photos
                     </button>
                 </div>

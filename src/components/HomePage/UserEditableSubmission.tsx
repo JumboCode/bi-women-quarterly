@@ -443,14 +443,14 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                             </div>
 
                             <div className="flex flex-row w-[100%] justify-between">
-                                <div className="UserEdit-image-container pr-4 flex items-start">
+                                <div className="UserEdit-image-container mr-4 flex items-start">
                                     <img
                                         src={state.submission.mainSubmission.imageUrl}
                                         alt="Submission"
                                         className="UserEdit-image max-w-[100%] mr-4 rounded-lg"
                                     />
                                 </div>
-                                <div className="flex-col items-center py-2 UserEdit-textbox w-[100%]">
+                                <div className="flex-col items-center py-2 pl-2 UserEdit-textbox w-[100%]">
                                     <div className="title p-2 text-left">
                                         <b style={{ color: "#395EB9" }}>Title</b>
                                         <br></br>
@@ -628,11 +628,11 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                         </div>
 
                         <div className="flex flex-row w-[100%] justify-between">
-                            <div className="UserEdit-image-container flex items-start">
+                            <div className="UserEdit-image-container mr-4 flex items-start">
                                 <img
                                     src={submission.mainSubmission.imageUrl}
                                     alt="Submission"
-                                    className="max-w-[100%] mr-1 rounded-lg"
+                                    className="max-w-[100%] mr-4 rounded-lg"
                                 />
                             </div>
                             <div className="flex-col items-center py-2 UserEdit-textbox w-[100%]">

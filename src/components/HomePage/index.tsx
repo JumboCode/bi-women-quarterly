@@ -435,7 +435,7 @@ export default function HomePage() {
                     <div className="flex text-2xl lg:text-3xl xl:text-4xl font-bold text-primary-blue">
                         My Work
                     </div>
-                    <li className="flex items-center space-x-4">
+                    <li className="flex items-center space-x-4 font-semibold">
                         <button className="HomePage-submit-button lg:text-lg xl:text-xl shadow-md"
                                 onClick={() => {
                                     dispatch({

@@ -68,8 +68,8 @@ const SubmissionThumbnail: React.FC<Props> = props => {
             onClick={onClick}
             className="group block flex flex-col items-start bg-[#ffffff3c] hover:bg-[#385FB8] cursor-pointer p-4 transition-colors rounded-lg hover:text-[#ffffff] w-full"
         >
-            <div className="w-full mb-2 object-cover"> {/*max-w-md min-w-min */}
-                <img src={imageUrl} className="max-h-96 rounded-lg"></img>
+            <div className="mb-2 object-none"> 
+                <img src={imageUrl} className="w-60 h-60 rounded-lg"></img>
             </div>
             <div className="w-full flex min-w-min justify-between">
                 <div className="text-[#385FB8] font-bold md:text-xl lg:text-2xl xl:text-2xl group-hover:text-white pr-2">{title}</div>
