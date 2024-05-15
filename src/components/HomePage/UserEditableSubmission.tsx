@@ -482,7 +482,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                                             ></textarea>
                                         </div>
                                     </div>
-                                    <div className="photo-credit p-2 text-left">
+                                    <div className="photo-credit p-5 text-left">
                                         <b style={{ color: "#395EB9" }}>Photo Credit</b>
                                         <br></br>
                                         <input
@@ -549,7 +549,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                                     </div>
 
                                     <div className="flex-col items-center py-2 UserEdit-textbox w-[100%]">
-                                        <div className="title p-[5%] text-left">
+                                        <div className="title p-5 text-left">
                                             <b style={{ color: "#395EB9" }}>Title</b>
                                             <br></br>
                                             <input
@@ -560,7 +560,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                                                 onChange={(e: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>) => handleUpdateAdditionalRef(index, e)}
                                             ></input>
                                         </div>
-                                        <div className="image-description text-black p-[5%] text-left ">
+                                        <div className="image-description text-black p-5 text-left ">
                                             <b style={{ color: "#395EB9" }}>Description</b>
                                             <br></br>
                                             <div>
@@ -573,6 +573,19 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                                                     onChange={(e: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>) => handleUpdateAdditionalRef(index, e)}
                                                 ></textarea>
                                             </div>
+                                        </div>
+                                        <div className="photo-credit p-5 text-left">
+                                            <b style={{ color: "#395EB9" }}>Photo Credit</b>
+                                            <br></br>
+                                            <input
+                                                className="UserEdit-inputbox"
+                                                type="text"
+                                                name="photoCredit"
+                                                value={
+                                                    additionalReference.photoCredit
+                                                }
+                                                onChange={(e: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>) => handleUpdateAdditionalRef(index, e)}
+                                            ></input>
                                         </div>
                                     </div>
                                 </div>
@@ -693,17 +706,22 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                                 </div>
 
                                 <div className="flex-col items-center py-2 UserEdit-textbox w-[100%]">
-                                    <div className="title p-[5%] text-left">
+                                    <div className="title p-5 text-left">
                                         <b style={{ color: "#395EB9" }}>Title</b>
                                         <br></br>
                                         <span>{additionalReference.title}</span>
                                     </div>
-                                    <div className="image-description text-black p-[5%] text-left">
+                                    <div className="image-description text-black p-5 text-left">
                                         <b style={{ color: "#395EB9" }}>Description</b>
                                         <br></br>
                                         <span>
                                             {additionalReference.description}
                                         </span>
+                                    </div>
+                                    <div className="photo-credit p-5 text-left">
+                                        <b style={{ color: "#395EB9" }}>Photo Credit</b>
+                                        <br></br>
+                                        {additionalReference.photoCredit}
                                     </div>
                                 </div>
                             </div>
