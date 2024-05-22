@@ -20,7 +20,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         // Insert the defined document into the "Submissions" collection
         const body = JSON.parse(req.body);
-        console.log("NEW SUBMISSION BODY:" + JSON.stringify(body, null, 2));
         await collect.insertOne(body);
 
         res.status(201).json({ success: true });

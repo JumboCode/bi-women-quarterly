@@ -180,11 +180,6 @@ const AdminGrid: React.FC<Props> = (properties) => {
 
     const rows: Submission[] = submissionArray;
 
-    rows.forEach((row) => {
-        console.log(JSON.stringify(row, null, 2));
-    }
-    );
-
     const handleRowClick = (params: GridRowParams) => {
         const selectedRowData = params.row;
 

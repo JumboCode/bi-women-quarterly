@@ -6,18 +6,15 @@
  */
 
 // ... other imports
-import React, { useState, ChangeEvent, useEffect, useReducer, } from 'react';
+import React, { useState, ChangeEvent, useEffect, useReducer, ReactNode } from 'react';
 
 // Import types
 import Submission from '@/types/Submission';
 import Mediums from '@/types/Mediums';
 import SocialMedias from '@/types/SocialMedias';
 
-// Import FontAwesome
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLink } from '@fortawesome/free-solid-svg-icons';
+// Import other components
 import { TailSpin } from 'react-loader-spinner';
-
 
 type Props = {
     initialSubmission: Submission;
@@ -35,6 +32,7 @@ type State = {
     additionalRefIndex: number;
     initialAddRefIndex: number;
     showLoading: boolean;
+    showWarning: boolean;
 };
 
 type UserInfo = {
@@ -93,6 +91,10 @@ enum ActionType {
     HideLoading = 'HideLoading',
     // Cancel
     Cancel = "Cancel",
+    // Show Warning
+    ShowWarning = 'ShowWarning',
+    // Hide Warning
+    HideWarning = 'HideWarning',
 }
 
 type Action = (
@@ -135,6 +137,14 @@ type Action = (
         type: ActionType.Cancel,
 
         submission: Submission;
+    }
+    | {
+        // Action type
+        type: ActionType.ShowWarning,
+    }
+    | {
+        // Action type
+        type: ActionType.HideWarning,
     }
 )
 
@@ -204,6 +214,18 @@ const reducer = (state: State, action: Action): State => {
                 submission: action.submission,
             }
         }
+        case ActionType.ShowWarning: {
+            return {
+                ...state,
+                showWarning: true,
+            }
+        }
+        case ActionType.HideWarning: {
+            return {
+                ...state,
+                showWarning: false,
+            }
+        }
         default: {
             return state;
         }
@@ -233,6 +255,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
         additionalRefIndex: initialSubmission.additionalReferences ? initialSubmission.additionalReferences.length - 1 : -1,
         initialAddRefIndex: initialSubmission.additionalReferences ? initialSubmission.additionalReferences.length - 1 : -1,
         showLoading: false,
+        showWarning: false,
     }
 
     const [state, dispatch] = useReducer(reducer, initialState);
@@ -242,6 +265,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
         submission,
         additionalRefIndex,
         showLoading,
+        showWarning,
     } = state;
 
     const [userInfo, setUserInfo] = useState<UserInfo>(PLACEHOLDERS);
@@ -278,11 +302,6 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
 
         dispatch({ type: ActionType.ShowLoading });
 
-        console.log(JSON.stringify(state.submission, null, 2));
-        submission.additionalReferences?.forEach((preview) => {
-            console.log(JSON.stringify(preview, null, 2));
-        })
-
         try {
             // add submission to database
             await fetch("../api/submissions/edit", {
@@ -300,12 +319,12 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
         handleEdit();
     };
 
-    const deleteSubmit = async (id: string, title: string) => {
+    const deleteSubmit = async () => {
         // Show loading spinner
         dispatch({ type: ActionType.ShowLoading });
 
         try {
-            await fetch(`../api/submissions/delete?id=${id}&title=${title}`, {
+            await fetch(`../api/submissions/delete?id=${submission.id}&title=${submission.title}`, {
                 method: "DELETE",
             });
         } catch (error) {
@@ -338,10 +357,43 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
     /* --------------- Main UI -------------- */
     /*----------------------------------------*/
 
+    let body: React.ReactNode;
+    let modal: React.ReactNode;
 
+    if (showWarning) {
+        modal = (
+            <div>
+                <div className="fixed top-0 left-0 z-50 w-screen h-screen bg-black bg-opacity-50"></div>
+                <div className="fixed top-1/2 left-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-lg">
+                    <div className="text-center">
+                        <h2 className="text-2xl font-bold">Are you sure you want to delete this submission?</h2>
+                        <p>This action cannot be undone.</p>
+                    </div>
+                    <div className="flex justify-center mt-4">
+                        <button
+                            className="bg-pink-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2"
+                            onClick={() => {
+                                dispatch({ type: ActionType.HideWarning });
+                                deleteSubmit();
+                            }}
+                        >
+                            Yes
+                        </button>
+                        <button
+                            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={() => dispatch({ type: ActionType.HideWarning })}
+                        >
+                            No
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
-    const body = (
+    body = (
         <div className="flex flex-row h-100 w-100 UserEdit-container m-[0px] justify-around overflow-y-scroll rounded-lg">
+            {modal}
             {/* Loading Spinner */}
             {showLoading ? (
                 <div className="flex h-screen">
@@ -371,20 +423,8 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                                     </button>
                                 </div>
                             </div>
-                            <div className="title-date flex items-center justify-between mb-4">
-                                <div className="flex flex-row">
-                                    <button
-                                        className="bottom-0 mt-6 text-sm UserEdit-bottombutton"
-                                        style={{ backgroundColor: "#FFFFFF80" }}
-                                        onClick={e => {
-                                            e.preventDefault();
-                                            openInNewTab(state.submission.mainSubmission.contentDriveUrl);
-                                        }}
-                                    >
-                                        <FontAwesomeIcon icon={faLink} /> &nbsp; Google Drive
-                                    </button>
-                                </div>
-                                <div className="flex items-center issue-type text font-bold">
+                            <div className="title-date flex justify-end mb-4">
+                                <div className="flex issue-type text font-bold">
                                     <div className="UserEdit-selectBox">
                                         <div className="UserEdit-blue-box">
                                             <label>Issue: </label>
@@ -470,9 +510,9 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                                     <div className="image-description text-black p-2 text-left">
                                         <b style={{ color: "#395EB9" }}>Description</b>
                                         <br></br>
-                                        <div>
+                                        <div className="h-32">
                                             <textarea
-                                                className="UserEdit-inputbox"
+                                                className="UserEdit-inputbox h-full"
                                                 name="description"
                                                 value={
                                                     state.submission.mainSubmission
@@ -482,7 +522,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                                             ></textarea>
                                         </div>
                                     </div>
-                                    <div className="photo-credit p-5 text-left">
+                                    <div className="photo-credit p-2 text-left">
                                         <b style={{ color: "#395EB9" }}>Photo Credit</b>
                                         <br></br>
                                         <input
@@ -502,10 +542,10 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                                 <div className="font-bold UserEdit-header">
                                     Artist Statement
                                 </div>
-                                <div className=" UserEdit-textbox flex-col items-center py-2 p-[50px] max-w-[100%] ">
+                                <div className=" UserEdit-textbox flex-col items-center p-2 max-w-[100%] h-32 mb-5">
                                     <textarea
                                         name="artist_statement"
-                                        className=" UserEdit-inputbox"
+                                        className=" UserEdit-inputbox w-full h-full"
                                         value={state.submission.artist_statement}
                                         onChange={handleSubmissionChange}
                                     ></textarea>
@@ -515,10 +555,10 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                                 <div className="font-bold UserEdit-header">
                                     Note to editor
                                 </div>
-                                <div className="UserEdit-textbox flex-col items-center py-2 p-[50px] max-w-[100%] ">
+                                <div className="UserEdit-textbox flex-col items-center p-2 max-w-[100%] h-32">
                                     <textarea
                                         name="editor_note"
-                                        className=" UserEdit-inputbox flex-col items-center max-w-[100%] "
+                                        className=" UserEdit-inputbox flex-col items-center w-full h-full "
                                         value={state.submission.editor_note}
                                         onChange={handleSubmissionChange}
                                     ></textarea>
@@ -563,9 +603,9 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                                         <div className="image-description text-black p-5 text-left ">
                                             <b style={{ color: "#395EB9" }}>Description</b>
                                             <br></br>
-                                            <div>
+                                            <div className="h-32">
                                                 <textarea
-                                                    className="UserEdit-inputbox"
+                                                    className="UserEdit-inputbox h-full"
                                                     name="description"
                                                     value={
                                                         additionalReference.description
@@ -596,8 +636,8 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
                     <div className="mt-2 w-11/12">
                         {/* View Only */}
                         <div className="w-full flex justify-between pb-2">
-                            <div className="flex items-center">
-                                <button type="button" onClick={(e) => deleteSubmit(state.submission.id, state.submission.title)} className="text-lg font-semibold UserEdit-bottombutton">
+                            <div className="flex">
+                                <button type="button" className="rounded shadow UserEdit-bottombutton font-semibold text-lg" onClick={() => dispatch({type: ActionType.ShowWarning})}>
                                     Delete Submission
                                 </button>
                             </div>
