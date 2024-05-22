@@ -12,7 +12,6 @@ import clientPromise from "@/lib/mongodb";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        // console.log(req.body);
         const client = await clientPromise;
         // access database BiWomenQuarterly
         const db = client.db("BiWomenQuarterly");
@@ -25,7 +24,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         // accesses collection to verify that everything was inserted correctly
         const collection = await db.collection("Issues").find({}).toArray();
-        // console.log(collection);
 
         res.status(201).json({ success: true, data: collection });
     } catch (e) {

@@ -6,7 +6,7 @@
  */
 
 // ... other imports
-import React, { useState, useEffect, useReducer, } from 'react';
+import React, { useState, useEffect, useReducer, ChangeEvent, } from 'react';
 import Submission from '@/types/Submission';
 import Statuses from '@/types/Statuses';
 
@@ -34,6 +34,7 @@ type State = {
     additionalRefIndex: number;
     initialAddRefIndex: number;
     showLoading: boolean;
+    showWarning: boolean;
 };
 
 type UserInfo = {
@@ -90,6 +91,10 @@ enum ActionType {
     ShowLoading = 'ShowLoading',
     // Hide a loading spinner
     HideLoading = 'HideLoading',
+    // Show warning modal
+    ShowWarning = "ShowWarning",
+    // Hide warning modal
+    HideWarning = "HideWarning",
     // Cancel
     Cancel = "Cancel",
 }
@@ -128,6 +133,14 @@ type Action = (
     | {
         // Action type
         type: ActionType.HideLoading,
+    }
+    | {
+        // Action type
+        type: ActionType.ShowWarning,
+    }
+    | {
+        // Action type
+        type: ActionType.HideWarning,
     }
     | {
         // Action type
@@ -196,6 +209,18 @@ const reducer = (state: State, action: Action): State => {
                 showLoading: false,
             }
         }
+        case ActionType.ShowWarning: {
+            return {
+                ...state,
+                showWarning: true,
+            }
+        }
+        case ActionType.HideWarning: {
+            return {
+                ...state,
+                showWarning: false,
+            }
+        }
         case ActionType.Cancel: {
             return {
                 ...state,
@@ -230,6 +255,7 @@ const AdminEditableSubmission: React.FC<Props> = (props) => {
         additionalRefIndex: initialSubmission.additionalReferences ? initialSubmission.additionalReferences.length - 1 : -1,
         initialAddRefIndex: initialSubmission.additionalReferences ? initialSubmission.additionalReferences.length - 1 : -1,
         showLoading: false,
+        showWarning: false,
     }
 
     const [state, dispatch] = useReducer(reducer, initialState);
@@ -239,6 +265,7 @@ const AdminEditableSubmission: React.FC<Props> = (props) => {
         submission,
         additionalRefIndex,
         showLoading,
+        showWarning,
     } = state;
 
     const [userInfo, setUserInfo] = useState<UserInfo>(PLACEHOLDERS);
@@ -256,12 +283,12 @@ const AdminEditableSubmission: React.FC<Props> = (props) => {
         getUserInfo();
     }, []);
 
-    const deleteSubmit = async (id: string, title: string) => {
+    const deleteSubmit = async () => {
         // Show loading spinner
         dispatch({ type: ActionType.ShowLoading });
 
         try {
-            await fetch(`../api/submissions/delete?id=${id}&title=${title}`, {
+            await fetch(`../api/submissions/delete?id=${submission.id}&title=${submission.title}`, {
                 method: "DELETE",
             });
         } catch (error) {
@@ -287,9 +314,43 @@ const AdminEditableSubmission: React.FC<Props> = (props) => {
     /*----------------------------------------*/
 
 
+    let body: React.ReactNode;
+    let modal: React.ReactNode;
 
-    const body = (
+    if (showWarning) {
+        modal = (
+            <div>
+                <div className="fixed top-0 left-0 z-50 w-screen h-screen bg-black bg-opacity-50"></div>
+                <div className="fixed top-1/2 left-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-lg">
+                    <div className="text-center">
+                        <h2 className="text-2xl font-bold">Are you sure you want to delete this submission?</h2>
+                        <p>This action cannot be undone.</p>
+                    </div>
+                    <div className="flex justify-center mt-4">
+                        <button
+                            className="bg-pink-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2"
+                            onClick={() => {
+                                dispatch({ type: ActionType.HideWarning });
+                                deleteSubmit();
+                            }}
+                        >
+                            Yes
+                        </button>
+                        <button
+                            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={() => dispatch({ type: ActionType.HideWarning })}
+                        >
+                            No
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    body = (
         <div className="flex flex-col h-100 w-100 UserEdit-container m-[0px] justify-center items-center overflow-y-scroll rounded-lg">
+            {modal}
             {/* Loading Spinner */}
             {showLoading ? (
                 <div className="flex h-screen">
@@ -302,7 +363,7 @@ const AdminEditableSubmission: React.FC<Props> = (props) => {
                     {/* Top Buttons */}
                         <div className="flex">
                             <div className="justify-start mr-auto">
-                                <button type="button" onClick={(e) => deleteSubmit(state.submission.id, state.submission.title)} className="text-lg font-semibold UserEdit-bottombutton">
+                                <button type="button" onClick={() => dispatch({type: ActionType.ShowWarning})} className="text-lg font-semibold UserEdit-bottombutton">
                                     Delete Submission
                                 </button>
                             </div>
@@ -347,60 +408,51 @@ const AdminEditableSubmission: React.FC<Props> = (props) => {
                                     className="w-full mr-1 rounded-lg UserEdit-image"
                                 />
                             </div>
-                            <div className="flex-col items-center py-2 UserEdit-textbox w-[100%]">
-                                <div className="title p-2 text-left">
-                                    <b style={{ color: "#395EB9" }}>Title</b>
-                                    <br></br>
-                                    <span className="font-medium">{submission.mainSubmission.title}</span>
+                            <div className="flex-col items-center py-2 pl-2 UserEdit-textbox w-[100%] UserEdit-selectBoxLabel">
+                                <div className="p-2 text-left text-primary-blue">
+                                    <b>Title</b>
+                                    <input
+                                        className="UserEdit-inputbox text-black"
+                                        type="text"
+                                        name="title"
+                                        value={
+                                            state.submission.mainSubmission.title
+                                        }
+                                        onChange={(e) => {
+                                            dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value})
+                                            dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})
+                                        }}
+                                    ></input>
                                 </div>
                                 <div className="image-description text-black p-2 text-left">
                                     <b style={{ color: "#395EB9" }}>Description</b>
                                     <br></br>
-                                    {state.submission.mainSubmission.description}
+                                    <div>
+                                        <textarea
+                                            className="UserEdit-inputbox"
+                                            name="description"
+                                            value={
+                                                state.submission.mainSubmission
+                                                    .description
+                                            }
+                                            onChange={(e) => dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value})}
+                                        ></textarea>
+                                    </div>
                                 </div>
-                                <div className="photo-credit text-black p-2 text-left">
+                                <div className="photo-credit p-2 text-left">
                                     <b style={{ color: "#395EB9" }}>Photo Credit</b>
                                     <br></br>
-                                    {state.submission.mainSubmission.photoCredit}
+                                    <input
+                                        className="UserEdit-inputbox"
+                                        type="text"
+                                        name="photoCredit"
+                                        value={
+                                            state.submission.mainSubmission.photoCredit
+                                        }
+                                        onChange={(e) => dispatch({type: ActionType.UpdateMainSubmission, field: e.target.name, value: e.target.value})}
+                                    ></input>
                                 </div>
                             </div>
-                            {(state.submission.additionalReferences?.length && state.submission.additionalReferences?.length > 0) ? (
-                            <div
-                                className="text-xl mt-[3%] font-semibold"
-                                style={{
-                                    textAlign: "left",
-                                    color: "#395EB9"
-                                }}
-                            >
-                                Optional Related Content
-                            </div>
-                        ) : null}
-                        {state.submission.additionalReferences?.map((additionalReference, index) => (
-                            <div key={additionalReference.contentDriveUrl} className="">
-                                <div className="w-full flex items-start pb-2">
-                                    <img
-                                        src={additionalReference.imageUrl}
-                                        alt={`Additional Image ${index}`}
-                                        className="UserEdit-image max-w-[100%] rounded-lg"
-                                    />
-                                </div>
-
-                                <div className="flex-col items-center py-2 UserEdit-textbox w-[100%]">
-                                    <div className="title p-[5%] text-left">
-                                        <b style={{ color: "#395EB9" }}>Title</b>
-                                        <br></br>
-                                        <span>{additionalReference.title}</span>
-                                    </div>
-                                    <div className="image-description text-black p-[5%] text-left">
-                                        <b style={{ color: "#395EB9" }}>Description</b>
-                                        <br></br>
-                                        <span>
-                                            {additionalReference.description}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
                     </div>
                     {/* Right half */}
                     <div className="w-1/2 h-full flex flex-col space-y-2 mt-5">
@@ -425,10 +477,9 @@ const AdminEditableSubmission: React.FC<Props> = (props) => {
                                             value={submission.status}
                                             onChange={(e) => dispatch({ type: ActionType.UpdateSubmission, field: "status", value: e.target.value })}
                                         >
-                                            <option defaultValue={Statuses.Pending}>{Statuses.Pending}</option>
-                                            <option value={Statuses.Approved}>{Statuses.Approved}</option>
-                                            <option value={Statuses.Waitlisted}>{Statuses.Waitlisted}</option>
-                                            <option value={Statuses.Declined}>{Statuses.Declined}</option>
+                                            {Object.keys(Statuses).map((status) => (
+                                                <option key={status} value={status}>{status}</option>
+                                            ))}
                                         </select>
                                     </div>
                                 </div>
@@ -481,23 +532,97 @@ const AdminEditableSubmission: React.FC<Props> = (props) => {
                         </div>
                     </div>
 
-                    <div className="pt-5">
-                            <div className="font-bold UserEdit-header">
-                                Artist Statement
-                            </div>
-                            <div className="flex-col items-center py-2 p-[50px] UserEdit-textbox max-w-[100%] ">
-                                {state.submission.artist_statement}
-                            </div>
+                {/* Center */}
+                                            
+                    <div className="pt-5 pb-5 ">
+                        <div className="font-bold UserEdit-header">
+                            Artist Statement
                         </div>
-
-                    <div className="pt-5">
+                        <div className=" UserEdit-textbox flex-col items-center py-2 p-[50px] max-w-[100%] UserEdit-selectBoxLabel">
+                            <textarea
+                                name="artist_statement"
+                                className=" UserEdit-inputbox"
+                                value={state.submission.artist_statement}
+                                onChange={(e) => dispatch({ type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value })}
+                            ></textarea>
+                        </div>
+                    </div>
+                    <div>
                         <div className="font-bold UserEdit-header">
                             Note to editor
                         </div>
-                        <div className="flex-col items-center py-2 p-[50px] UserEdit-textbox max-w-[100%] ">
-                            {state.submission.editor_note}
+                        <div className="UserEdit-textbox flex-col items-center py-2 p-[50px] max-w-[100%] UserEdit-selectBoxLabel ">
+                            <textarea
+                                name="editor_note"
+                                className=" UserEdit-inputbox flex-col items-center max-w-[100%] "
+                                value={state.submission.editor_note}
+                                onChange={(e) => dispatch({ type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value })}
+                            ></textarea>
                         </div>
                     </div>
+                    {(state.submission.additionalReferences?.length && state.submission.additionalReferences?.length > 0) ? (
+                            <div
+                                className="text-xl mt-[3%] font-semibold"
+                                style={{
+                                    textAlign: "left",
+                                    color: "#395EB9"
+                                }}
+                            >
+                                Optional Related Content
+                            </div>
+                        ) : null}
+                    {state.submission.additionalReferences?.map((additionalReference, index) => (
+                            <div className="flex flex-row w-full mt-5" key={index}>
+                                <div className="UserEdit-image-container flex items-start mr-4">
+                                    <img
+                                        src={additionalReference.imageUrl}
+                                        alt={`Additional Image ${index}`}
+                                        className="UserEdit-image max-w-[100%] mr-4 rounded-lg"
+                                    />
+                                </div>
+                                
+                                <div className="flex-col items-center py-2 UserEdit-textbox w-[100%] UserEdit-selectBoxLabel">
+                                    <div className="p-4 text-left text-primary-blue">
+                                        <b>Title</b>
+                                        <input
+                                            className="UserEdit-inputbox text-black"
+                                            type="text"
+                                            name="title"
+                                            value={additionalReference.title}
+                                            onChange={(e: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>) => dispatch({type: ActionType.UpdateAdditional, field: e.target.name, value: e.target.value, index})}
+                                        ></input>
+                                    </div>
+                                    
+                                    <div className="image-description text-black p-4 text-left ">
+                                        <b style={{ color: "#395EB9" }}>Description</b>
+                                        <br></br>
+                                        <div>
+                                            <textarea
+                                                className="UserEdit-inputbox"
+                                                name="description"
+                                                value={
+                                                    additionalReference.description
+                                                }
+                                                onChange={(e: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>) => dispatch({type: ActionType.UpdateAdditional, field: e.target.name, value: e.target.value, index})}
+                                            ></textarea>
+                                        </div>
+                                    </div>
+                                    <div className="photo-credit p-4 text-left">
+                                        <b style={{ color: "#395EB9" }}>Photo Credit</b>
+                                        <br></br>
+                                        <input
+                                            className="UserEdit-inputbox"
+                                            type="text"
+                                            name="photoCredit"
+                                            value={
+                                                additionalReference.photoCredit
+                                            }
+                                            onChange={(e) => dispatch({type: ActionType.UpdateAdditional, field: e.target.name, value: e.target.value, index})}
+                                        ></input>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
 
                     {/* Biographical info */}
                     <div className="font-bold UserEdit-header pt-4">

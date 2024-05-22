@@ -5,12 +5,8 @@ import { clerkClient } from "@clerk/nextjs/server";
 import Submission from "@/types/Submission";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-    console.log("HEREE");
     const { newSubmission, userId } = JSON.parse(req.body);
     const { user } = useUser();
-
-    console.log(`newSubmission: ${newSubmission}`);
-    console.log(`id: ${userId}`);
 
     if (!user) {
         console.log("User is undefined.");

@@ -119,7 +119,7 @@ const reducer = (state: State, action: Action): State => {
                 state.allSubmissions,
                 action.newFilter
             );
-            console.log('len:', filteredSubmissions.length);
+
             return {
                 ...state,
                 filter: action.newFilter,
@@ -435,7 +435,7 @@ export default function HomePage() {
                     <div className="flex text-2xl lg:text-3xl xl:text-4xl font-bold text-primary-blue">
                         My Work
                     </div>
-                    <li className="flex items-center space-x-4">
+                    <li className="flex items-center space-x-4 font-semibold">
                         <button className="HomePage-submit-button lg:text-lg xl:text-xl shadow-md"
                                 onClick={() => {
                                     dispatch({
@@ -451,7 +451,7 @@ export default function HomePage() {
                     </li>
                 </div>
                 <div className="flex items-end"> {/* ${isOpen ? "is-open" : ""} flex-row justify-around justify-items-stretch top-16 left-20 */}
-                    <li className="flex m-5 space-x-8 flex-col sm:flex-row"> {/*pt-4 pl-16 space-x-20*/}
+                    <li className="flex m-5 space-x-8"> {/*pt-4 pl-16 space-x-20*/}
                         <button
                             onClick={() => {
                                 dispatch({

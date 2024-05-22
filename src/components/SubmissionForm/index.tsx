@@ -320,6 +320,33 @@ const SubmissionForm: React.FC<Props> = (props) => {
     const [issues, setIssues] = useState<string[]>([]);
 
     /*------------------------------------------------------------------------*/
+    /* ------------------------- Back Button Warning ------------------------ */
+    /*------------------------------------------------------------------------*/
+
+    const [finishStatus, setfinishStatus] = useState(false);
+
+    const onBackButtonEvent = (e: any) => {
+        e.preventDefault();
+        if (!finishStatus) {
+            if (window.confirm("Are you sure you want to go back? Your submission will not be saved.")) {
+                setfinishStatus(true)
+                goBack();
+            } else {
+                window.history.pushState(null, '', window.location.pathname);
+                setfinishStatus(false)
+            }
+        }
+    }
+    
+    useEffect(() => {
+    window.history.pushState(null, '', window.location.pathname);
+    window.addEventListener('popstate', onBackButtonEvent);
+    return () => {
+        window.removeEventListener('popstate', onBackButtonEvent);  
+    };
+    }, []);
+
+    /*------------------------------------------------------------------------*/
     /* ------------------------- Component Functions ------------------------ */
     /*------------------------------------------------------------------------*/
 
@@ -520,7 +547,7 @@ const SubmissionForm: React.FC<Props> = (props) => {
         return (
             <div className="p-8 mb-5 min-h-screen bg-[#ecf0f6]">
             {/* // Creates a form to retrieve title, issue, and name information */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-row mb-6">
                     {/* drop down element for issue selection */}
                     <button className="rounded-lg h-11 w-11 left-3 absolute items-center "
                         onClick={() => {
@@ -533,33 +560,43 @@ const SubmissionForm: React.FC<Props> = (props) => {
                             className="text-primary-blue text-2xl"
                         />
                     </button>
-                    <h1 className="text-2xl font-bold text-primary-blue pb-8 mt-1 ml-12 justify=">New Submission</h1>
-                    <div className="flex md:flex md:flex-grow flex-row justify-end space-x-1 px-[20px] py-[10px]">
-                        <select name="issue" className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
-                                value={submission.issue} 
-                                onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})}>
-                            <option defaultValue="Select Issues">Select Issue</option> 
-                            <option value="Any">Any</option>
-                            {
-                                issues.map((issue) => (
-                                    <option key={issue} value={issue}>
-                                        {issue}
-                                    </option>
-                                ))
-                            }
-                        </select>
+                    <h1 className="flex text-2xl font-bold text-primary-blue ml-12 mt-1">
+                        New Submission
+                    </h1>
+                    <div className="flex mt-2 ml-auto">
+                        {/* drop down element for issue selection */}
+                        <div className="flex h-7 pl-1 font-bold">
+                            Issue:
+                            <select name="issue"  
+                                    className="text-m text-white rounded-lg bg-primary-blue font-normal w-32 ml-2"
+                                    value={submission.issue} 
+                                    onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})}>
+                                <option defaultValue="Select Issues">Select Issue</option> 
+                                <option value="Any">Any</option>
+                                {
+                                    issues.map((issue) => (
+                                        <option key={issue} value={issue}>
+                                            {issue}
+                                        </option>
+                                    ))
+                                }
+                            </select>
+                        </div>
                         {/* drop down element for type selection */}
+                        <div className="flex h-7 pl-4 font-bold">
+                            Medium:
                             <select
                                 name="medium" 
-                                className="absolute right-[80px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg"
+                                className="pl-1 text-m text-white rounded-lg bg-primary-blue font-normal w-32 ml-2"
                                 value={submission.medium}
                                 onChange={(e) => dispatch({type: ActionType.UpdateSubmission, field: e.target.name, value: e.target.value})}
                             >
-                                <option defaultValue="Select Type">Select Type</option>
+                                <option defaultValue="Select Medium">Select Medium</option>
                                 {(Object.keys(Mediums) as Array<keyof typeof Mediums>).map((key) => 
                                     <option key={key} value={Mediums[key]}>{key}</option>
                                 )}
                             </select>
+                        </div>
                     </div>
                 </div>
                 {/* Submission Boxes */}
@@ -586,8 +623,8 @@ const SubmissionForm: React.FC<Props> = (props) => {
                             </div>
                         </div> 
                     ) : 
-                    <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">
-                        <div className="flex items-center justify-center">
+                    <div className="p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px] flex flex-col justify-center">
+                        <div className="flex grow text-center items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3b60ba" className="mx-auto flex h-20 w-20 items-center justify-center">
                                 <path fillRule="evenodd" d="M10.5 3.75a6 6 0 00-5.98 6.496A5.25 5.25 0 006.75 20.25H18a4.5 4.5 0 002.206-8.423 3.75 3.75 0 00-4.133-4.303A6.001 6.001 0 0010.5 3.75zm2.03 5.47a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72v4.94a.75.75 0 001.5 0v-4.94l1.72 1.72a.75.75 0 101.06-1.06l-3-3z" clipRule="evenodd" />
                             </svg>
@@ -615,7 +652,7 @@ const SubmissionForm: React.FC<Props> = (props) => {
                     </div>
                     }
                     {/* Submission Box 2 */}
-                    <div className="resize pt-2 pl-6 pr-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
+                    <div className="resize pt-2 pl-6 pr-6 h-[250px] flex-1 bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                         <div>
                             <h3 className="flex grow text-left justify-start text-lg font-bold pt-1 ">Title*</h3>
                             <input 
@@ -660,22 +697,22 @@ const SubmissionForm: React.FC<Props> = (props) => {
                     previews.map((preview, index) => {
                         return (
                             <div>
-                                <div className=" grid grid-cols-2 gap-4 " >
-                                    <h1 className="text-1xl font-bold pb-4 mt-3 pt-8 justify=">Optional Related Photo</h1>
-                                    {/* <button className="inline-block h-[30px] w-[115px] rounded-sm  text-center  outline outline-[#5072c0] outline-offset-[3px]" */}
-                                    <div className="flex md:flex md:flex-grow flex-row  justify-end space-x-1 px-[20px] py-[40px]">
-                                    <button className="absolute right-[80px] flex inline-block bg-[#FFFFFF] items-center justify-center h-[30px] w-[115px] rounded-lg  text-center   "
-                                            // className="absolute right-[208px] h-[30px] w-[115px] pl-1 text-m text-gray-900 rounded-lg" 
-                                    onClick={() => {
-                                        if (preview.showImg) {
-                                            removeFile(index);
-                                        } 
-                                            
-                                        dispatch({type: ActionType.RemovePreview, index})
-                                        }}>
-                                            <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                            <path fillRule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
-                                        </svg> Delete</button>    
+                                <div className="flex flex-row pt-8" >
+                                    <h1 className="text-1xl font-bold pb-4 mt-2 justify=">Optional Related Photo</h1>
+                                    <div className="flex flex-row justify-end ml-auto">
+                                    <button className="flex inline-block bg-primary-blue text-white font-semibold items-center justify-center h-[30px] w-[115px] rounded-lg  text-center   "
+                                        onClick={() => {
+                                            if (preview.showImg) {
+                                                removeFile(index);
+                                            } 
+                                                
+                                            dispatch({type: ActionType.RemovePreview, index})
+                                            }}>
+                                            <svg className="w-6 h-6 text-white mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                                <path fillRule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd" />
+                                            </svg>
+                                            Delete
+                                        </button>    
                                     </div> 
                                 </div>
 
@@ -703,7 +740,7 @@ const SubmissionForm: React.FC<Props> = (props) => {
                                         </div>
                                         </div> 
                                     ) :
-                                        <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px]">
+                                        <div className="resize	p-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center outline-dashed outline-[#768fcd] outline-offset-[-3px] flex flex-col justify-center">
                                         <div className="break-normal">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3b60ba" className="mx-auto flex h-20 w-20 items-center justify-center">
                                                 <path fillRule="evenodd" d="M10.5 3.75a6 6 0 00-5.98 6.496A5.25 5.25 0 006.75 20.25H18a4.5 4.5 0 002.206-8.423 3.75 3.75 0 00-4.133-4.303A6.001 6.001 0 0010.5 3.75zm2.03 5.47a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72v4.94a.75.75 0 001.5 0v-4.94l1.72 1.72a.75.75 0 101.06-1.06l-3-3z" clipRule="evenodd" />
@@ -712,36 +749,29 @@ const SubmissionForm: React.FC<Props> = (props) => {
                             
                                         <h1 className="flex grow text-center justify-center text-l font-bold pb-1 pt-1">Drag & Drop Files Here</h1>
                                         <h1 className="flex grow text-center justify-center text-m pb-1 pt-1">or</h1>
-                                        
-                                        <div className="flex grid grid-cols-2 gap-4 pt-[20px]">
-                                        <div className="flex grow text-justify justify-center text-[#3b60ba]">
-                                            <form>
-                                                <div>
-                                                    <label className="resize inline-block h-[30px] w-[115px] pt-[3px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]">
-                                                        <input
-                                                            type="file"
-                                                            name="files"
-                                                            id="inputFile"
-                                                            className="hidden"
-                                                            onChange={(e) => (handleFileChange(index, e))}
-                                                        />{" "}
-                                                        Local File
-                                                    </label>
-                                                </div>
-                                            </form>
-                                    </div>
-                                        <div className="flex  text-justify justify-center text-[#3b60ba]">
-                                            <button  type="submit" className="inline-block h-[30px] w-[115px] rounded-sm   text-center  outline outline-[#5072c0] outline-offset-[3px]">
-                                                Google Drive
-                                            </button>
+                                            <div className="flex pt-[20px]">
+                                            <div className="flex grow text-justify justify-center text-[#3b60ba]">       
+                                                <form>
+                                                        <label className="resize inline-block h-[30px] w-[115px] pt-[3px] rounded-sm  text-center  outline outline-[#5072c0] outline-offset-[3px]">
+                                                            <input
+                                                                type="file"
+                                                                name="files"
+                                                                id="inputFile"
+                                                                className="hidden"
+                                                                onChange={(e) => handleFileChange(index, e)}
+                                                            />{" "}
+                                                            Select File
+                                                        </label>
+                                                </form>                                
+                                            </div>
                                         </div>
-                                        </div>
+                            
                                     </div>
                                     }
                                     
 
                                     {/* Submission Box 2 */}
-                                    <div className="resize pt-2 pl-6 pr-6 h-[250px] w-[550px] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
+                                    <div className="resize pt-2 pl-6 pr-6 h-[250px] flex-1 bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                                         <div>
                                             <h3 className="flex grow text-left justify-start text-lg font-bold pt-1 ">Title*</h3>
                                             <input 
@@ -789,7 +819,7 @@ const SubmissionForm: React.FC<Props> = (props) => {
                         onClick={() => {
                             dispatch({type: ActionType.AddPreview});
                         }}
-                        className="rounded-lg items-center pt-4 ml-20">
+                        className="rounded-lg items-center pt-4 ml-20 font-semibold">
                         + Additional Photos
                     </button>
                 </div>
@@ -824,7 +854,6 @@ const SubmissionForm: React.FC<Props> = (props) => {
                         </div>
                     </div>
                 </div>
-
                     <button className="absolute right-[176px] mt-[70px] rounded-lg bg-white m-6 h-[40px] w-[200px]  items-center shadow-lg"
                             onClick={goBack}>
                             Discard
