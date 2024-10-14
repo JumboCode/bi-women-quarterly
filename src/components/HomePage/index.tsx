@@ -46,10 +46,10 @@ enum FilterType {
 type State = {
     // How the submissions should be filtered
     filter: FilterType;
+    // Current issue
+    currentIssue: string;
     // All user submissions
     allSubmissions: Submission[];
-    // Submissions to show on the page
-    filteredSubmissions: Submission[];
     // Submission to show in the edit modal
     editModalSubmission?: Submission;
     // Whether to show loading spinner
@@ -63,6 +63,7 @@ type State = {
 // Types of actions
 enum ActionType {
     ChangeFilter = "ChangeFilter",
+    setCurrentIssue = "setCurrentIssue",
     UpdateAllSubmissions = "UpdateAllSubmissions",
     ChangeEditModal = "ChangeEditModal",
     ToggleLoadingOn = "ToggleLoadingOn",
@@ -77,6 +78,12 @@ type Action =
           type: ActionType.ChangeFilter;
           // Filter to change to
           newFilter: FilterType;
+      }
+    | {
+          // Action type
+          type: ActionType.setCurrentIssue;
+          // Issue
+          currentIssue: string;
       }
     | {
           // Action type
@@ -115,15 +122,15 @@ type Action =
 const reducer = (state: State, action: Action): State => {
     switch (action.type) {
         case ActionType.ChangeFilter: {
-            const filteredSubmissions = filterSubmissions(
-                state.allSubmissions,
-                action.newFilter
-            );
-
             return {
                 ...state,
                 filter: action.newFilter,
-                filteredSubmissions
+            };
+        }
+        case ActionType.setCurrentIssue: {
+            return {
+                ...state,
+                currentIssue: action.currentIssue,
             };
         }
         case ActionType.UpdateAllSubmissions: {
@@ -163,53 +170,6 @@ const reducer = (state: State, action: Action): State => {
 };
 
 /*------------------------------------------------------------------------*/
-/* --------------------------- Static Helpers --------------------------- */
-/*------------------------------------------------------------------------*/
-
-const fetchCurrentIssue = async () => {
-    try {
-        return await fetch("../api/issues/get", { method: "GET" })
-            .then(response => response.json())
-            .then(res => res.data.map((issue: any) => [issue.status, issue.title]))
-            .then(issues => issues.filter((issue: [string, string]) => issue[0] === "Current"))
-            .then(issue => issue[0][1]);
-    } catch (error) {
-        console.error("Error fetching issue themes: ", error);
-    }
-};
-
-/**
- * Filters given Submission array to just the given type.
- * @author Austen Money
- * @param submissions submissions to filter
- * @param filter how to filter the submissions
- * @returns filtered submissions
- */
-const filterSubmissions = (
-    submissions: Submission[],
-    filter: FilterType
-): Submission[] => {
-    switch (filter) {
-        case FilterType.Approved: {
-            return submissions.filter(submission => {
-                return submission.status === Statuses.Approved;
-            });
-        }
-        case FilterType.Current: {
-            return submissions.filter(submission => {
-                return submission.issue === "Summer 2024: More Than One Letter";
-            });
-        }
-        case FilterType.None: {
-            return submissions;
-        }
-        default: {
-            return submissions;
-        }
-    }
-};
-
-/*------------------------------------------------------------------------*/
 /* ------------------------------ Component ----------------------------- */
 /*------------------------------------------------------------------------*/
 
@@ -223,8 +183,8 @@ export default function HomePage() {
     // Initial state
     const initialState: State = {
         filter: FilterType.None,
+        currentIssue: "",
         allSubmissions: [],
-        filteredSubmissions: [],
         editModalSubmission: undefined,
         isLoading: false,
         view: "Homepage"
@@ -236,8 +196,8 @@ export default function HomePage() {
     // Destructure common state
     const {
         filter,
+        currentIssue,
         allSubmissions,
-        filteredSubmissions,
         editModalSubmission,
         isLoading,
         view,
@@ -252,6 +212,34 @@ export default function HomePage() {
     /*------------------------------------------------------------------------*/
 
     /**
+     * Filters given Submission array to just the given type.
+     * @author Austen Money
+     * @param submissions submissions to filter
+     * @param filter how to filter the submissions
+     * @returns filtered submissions
+     */
+    const filteredSubmissions = ((): Submission[] => {
+        switch (filter) {
+            case FilterType.Approved: {
+                return allSubmissions.filter(submission => {
+                    return submission.status === Statuses.Approved;
+                });
+            }
+            case FilterType.Current: {
+                return allSubmissions.filter(submission => {
+                    return submission.issue === currentIssue;
+                });
+            }
+            case FilterType.None: {
+                return allSubmissions;
+            }
+            default: {
+                return allSubmissions;
+            }
+        }
+    })();
+
+    /**
      * Fetches the issue themes from the database and sets the issues state
      * @author Austen Money
      * @author Walid Nejmi
@@ -259,12 +247,20 @@ export default function HomePage() {
      */
     const fetchIssueThemes = async () => {
         try {
-            await fetch("../api/issues/get", { method: "GET" })
-                .then(response => response.json())
-                .then(res => res.data.map((issue: any) => issue.title))
-                .then(titles => {
-                    setIssues(titles);
+            const issues = await fetch("../api/issues/get", { method: "GET" })
+            .then(response => response.json())
+            .then(res => res.data.map((issue: any) => [issue.status, issue.title]));
+
+            const issueTitles = issues.forEach((issue: [string, string]) => issues[1]);
+            const fetchedIssue = issues.filter((issue: [string, string]) => issue[0] === "Current")
+
+            setIssues(issueTitles);
+            if (fetchedIssue) {
+                dispatch({
+                    type: ActionType.setCurrentIssue,
+                    currentIssue: fetchedIssue[0][1],
                 });
+            }
         } catch (error) {
             console.error("Error fetching issue themes: ", error);
             return [];
@@ -400,11 +396,7 @@ export default function HomePage() {
                 newFilter: filter
             });
         })();
-    }, [filter, allSubmissions]);
-
-    /*------------------------------------------------------------------------*/
-    /* ------------------------- Component Functions ------------------------ */
-    /*------------------------------------------------------------------------*/
+    }, [filter]);
 
     if (!user) {
         return null;

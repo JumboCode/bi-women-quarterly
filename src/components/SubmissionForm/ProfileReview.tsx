@@ -714,7 +714,7 @@ const ProfileReview: React.FC<Props> = (props) => {
                             defaultValue={userInfo.bio}
                             onChange={(e) => handleChange('bio', e.target.value)} required />
                         <label className="text-primary-blue text-sm">
-                            Please write in third person.</label>
+                            Bio should be 1-2 sentences in length and include geographic location (can be as precise about location as you wish, but please include country). Please write in third person. </label>
                     </div>
                 </div>
                 <div className="text-xl text-primary-blue font-bold pl-5 ">

@@ -536,7 +536,7 @@ const AdminEditableSubmission: React.FC<Props> = (props) => {
                                             
                     <div className="pt-5 pb-5 ">
                         <div className="font-bold UserEdit-header">
-                            Artist Statement
+                            Artist Statement (for visual art submissions only)
                         </div>
                         <div className=" UserEdit-textbox flex-col items-center py-2 p-[50px] max-w-[100%] UserEdit-selectBoxLabel">
                             <textarea

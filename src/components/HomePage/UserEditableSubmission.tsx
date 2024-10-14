@@ -540,7 +540,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
 
                             <div className="pt-5">
                                 <div className="font-bold UserEdit-header">
-                                    Artist Statement
+                                    Artist Statement (for visual art submissions only)
                                 </div>
                                 <div className=" UserEdit-textbox flex-col items-center p-2 max-w-[100%] h-32 mb-5">
                                     <textarea
@@ -707,7 +707,7 @@ const UserEditableSubmission: React.FC<Props> = (props) => {
 
                         <div className="pt-5">
                             <div className="font-bold UserEdit-header">
-                                Artist Statement
+                                Artist Statement (for visual art submissions only)
                             </div>
                             <div className="flex-col items-center py-2 p-[50px] UserEdit-textbox max-w-[100%] ">
                                 {state.submission.artist_statement}

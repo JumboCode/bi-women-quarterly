@@ -825,7 +825,7 @@ const SubmissionForm: React.FC<Props> = (props) => {
                 </div>
                 {/* Artist Statement */}
                 <div>
-                <h1 className="text-1xl font-bold pb-4 mt-3 pt-8 justify=">Artist Statement</h1>
+                <h1 className="text-1xl font-bold pb-4 mt-3 pt-8 justify=">Artist Statement (for visual art submissions only)</h1>
                     <div className="p-6 h-[150px] w-[full] bg-[#c3cee3] rounded-xl shadow-lg items-center space-x-4 outline-[#768fcd] outline-offset-[-3px]">
                         <div>
                             {submission.medium == Mediums.VisualArt ? (
