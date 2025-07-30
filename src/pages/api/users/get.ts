@@ -7,7 +7,10 @@ import { clerkClient } from "@clerk/nextjs/server";
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const data = await clerkClient.users.getUser(req.query.id as string);
-        const userData = data.unsafeMetadata;
+        const userData = {
+            ...data.unsafeMetadata,
+            backupEmailAddress: data.emailAddresses?.[0]?.emailAddress || "",
+        };
         res.status(201).json({ success: true, data: userData });
     } catch (e) {
         res.status(400).json({ success: false });
