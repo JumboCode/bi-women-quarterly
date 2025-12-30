@@ -51,6 +51,7 @@ type UserInfo = {
     country?: string,
     stateProvince?: string,
     cityTown?: string,
+    backupEmailAddress?: string, // optional
 
     // NOTE: for socialMedias to be optional means that the
     // strings it contains are allowed to be empty
@@ -271,17 +272,31 @@ const AdminEditableSubmission: React.FC<Props> = (props) => {
     const [userInfo, setUserInfo] = useState<UserInfo>(PLACEHOLDERS);
 
     const userId = initialSubmission.userId;
+    console.log('initialSubmission', initialSubmission);
+
     useEffect(() => {
         const getUserInfo = async () => {
-            await fetch(`../api/users/get?id=${userId}`, { method: "GET" })
-                .then(response => response.json())
-                .then(response => {
-                    setUserInfo(response.data);
-                });
-        }
-
+          try {
+            const response = await fetch(`../api/users/get?id=${userId}`, { method: 'GET' });
+            const data = await response.json();
+            if (data?.data && typeof data.data === 'object') {
+              setUserInfo({ ...PLACEHOLDERS, authorName: initialSubmission.author, primaryEmailAddress: data.data.backupEmailAddress, ...data.data });
+            } else {
+              setUserInfo({
+                ...PLACEHOLDERS,
+                authorName: initialSubmission.author,
+            });
+            }
+          } catch (error) {
+            console.error('Failed to fetch user info:', error);
+            setUserInfo({
+                ...PLACEHOLDERS,
+                authorName: initialSubmission.author,
+            });
+          }
+        };
         getUserInfo();
-    }, []);
+      }, [userId]);
 
     const deleteSubmit = async () => {
         // Show loading spinner
@@ -347,6 +362,8 @@ const AdminEditableSubmission: React.FC<Props> = (props) => {
             </div>
         );
     }
+
+    console.log('userInfo', userInfo);
 
     body = (
         <div className="flex flex-col h-100 w-100 UserEdit-container m-[0px] justify-center items-center overflow-y-scroll rounded-lg">
@@ -633,35 +650,35 @@ const AdminEditableSubmission: React.FC<Props> = (props) => {
                         + " shadow shadow-lg shadow-blue"} >
                         <div>
                             <label className="font-bold text-primary-blue">Email</label>
-                            <div className="py-4">{userInfo!.primaryEmailAddress}</div>
+                            <div className="py-4">{userInfo?.primaryEmailAddress}</div>
                         </div>
 
                         <div className="grid grid-cols-2 lg:pr-96">
                             <div>
                                 <label className="font-bold text-primary-blue">First Name</label>
-                                <div className="py-4">{userInfo!.firstName}</div>
+                                <div className="py-4">{userInfo?.firstName}</div>
                             </div>
 
                             <div>
                                 <label className="font-bold text-primary-blue">Last Name</label>
-                                <div className="py-4">{userInfo!.lastName}</div>
+                                <div className="py-4">{userInfo?.lastName}</div>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 lg:pr-96">
                             <div>
                                 <div className="font-bold text-primary-blue">Author Name</div>
-                                <div className="py-4">{userInfo!.authorName}</div>
+                                <div className="py-4">{userInfo?.authorName}</div>
                             </div>
 
                             <div>
                                 <div className="font-bold text-primary-blue">Pronouns</div>
-                                <div className="py-4">{userInfo!.pronouns}</div>
+                                <div className="py-4">{userInfo?.pronouns}</div>
                             </div>
                         </div>
 
                         <div className="font-bold text-primary-blue">Bio</div>
-                        <div className="py-4">{userInfo!.bio}</div>
+                        <div className="py-4">{userInfo?.bio}</div>
 
                     </div>
 
@@ -674,7 +691,7 @@ const AdminEditableSubmission: React.FC<Props> = (props) => {
                         <div className="grid md:grid-cols-3 grid-cols-2 lg:pr-96">
                             <div>
                                 <div className="font-bold text-primary-blue">Year of Birth</div>
-                                <div className="py-4">{userInfo!.yearOfBirth}</div>
+                                <div className="py-4">{userInfo?.yearOfBirth}</div>
                             </div>
 
                             <div>
@@ -689,17 +706,17 @@ const AdminEditableSubmission: React.FC<Props> = (props) => {
 
                             <div>
                                 <div className="font-bold text-primary-blue">Country</div>
-                                <div className="py-4">{userInfo!.country}</div>
+                                <div className="py-4">{userInfo?.country}</div>
                             </div>
 
                             <div>
                                 <div className="font-bold text-primary-blue">State</div>
-                                <div className="py-4">{userInfo!.stateProvince}</div>
+                                <div className="py-4">{userInfo?.stateProvince}</div>
                             </div>
 
                             <div>
                                 <div className="font-bold text-primary-blue">City</div>
-                                <div className="py-4">{userInfo!.cityTown}</div>
+                                <div className="py-4">{userInfo?.cityTown}</div>
                             </div>
                         </div>
                     </div>
@@ -715,22 +732,22 @@ const AdminEditableSubmission: React.FC<Props> = (props) => {
                         <div className="grid md:grid-cols-2 grid-cols-1">
                             <div className="py-4">
                                 <label className="font-bold inline mr-5 text-primary-blue">LinkedIn</label>
-                                <div className="inline">{userInfo!.socialMedias.LinkedIn}</div>
+                                <div className="inline">{userInfo?.socialMedias.LinkedIn}</div>
                             </div>
 
                             <div className="py-4">
                                 <label className="font-bold inline mr-5 text-primary-blue">Instagram</label>
-                                <div className="inline">{userInfo!.socialMedias.Instagram}</div>
+                                <div className="inline">{userInfo?.socialMedias.Instagram}</div>
                             </div>
 
                             <div className="py-4">
                                 <label className="font-bold inline mr-5 text-primary-blue">X/Twitter</label>
-                                <div className="inline">{userInfo!.socialMedias.X}</div>
+                                <div className="inline">{userInfo?.socialMedias.X}</div>
                             </div>
 
                             <div className="py-4">
                                 <label className="font-bold inline mr-5 text-primary-blue">Facebook</label>
-                                <div className="inline">{userInfo!.socialMedias.Facebook}</div>
+                                <div className="inline">{userInfo?.socialMedias.Facebook}</div>
                             </div>
                         </div>
                     </div>
